@@ -1,0 +1,15 @@
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: hsl(200, 80%, 0%);
+}
+
+#canvasBody canvas {
+  cursor: none;
+  image-rendering: optimizeSpeed;
+  max-width: 100%;
+  display: block;
+  margin: auto;
+  background: #000;
+}
