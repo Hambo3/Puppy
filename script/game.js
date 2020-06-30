@@ -98,6 +98,8 @@
             for(var e = 0; e < asses.length; e++) {
                 asses[e].Render(mp);
             }     
+
+            Renderer.Text("HOWDY", 32);
         }
     };
 

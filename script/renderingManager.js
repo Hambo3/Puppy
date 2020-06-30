@@ -43,6 +43,36 @@ var Rendering = function (context, screen, border) {
         ctx.fill();
     }
 
+    function txt(string, size) {
+        var needed = [];
+        string = string.toUpperCase(); // because I only did uppercase letters
+        for (var i = 0; i < string.length; i++) {
+            var letter = letters[string.charAt(i)];
+            if (letter) { // because there's letters I didn't do
+                needed.push(letter);
+            }
+        }
+
+        ctx.fillStyle = 'black';
+        var currX = 0;
+        for (i = 0; i < needed.length; i++) {
+            letter = needed[i];
+            var currY = 0;
+            var addX = 0;
+            for (var y = 0; y < letter.length; y++) {
+                var row = letter[y];
+                for (var x = 0; x < row.length; x++) {
+                    if (row[x]) {
+                        ctx.fillRect(currX + x * size, currY, size, size);
+                    }
+                }
+                addX = Math.max(addX, row.length * size);
+                currY += size;
+            }
+            currX += size + addX;
+        }
+    }
+
     return {
         Clear: function(w,h,x,y){
             ctx.clearRect(x||0, y||0, w, h);
@@ -65,24 +95,8 @@ var Rendering = function (context, screen, border) {
         Image: function(c, x, y){
             ctx.drawImage(c,x,y);
         },  
-        Text: function(txt, x, y, font, col){
-            ctx.font = font;
-            ctx.fillStyle = col;
-            ctx.fillText(txt, x, y);
-        }, 
-        DrawBox: function(x, y, w, h, col){
-            ctx.fillStyle = col;
-            ctx.fillRect(PT(x), PT(y), w, h);
-        }, 
-        ImgText: function(S, px, x, y, sc,c){
-            for(j=0;j<S;j++){
-              for(i=0;i<S;i++){
-                if(px[j*S+i]){
-                    ctx.fillStyle = c;
-                    ctx.fillRect(x+(i*sc),y+(j*sc),sc,sc);
-                }
-              }
-            }
+        Text: function(text, size){
+            txt(text, size);
         }
     }
 };
