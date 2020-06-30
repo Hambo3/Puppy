@@ -22,7 +22,7 @@
         this.jumping = false;
         this.dest = {x:0, y:0};
 
-        this.accel = 90;  
+        this.accel = 120;  
 
         this.action = Const.actions.up;
         this.status = 0;

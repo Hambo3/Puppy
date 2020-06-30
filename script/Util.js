@@ -178,7 +178,7 @@ var Util = {
     },
     IsoPoint: function(x, y)
     {
-        return {x: x - (y * 0.2), y: y + (x * 0.2)};
+        return {x: x - (y * 0.32), y: (y + (x * 0.32))*0.7};
     },
     Arc: function(i, items, radius)
     {
@@ -315,7 +315,9 @@ var Factory = {
     Tile: function(col, size)
     {
         var half = size/2;
-        return {col: col, pt: [{x:-12, y:-18},{x:18, y:-12},{x:12, y:18},{x:-18, y:12}] }
+        return {col: col, pt: [{x:-11, y:-15},{x:21, y:-7.83},{x:10.75, y:14.56},{x:-21.24, y:7.4}] }
+        //return {col: col, pt: [{x:-12, y:-15},{x:20, y:-9},{x:12, y:15},{x:-20, y:9}] }
+        //return {col: col, pt: [{x:-12, y:-20},{x:20, y:-12},{x:12, y:20},{x:-20, y:12}] }
     },
     Tilex: function(col, size)
     {
