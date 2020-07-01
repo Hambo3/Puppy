@@ -1,7 +1,7 @@
-//怒クリス
-//Ika Kurisu
 (function() {
     function Game(map, level) {
+
+        Fac.push(Util.Build(Sources.man()));
 
         var isoTileSet = [ 
             Factory.Tile('#69EA5D',32),//grass
@@ -99,7 +99,9 @@
                 asses[e].Render(mp);
             }     
 
-            Renderer.Text("HOWDY", 32);
+            Renderer.Text("ABCDEFFGHIJKL", 100, 100, 8);
+            Renderer.Text("MNOPQRSTUVWXYZ", 100, 160, 8);
+            Renderer.Text("0123456789", 100, 220, 8);
         }
     };
 

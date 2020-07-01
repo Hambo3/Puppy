@@ -29,10 +29,12 @@
         
         this.shadow = [ Factory.Tile('rgba(100, 100, 100, 0.6)', this.width) ];        
         this.body= [
-            Factory.Man2(0),
-            Util.FlipX(Factory.Man1(0)),            
-            Util.FlipX(Factory.Man2(0)),
-            Factory.Man1(0),
+            //Factory.Man2(0),
+            Fac[0],
+            Util.FlipX(Fac[0]),            
+            Util.FlipX(Fac[0]),
+            //Factory.Man1(0),
+            Fac[0],
             [],
             [],
             Factory.Flat()];

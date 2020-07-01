@@ -4,7 +4,7 @@ var MapManager = function (mapdim, mapdata, set, isomode) {
     var map = unpack(mapdata.data);
     var mapWidth = mapdata.dim.width;
     var mapHeight = mapdata.dim.height;
-    var offset = isomode ? {x:0,y:-300} : {x:0,y:0};
+    var offset = isomode ? {x:-32,y:-238} : {x:0,y:0};
     var scroll = {x:0, y:0,
         xoffset:0,yoffset:0};
 

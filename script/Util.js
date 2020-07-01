@@ -205,18 +205,18 @@ var Util = {
         }
         return poly;
     },
-    ImgTxtArr:function(t){
-        var ch =[];
-        for (var i = 0; i < t.length; i++){
-            var px=[];
-            t[i].replace(/./g,a=>{
-                z=a.charCodeAt()
-                px.push(z&7)
-                px.push((z>>3)&7)
-              });
-              ch.push(px);
+    Build:function(src){
+        var b = [];
+        for (var i = 0; i < src.length; i+=2){
+
+            var pts = [];
+            for (var p = 0; p < src[i+1].length; p+=2){
+                pts.push({x: src[i+1][p],y:src[i+1][p+1]})
+            }
+            b.push({col:PAL[src[i]], pt: pts});
         }
-        return ch;
+
+        return b;
     }
 }
 
@@ -302,6 +302,53 @@ var Const = {
         waveright:10
     }
 }
+
+//pallette
+var PAL = [
+    "#000000",
+    "#C8C8C8",
+    "#aaaaaa",
+    "#999999",
+    "#cccccc",
+    "#4a3030",
+    "#402929",
+    "#368122",
+    "#225216",
+    "#4ab230",
+    "#545454",//10
+    "#333333",
+    "#282828",
+    "#938f8e",
+    "#645b5c",
+    "#3d3435",
+    "#b44528",
+    "#9d2817",
+    "#ef7e52",
+    "#ffac6c",
+    "#9c2615",//20
+    "#b4442a",
+    "#8E5451",
+    "#5C373B",
+    "#80413E",
+    "#69b9c8",//25
+    "#855120",
+    "#2b8596",
+    "#784614"
+    ];
+var Fac = [];
+var Sources ={
+    man:function(){
+        return[
+            0,[0,0],
+            8,[11,15,21,-8,21,-27,11,-4],
+            7,[11,16,-21,9,-21,-10,11,-3],
+            3,[11,-3,21,-26,21,-45,11,-22],
+            2,[11,-3,-21,-10,-21,-29,11,-22],
+            1,[11,-22,-21,-29,-9,-52,21,-45]
+        ];
+    }
+}
+
 
 var Factory = {
     Cube: function (col, size){

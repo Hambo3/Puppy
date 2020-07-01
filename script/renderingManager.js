@@ -43,33 +43,34 @@ var Rendering = function (context, screen, border) {
         ctx.fill();
     }
 
-    function txt(string, size) {
-        var needed = [];
-        string = string.toUpperCase(); // because I only did uppercase letters
-        for (var i = 0; i < string.length; i++) {
-            var letter = letters[string.charAt(i)];
-            if (letter) { // because there's letters I didn't do
-                needed.push(letter);
-            }
-        }
+    //assumes upper
+    function txt(str, xs, ys, size, col) {
 
-        ctx.fillStyle = 'black';
-        var currX = 0;
-        for (i = 0; i < needed.length; i++) {
-            letter = needed[i];
-            var currY = 0;
-            var addX = 0;
-            for (var y = 0; y < letter.length; y++) {
-                var row = letter[y];
-                for (var x = 0; x < row.length; x++) {
-                    if (row[x]) {
-                        ctx.fillRect(currX + x * size, currY, size, size);
+        ctx.fillStyle = col || '#000000';
+
+        for (i = 0; i < str.length; i++) {
+            l = CHR[str.charAt(i)];
+
+            xp = 0;
+            yp = 0;
+            mx = 0;
+            for (var r = 0; r < l.length; r++) 
+            {                
+                xp = 0;
+                row = l[r];
+                for (var c = 0; c < row.length; c++) 
+                {
+                    szx = c==row.length-1 ? size*2 : size;
+                    szy = r==l.length-1 ? size*2 : size;
+                    if (row[c]) {
+                        ctx.fillRect(xp + xs, yp + ys, szx, szy);
                     }
+                    xp += szx;
                 }
-                addX = Math.max(addX, row.length * size);
-                currY += size;
+                mx = xp>mx ? xp : mx;                
+                yp += szy;
             }
-            currX += size + addX;
+            xs += mx + size;
         }
     }
 
@@ -95,8 +96,8 @@ var Rendering = function (context, screen, border) {
         Image: function(c, x, y){
             ctx.drawImage(c,x,y);
         },  
-        Text: function(text, size){
-            txt(text, size);
+        Text: function(text, x, y, size, col){
+            txt(text, x, y, size, col);
         }
     }
 };
