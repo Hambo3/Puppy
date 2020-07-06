@@ -1,7 +1,8 @@
 (function() {
     function Game(map, level) {
 
-        Fac.push(Util.Build(Sources.man()));
+        Fac.push(Util.Build(Sources.pup()));
+        Fac.push(Util.Build(Sources.pup(),true));
 
         var isoTileSet = [ 
             Factory.Tile('#69EA5D',32),//grass
@@ -42,6 +43,7 @@
         this.player = new Puppy(spawn.x*tw, spawn.y*th);
         this.assets.Add(this.player);
 
+        
         // //mapped stumps
         // for (var i = 0; i < map.levels[this.level].features.hard.length; i++) {
         //     spawn = map.levels[this.level].features.hard[i];

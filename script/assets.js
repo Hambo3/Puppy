@@ -29,25 +29,13 @@
         
         this.shadow = [ Factory.Tile('rgba(100, 100, 100, 0.6)', this.width) ];        
         this.body= [
-            //Factory.Man2(0),
             Fac[0],
-            Util.FlipX(Fac[0]),            
-            Util.FlipX(Fac[0]),
-            //Factory.Man1(0),
+            Fac[1],            
+            Fac[0],
             Fac[0],
             [],
             [],
             Factory.Flat()];
-
-            this.reset = function(die){
-                if(die==true){
-                    this.death = die;
-                }
-                this.jumping = false;
-                this.dx = 0;
-                this.dy = 0;
-                this.z = 0;
-            }
     };
 
     Puppy.prototype = {
@@ -55,30 +43,31 @@
         Logic: function(dt){
             var speed = this.accel * dt;
 
-                if(!this.jumping)
-                {
-                    var inp = {
-                                up: (input.isDown('UP') || input.isDown('W') ),
-                                down: (input.isDown('DOWN') || input.isDown('S') ),
-                                left: (input.isDown('LEFT') || input.isDown('A') ),
-                                right: (input.isDown('RIGHT') || input.isDown('D') )
-                            };
+            if(!this.jumping)
+            {
+                var inp = {
+                            up: (input.isDown('UP') || input.isDown('W') ),
+                            down: (input.isDown('DOWN') || input.isDown('S') ),
+                            left: (input.isDown('LEFT') || input.isDown('A') ),
+                            right: (input.isDown('RIGHT') || input.isDown('D') )
+                        };
 
-                
-                    AssetUtil.InputLogic(inp, this, speed, 32);
-                }
-                else
+            
+                AssetUtil.InputLogic(inp, this, speed, 32);
+            }
+            else
+            {
+                var t = AssetUtil.HopLogic(this, 32, 16);
+                if(!this.jumping)// landed
                 {
-                    var t = AssetUtil.HopLogic(this, 32, 16);
-                    if(!this.jumping)// landed
-                    {
-                        this.status = 0;
-                        //check what landed on
-                        var c = gameAsset.scene.Cell(this.x, this.y, 32);
-                        this.x = c.x;
-                        this.y = c.y;                    
-                    }
+                    this.status = 0;
+                    //check what landed on
+                    var c = gameAsset.scene.Cell(this.x, this.y, 32);
+                    this.x = c.x;
+                    this.y = c.y;                    
                 }
+            }
+
 
         },
         Update: function(dt){

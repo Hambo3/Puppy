@@ -56,7 +56,6 @@ var map = {
 	]
 };
 
-
 /*****************************/
 var ctx;
 function Start(canvasBody)
