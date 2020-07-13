@@ -1,12 +1,14 @@
 (function() {
     function Game(map, level) {
-
-        Fac.push(Util.Build(Sources.pup()));
-        Fac.push(Util.Build(Sources.pup(),true));
+        Fac.push(Util.Build([Sources.pupu()],1.5));//up
+        Fac.push(Util.Build([Sources.pupdl1(), Sources.pupd()],1.5));//down
+        Fac.push(Util.Build([Sources.puplr0(),Sources.pupl()],1.5));//left
+        Fac.push(Util.Build([Sources.puprl1(), Sources.pupr()],1.5));//right
 
         var isoTileSet = [ 
-            Factory.Tile('#69EA5D',32),//grass
-            Factory.Tile('#61D856',32),
+            Util.Build([Sources.tile(5)],1.5),
+            Util.Build([Sources.tile(6)],1.5),            
+
             Factory.Tile('#F6C996',32),//path
             Factory.Tile('#F3B36E',32),
             Factory.Tile('#C0C0C0',32),//road

@@ -27,9 +27,9 @@ var highScore = 0;
 
 var map = {
 	size:{
-		tile:{width:32, height:32},
-		iso:{width:33, height:33},
-		screen:{width:25, height:19}			
+		tile:{width:48, height:48},
+		iso:{width:24, height:24},
+		screen:{width:17, height:13}			
 	},
 	colliders:{hit:[7,8,9],
 		over:[10,11,12,13,14,15],
