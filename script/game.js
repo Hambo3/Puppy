@@ -1,8 +1,8 @@
 (function() {
     function Game(map, level) {
-        Fac.push(Util.Build([Sources.pupu()],1.5));//up
+        Fac.push(Util.Build([Sources.pupul1(),Sources.pupu()],1.5));//up
         Fac.push(Util.Build([Sources.pupdl1(), Sources.pupd()],1.5));//down
-        Fac.push(Util.Build([Sources.puplr0(),Sources.pupl()],1.5));//left
+        Fac.push(Util.Build([Sources.pupll1(),Sources.pupl()],1.5));//left
         Fac.push(Util.Build([Sources.puprl1(), Sources.pupr()],1.5));//right
 
         var isoTileSet = [ 
