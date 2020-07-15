@@ -1,18 +1,27 @@
 (function() {
     function Game(map, level) {
-        Fac.push(Util.Build([Sources.pupul1(),Sources.pupu()],1.5));//up
-        Fac.push(Util.Build([Sources.pupdl1(), Sources.pupd()],1.5));//down
-        Fac.push(Util.Build([Sources.pupll1(),Sources.pupl()],1.5));//left
-        Fac.push(Util.Build([Sources.puprl1(), Sources.pupr()],1.5));//right
+        Fac.push(Util.Build([Sources.pupul1(),Sources.pupu()],1.5,[C.col.d1,C.col.d1]));//up
+        Fac.push(Util.Build([Sources.pupul2(),Sources.pupu()],1.5,[C.col.d1,C.col.d1]));//up run
+        Fac.push(Util.Build([Sources.pupdl1(), Sources.pupd()],1.5,[C.col.d1,C.col.d1]));//down
+        Fac.push(Util.Build([Sources.pupdl2(), Sources.pupd()],1.5,[C.col.d1,C.col.d1]));//down run
+        Fac.push(Util.Build([Sources.pupll1(),Sources.pupl()],1.5,[C.col.d1,C.col.d1]));//left
+        Fac.push(Util.Build([Sources.pupll2(),Sources.pupl()],1.5,[C.col.d1,C.col.d1]));//left run
+        Fac.push(Util.Build([Sources.puprl1(), Sources.pupr()],1.5,[C.col.d1,C.col.d1]));//right
+        Fac.push(Util.Build([Sources.puprl2(), Sources.pupr()],1.5,[C.col.d1,C.col.d1]));//right run
+        
 
         var isoTileSet = [ 
-            Util.Build([Sources.tile(5)],1.5),
-            Util.Build([Sources.tile(6)],1.5),            
+            Util.Build([Sources.tile(13)],1.5),
+            Util.Build([Sources.tile(14)],1.5),            
 
-            Factory.Tile('#F6C996',32),//path
-            Factory.Tile('#F3B36E',32),
-            Factory.Tile('#C0C0C0',32),//road
-            Factory.Tile('#00FFFF',32),//home
+            Util.Build([Sources.tile(5)],1.5),    
+            Util.Build([Sources.tile(6)],1.5), 
+            Util.Build([Sources.tile(7)],1.5),    
+            Util.Build([Sources.tile(8)],1.5),   
+            
+            Util.Build([Sources.tile(8)],1.5),    
+            Util.Build([Sources.tile(8)],1.5),   
+
             Factory.Tile('#00DBDB',32),
 
             Factory.Tile('#69EA5D',32),

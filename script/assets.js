@@ -2,7 +2,7 @@
 (function() {
 
     function Puppy(x, y) {
-        this.type = Const.actors.player;
+        this.type = C.ass.player;
         this.enabled = true;
 
         this.home = {x:x,y:y};
@@ -24,18 +24,18 @@
 
         this.accel = 180;  
 
-        this.action = Const.actions.up;
+        this.action = C.act.up;
         this.motion = 0;
         this.status = 0;
         
         //this.shadow = [ Factory.Tile('rgba(100, 100, 100, 0.6)', this.width) ];        
 
-        this.shadow = Util.Build([Sources.tile(1)],1.5);
+        this.shadow = Util.Build([Sources.tile(0)],1.5);
         this.body= [
-            [Fac[0]],
-            [Fac[1]],            
-            [Fac[2],Fac[4],Fac[5]],
-            [Fac[3]],
+            [Fac[C.act.up],Fac[C.act.up+1]],
+            [Fac[C.act.dn],Fac[C.act.dn+1]],            
+            [Fac[C.act.lt],Fac[C.act.lt+1]],
+            [Fac[C.act.rt],Fac[C.act.rt+1]],
             [],
             [],
             Factory.Flat()];
@@ -60,11 +60,11 @@
             }
             else
             {
-                if((this.x-this.dest.x) > 0 && (this.x-this.dest.x)<16){
-                    //this.motion = 0;
+                if((this.z) > 4){
+                    this.motion = 1;
                 }
                 else{
-                    //this.motion = 1;
+                    this.motion = 0;
                 }
 
                 var t = AssetUtil.HopLogic(this, 48, 8);

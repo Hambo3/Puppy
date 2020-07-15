@@ -184,28 +184,28 @@ var Util = {
     {
         return (radius * Math.sin( Math.PI * i / items));
     },
-    FlipX: function(src)
-    {
-        var poly = src;
-        for (let p = 0; p < poly.length; p++) {
-            for (let i = 0; i < poly[p].pt.length; i++) {
-                poly[p].pt[i].x=-poly[p].pt[i].x;              
-            }
-        }
-        return poly;
-    },
-    Scale: function(src, sc)
-    {
-        var poly = src;
-        for (let p = 0; p < poly.length; p++) {
-            for (let i = 0; i < poly[p].pt.length; i++) {
-                poly[p].pt[i].x *= sc;
-                poly[p].pt[i].y *= sc;
-            }
-        }
-        return poly;
-    },
-    Build:function(src, scl){
+    // FlipX: function(src)
+    // {
+    //     var poly = src;
+    //     for (let p = 0; p < poly.length; p++) {
+    //         for (let i = 0; i < poly[p].pt.length; i++) {
+    //             poly[p].pt[i].x=-poly[p].pt[i].x;              
+    //         }
+    //     }
+    //     return poly;
+    // },
+    // Scale: function(src, sc)
+    // {
+    //     var poly = src;
+    //     for (let p = 0; p < poly.length; p++) {
+    //         for (let i = 0; i < poly[p].pt.length; i++) {
+    //             poly[p].pt[i].x *= sc;
+    //             poly[p].pt[i].y *= sc;
+    //         }
+    //     }
+    //     return poly;
+    // },
+    Build:function(src, scl,c){
         var b = [];
         scl=scl||1;
         for (var f = 0; f < src.length; f++){
@@ -214,7 +214,8 @@ var Util = {
                 for (var p = 0; p < src[f][i+1].length; p+=2){
                     pts.push({x: src[f][i+1][p]*scl, y:src[f][i+1][p+1]*scl})
                 }
-                b.push({col:PAL[src[f][i]], pt: pts});
+                var n = (c)?c[f]||0 :0;
+                b.push({col:PAL[src[f][i]+n], pt: pts});
             }
         }
         return b;
@@ -298,10 +299,7 @@ var Factory = {
     }, 
     Tile: function(col, size)
     {
-        var half = size/2;
         return {col: col, pt: [{x:-11, y:-15},{x:21, y:-7.83},{x:10.75, y:14.56},{x:-21.24, y:7.4}] }
-        //return {col: col, pt: [{x:-12, y:-15},{x:20, y:-9},{x:12, y:15},{x:-20, y:9}] }
-        //return {col: col, pt: [{x:-12, y:-20},{x:20, y:-12},{x:12, y:20},{x:-20, y:12}] }
     },
     Tilex: function(col, size)
     {
