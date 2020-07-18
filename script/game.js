@@ -1,47 +1,42 @@
 (function() {
     function Game(map, level) {
-        Fac.push(Util.Build([Sources.pupul1(),Sources.pupu()],1.5,[C.col.d1,C.col.d1]));//up
-        Fac.push(Util.Build([Sources.pupul2(),Sources.pupu()],1.5,[C.col.d1,C.col.d1]));//up run
-        Fac.push(Util.Build([Sources.pupdl1(), Sources.pupd()],1.5,[C.col.d1,C.col.d1]));//down
-        Fac.push(Util.Build([Sources.pupdl2(), Sources.pupd()],1.5,[C.col.d1,C.col.d1]));//down run
-        Fac.push(Util.Build([Sources.pupll1(),Sources.pupl()],1.5,[C.col.d1,C.col.d1]));//left
-        Fac.push(Util.Build([Sources.pupll2(),Sources.pupl()],1.5,[C.col.d1,C.col.d1]));//left run
-        Fac.push(Util.Build([Sources.puprl1(), Sources.pupr()],1.5,[C.col.d1,C.col.d1]));//right
-        Fac.push(Util.Build([Sources.puprl2(), Sources.pupr()],1.5,[C.col.d1,C.col.d1]));//right run
-        
+        Fac.push(Util.Build([assets.pupu.leg,assets.pupu.body],1.5,[C.col.d1,C.col.d1]));//up
+        Fac.push(Util.Build([assets.pupu.run,assets.pupu.body],1.5,[C.col.d1,C.col.d1]));//up run
+        Fac.push(Util.Build([assets.pupd.leg,assets.pupd.body],1.5,[C.col.d1,C.col.d1]));//down
+        Fac.push(Util.Build([assets.pupd.run,assets.pupd.body],1.5,[C.col.d1,C.col.d1]));//down run
+        Fac.push(Util.Build([assets.pupl.leg,assets.pupl.body],1.5,[C.col.d1,C.col.d1]));//left
+        Fac.push(Util.Build([assets.pupl.run,assets.pupl.body],1.5,[C.col.d1,C.col.d1]));//left run
+        Fac.push(Util.Build([assets.pupr.leg,assets.pupr.body],1.5,[C.col.d1,C.col.d1]));//right
+        Fac.push(Util.Build([assets.pupr.run,assets.pupr.body],1.5,[C.col.d1,C.col.d1]));//right run
+
 
         var isoTileSet = [ 
-            Util.Build([Sources.tile(13)],1.5),
-            Util.Build([Sources.tile(14)],1.5),            
+            Util.Build([assets.tile.sol],1.5,[C.col.gr]),
+            Util.Build([assets.tile.sol],1.5,[C.col.gr+1]),            
 
-            Util.Build([Sources.tile(5)],1.5),    
-            Util.Build([Sources.tile(6)],1.5), 
-            Util.Build([Sources.tile(7)],1.5),    
-            Util.Build([Sources.tile(8)],1.5),   
+            Util.Build([assets.tile.sol],1.5,[C.col.pt]),
+            Util.Build([assets.tile.sol],1.5,[C.col.pt+1]), 
+            Util.Build([assets.tile.sol],1.5,[C.col.rd]),
+            Util.Build([assets.tile.sol],1.5,[2]),
+            Util.Build([assets.tile.sol],1.5,[2]), 
             
-            Util.Build([Sources.tile(8)],1.5),    
-            Util.Build([Sources.tile(8)],1.5),   
+            Util.Build([assets.tile.sol],1.5,[C.col.gr]),
+            Util.Build([assets.tile.sol],1.5,[C.col.gr+1]), 
+            Util.Build([assets.tile.sol],1.5,[C.col.rd]),
 
-            Factory.Tile('#00DBDB',32),
+            Util.Build([assets.tile.sol],1.5,[C.col.hl]),
+            Util.Build([assets.tile.sol,assets.tile.hol],1.5,[C.col.hl,C.col.hl+1]),    
+            Util.Build([assets.tile.sol],1.5,[C.col.hl+1]),  
 
-            Factory.Tile('#69EA5D',32),
-            Factory.Tile('#61D856',32),
-            Factory.Tile('#C0C0C0',32),
-
-            Factory.Tile('#54311D',32),
-            Factory.Hole(['#54311D','#744B31'],32),
-            Factory.Tile('#744B31',32),
-
-            Factory.Tile('#328DC1',32),
-            Factory.Hole(['#328DC1','#4294C4'],32),
-            Factory.Tile('#4294C4',32),
-
-            Factory.Tile('#4800FF',32)
+            Util.Build([assets.tile.sol],1.5,[C.col.wt]),
+            Util.Build([assets.tile.sol,assets.tile.hol],1.5,[C.col.wt,C.col.wt+1]),    
+            Util.Build([assets.tile.sol],1.5,[C.col.wt+1]),  
+            
+            Util.Build([assets.tile.sol],1.5,[C.col.wt+1]),
             ];  
 
         this.level = level;    
-        this.isomode = true;
-        this.scene = new MapManager(map.size, map.levels[this.level], (this.isomode) ? isoTileSet: t2d, this.isomode);
+        this.scene = new MapManager(map.size, map.levels[this.level], isoTileSet, true);
         this.assets = new ObjectPool(); 
 
         this.player;
@@ -112,9 +107,9 @@
                 asses[e].Render(mp);
             }     
 
-            Renderer.Text("ABCDEFFGHIJKL", 100, 100, 8);
-            Renderer.Text("MNOPQRSTUVWXYZ", 100, 160, 8);
-            Renderer.Text("0123456789", 100, 220, 8);
+             Renderer.Text("ABCDEFFGHIJKL", 100, 100, 8);
+            // Renderer.Text("MNOPQRSTUVWXYZ", 100, 160, 8);
+            // Renderer.Text("0123456789", 100, 220, 8);
         }
     };
 

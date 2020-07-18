@@ -9,15 +9,12 @@
         this.x = x;
         this.y = y;
         this.z = 0;
-        this.width = 32;
-        this.length = 32;
+        // this.width = 32;
+        // this.length = 32;
 
         this.dx = 0;
         this.dy = 0; 
-        this.dz = 0;
 
-        this.bonus = 0;
-        this.amount = 1;
         this.death = false;
         this.jumping = false;
         this.dest = {x:0, y:0};
@@ -26,19 +23,26 @@
 
         this.action = C.act.up;
         this.motion = 0;
-        this.status = 0;
-        
-        //this.shadow = [ Factory.Tile('rgba(100, 100, 100, 0.6)', this.width) ];        
+ 
 
-        this.shadow = Util.Build([Sources.tile(0)],1.5);
+        this.shadow = Util.Build([assets.tile.sol],1.5,[C.col.sw]);
         this.body= [
-            [Fac[C.act.up],Fac[C.act.up+1]],
-            [Fac[C.act.dn],Fac[C.act.dn+1]],            
-            [Fac[C.act.lt],Fac[C.act.lt+1]],
-            [Fac[C.act.rt],Fac[C.act.rt+1]],
-            [],
-            [],
-            Factory.Flat()];
+            [Fac[C.src.up],Fac[C.src.up+1]],
+            [Fac[C.src.dn],Fac[C.src.dn+1]],            
+            [Fac[C.src.lt],Fac[C.src.lt+1]],
+            [Fac[C.src.rt],Fac[C.src.rt+1]],
+            [],[],[]
+        ];
+
+        this.reset = function(die){
+            //if(die==true){
+            //    this.death = die;
+            //}
+            this.jumping = false;
+            this.dx = 0;
+            this.dy = 0;
+            this.z = 0;
+        }        
     };
 
     Puppy.prototype = {
@@ -71,15 +75,20 @@
                 if(!this.jumping)// landed
                 {
                     this.motion = 0;
-                    this.status = 0;
-                    //check what landed on
-                    var c = gameAsset.scene.Cell(this.x, this.y, 48);
-                    this.x = c.x;
-                    this.y = c.y;                    
+                     //check what landed on
+                    if(map.colliders.over.indexOf(t) != -1){
+                        if(t > 12 && t < 16){//water
+                            this.action = C.act.sp;
+                        }
+                        else{
+                            this.action = C.act.fall;
+                        }
+                    }
+                    // var c = gameAsset.scene.Cell(this.x, this.y, 48);
+                    // this.x = c.x;
+                    // this.y = c.y;                    
                 }
             }
-
-
 
         },
         Update: function(dt){
@@ -87,7 +96,14 @@
             this.y += this.dy;
         },
         Collider: function(perps){
-          //if hit something
+            if(this.jumping){
+                //determine if can jump
+                var d = AssetUtil.Collisions(this, perps, this.jumping);
+
+                //if(d && (d.type == C.ass.stump || d.type == C.ass.dood)){
+                //    this.reset();
+                //}
+            } 
         },
         Render: function(os){
             var x = this.x;

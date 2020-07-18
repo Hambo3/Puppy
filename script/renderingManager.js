@@ -49,7 +49,7 @@ var Rendering = function (context, screen, border) {
         ctx.fillStyle = col || '#000000';
 
         for (i = 0; i < str.length; i++) {
-            l = CHR[str.charAt(i)];
+            l = FONT[str.charAt(i)];
 
             xp = 0;
             yp = 0;
@@ -75,9 +75,6 @@ var Rendering = function (context, screen, border) {
     }
 
     return {
-        Clear: function(w,h,x,y){
-            ctx.clearRect(x||0, y||0, w, h);
-        },
         PolyTile: function(x, y, plane){
             if(!bounds || ((x > bounds.minx && x < bounds.maxx) && (y > bounds.miny  && y < bounds.maxy)) ) {
                 side(x, y, plane);
@@ -92,10 +89,7 @@ var Rendering = function (context, screen, border) {
                 return 1;
             }
             return 0;
-        },      
-        Image: function(c, x, y){
-            ctx.drawImage(c,x,y);
-        },  
+        },   
         Text: function(text, x, y, size, col){
             txt(text, x, y, size, col);
         }
