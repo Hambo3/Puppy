@@ -48,14 +48,14 @@ var map = {
 };
 
 /*****************************/
-var ctx;
+//var ctx;
 function Start(canvasBody)
 {	
 	// Create the canvas
 	var canvas = document.createElement("canvas");
 	if(canvas.getContext)
 	{
-		ctx = canvas.getContext("2d");
+		var ctx = canvas.getContext("2d");
 		canvas.width = (map.size.screen.width * map.size.tile.width);
 		canvas.height = (map.size.screen.height * map.size.tile.height);
 

@@ -1,14 +1,31 @@
 (function() {
     function Game(map, level) {
-        Fac.push(Util.Build([assets.pupu.leg,assets.pupu.body],1.5,[C.col.d1,C.col.d1]));//up
-        Fac.push(Util.Build([assets.pupu.run,assets.pupu.body],1.5,[C.col.d1,C.col.d1]));//up run
-        Fac.push(Util.Build([assets.pupd.leg,assets.pupd.body],1.5,[C.col.d1,C.col.d1]));//down
-        Fac.push(Util.Build([assets.pupd.run,assets.pupd.body],1.5,[C.col.d1,C.col.d1]));//down run
-        Fac.push(Util.Build([assets.pupl.leg,assets.pupl.body],1.5,[C.col.d1,C.col.d1]));//left
-        Fac.push(Util.Build([assets.pupl.run,assets.pupl.body],1.5,[C.col.d1,C.col.d1]));//left run
-        Fac.push(Util.Build([assets.pupr.leg,assets.pupr.body],1.5,[C.col.d1,C.col.d1]));//right
-        Fac.push(Util.Build([assets.pupr.run,assets.pupr.body],1.5,[C.col.d1,C.col.d1]));//right run
+        Fac.push(Util.Build([assets.pupu.leg,assets.pupu.bod],1.5,[C.col.d1,C.col.d1]));//up
+        Fac.push(Util.Build([assets.pupu.run,assets.pupu.bod],1.5,[C.col.d1,C.col.d1]));//up run
+        Fac.push(Util.Build([assets.pupd.leg,assets.pupd.bod],1.5,[C.col.d1,C.col.d1]));//down
+        Fac.push(Util.Build([assets.pupd.run,assets.pupd.bod],1.5,[C.col.d1,C.col.d1]));//down run
+        Fac.push(Util.Build([assets.pupl.leg,assets.pupl.bod],1.5,[C.col.d1,C.col.d1]));//left
+        Fac.push(Util.Build([assets.pupl.run,assets.pupl.bod],1.5,[C.col.d1,C.col.d1]));//left run
+        Fac.push(Util.Build([assets.pupr.leg,assets.pupr.bod],1.5,[C.col.d1,C.col.d1]));//right
+        Fac.push(Util.Build([assets.pupr.run,assets.pupr.bod],1.5,[C.col.d1,C.col.d1]));//right run
+        Fac.push(Util.Build([assets.cube],0.3,[C.col.wt]));//splash
 
+
+        Fac.push(Util.Build([assets.man.v.leg,assets.man.bod],1,[C.col.d1,C.col.d1]));//up
+        Fac.push(Util.Build([assets.man.v.leg1,assets.man.bod],1,[C.col.d1,C.col.d1]));//up
+        Fac.push(Util.Build([assets.man.v.leg2,assets.man.bod],1,[C.col.d1,C.col.d1]));//up
+
+        Fac.push(Util.Build([assets.man.v.leg,assets.man.bod],1,[C.col.d1,C.col.d1]));//down
+        Fac.push(Util.Build([assets.man.v.leg1,assets.man.bod],1,[C.col.d1,C.col.d1]));//down
+        Fac.push(Util.Build([assets.man.v.leg2,assets.man.bod],1,[C.col.d1,C.col.d1]));//down        
+
+        Fac.push(Util.Build([assets.man.h.leg,assets.man.bod],1,[C.col.d1,C.col.d1]));//left
+        Fac.push(Util.Build([assets.man.h.leg1,assets.man.bod],1,[C.col.d1,C.col.d1]));//left
+        Fac.push(Util.Build([assets.man.h.leg2,assets.man.bod],1,[C.col.d1,C.col.d1]));//left
+
+        Fac.push(Util.Build([assets.man.h.leg,assets.man.bod],1,[C.col.d1,C.col.d1]));//right
+        Fac.push(Util.Build([assets.man.h.leg1,assets.man.bod],1,[C.col.d1,C.col.d1]));//right
+        Fac.push(Util.Build([assets.man.h.leg2,assets.man.bod],1,[C.col.d1,C.col.d1]));//right    
 
         var isoTileSet = [ 
             Util.Build([assets.tile.sol],1.5,[C.col.gr]),
@@ -49,7 +66,15 @@
         this.player = new Puppy(spawn.x*tw, spawn.y*th);
         this.assets.Add(this.player);
 
-        
+        var m = new Man((spawn.x+8)*tw, (spawn.y)*th);
+        m.target = this.player;
+
+        this.assets.Add(m);
+
+        this.gameState = 0;
+        this.scCol = 1;
+        this.count = 64;
+        this.scene.ScrollTo(this.player.x, this.player.y, 1); 
         // //mapped stumps
         // for (var i = 0; i < map.levels[this.level].features.hard.length; i++) {
         //     spawn = map.levels[this.level].features.hard[i];
@@ -77,12 +102,44 @@
     Game.prototype = {
         Update: function(dt){
             var asses = this.assets.Get();
-
+            
+            switch (this.gameState) {
+                case 0:     //app start
+                    if(this.count == 0){                        
+                        this.scCol = Util.SLerp(this.scCol, 0, 0.01);
+                        if(this.scCol < 0.1){
+                            this.gameState = 1;
+                        }
+                    }
+                    else{
+                        this.count--;
+                    }
+                    break;
+                case 1:
+                    if(input.isUp("SPACE")){
+                        this.count = 64;
+                        this.gameState = 2;
+                    } 
+                    break; 
+                case 2:
+                    if(this.player.death){
+                        if(--this.count == 0)
+                        {
+                            this.gameState = 3;
+                        }
+                    }
+                    break; 
+                default:
+                    break;
+            }
+ 
             for(var e = 0; e < asses.length; e++) 
             {
                 //do move
-                asses[e].Logic(dt);
-                asses[e].Collider(asses);
+                if(this.gameState == 2){
+                    asses[e].Logic(dt);
+                    asses[e].Collider(asses);
+                }
                 asses[e].Update(dt);
             }        
 
@@ -107,7 +164,24 @@
                 asses[e].Render(mp);
             }     
 
-             Renderer.Text("ABCDEFFGHIJKL", 100, 100, 8);
+            switch (this.gameState) {
+                case 0:
+                    Renderer.Box(0,0,this.screen.w, this.screen.h, "rgba(0, 0, 0, "+this.scCol+")");
+                    Renderer.Text("PUPPY", 260, 100, 12);                    
+                    break;
+                case 1:
+                    Renderer.Text("PUPPY", 260, 100, 12);
+                    Renderer.Text("PRESS START", 240, 300, 6);
+                    break;
+                case 3:
+                    //Renderer.Box(0,0,this.screen.w, this.screen.h, "rgba(0, 0, 0, "+this.scCol+")");
+                    Renderer.Text("GAME OVER", 280, 100, 8);                    
+                    break;
+                default:
+                    break;
+            }
+
+            // Renderer.Text("ABCDEFFGHIJKL", 100, 100, 8);
             // Renderer.Text("MNOPQRSTUVWXYZ", 100, 160, 8);
             // Renderer.Text("0123456789", 100, 220, 8);
         }

@@ -114,7 +114,7 @@ var MapManager = function (mapdim, mapdata, set, isomode) {
             return {x:(scroll.xoffset*mapSize.tile.width)-scroll.x-offset.x,
                 y:(scroll.yoffset*mapSize.tile.height)-scroll.y-offset.y};
         }, 
-        ScrollTo: function(x, y){
+        ScrollTo: function(x, y, r){
             var midx = ( mapSize.iso.width*mapSize.tile.width) / 2;
             var midy = ( mapSize.iso.height*mapSize.tile.height) / 2;
             var maxx = (mapWidth * mapSize.tile.width) - ( mapSize.iso.width*mapSize.tile.width);
@@ -122,8 +122,8 @@ var MapManager = function (mapdim, mapdata, set, isomode) {
 
             var cpx = (scroll.xoffset*mapSize.tile.width)-scroll.x;
             var cpy = (scroll.yoffset*mapSize.tile.height)-scroll.y;
-            var destx = Util.Lerp(cpx, (x-midx), 0.04);
-            var desty = Util.Lerp(cpy, (y-midy), 0.04);
+            var destx = Util.Lerp(cpx, (x-midx), r||0.04);
+            var desty = Util.Lerp(cpy, (y-midy), r||0.04);
 
             if(destx > 0 && destx < maxx)
             {

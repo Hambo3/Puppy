@@ -102,7 +102,8 @@ var AssetUtil = {
                 asset.jumping = false;
                 asset.z = 0;
             }else{
-                asset.z = Util.Arc(asset.dest.y - asset.y, step, ht);
+                asset.p = asset.dest.y - asset.y;                
+                asset.z = Util.Arc(asset.p, step, ht);
             }
         }
         else if(asset.dy < 0){
@@ -112,7 +113,8 @@ var AssetUtil = {
                 asset.jumping = false;
                 asset.z = 0;
             }else{
-                asset.z = Util.Arc(asset.y - asset.dest.y, step, ht);
+                asset.p = asset.y - asset.dest.y;   
+                asset.z = Util.Arc(asset.p, step, ht);
             }
         }
         if(asset.dx > 0){
@@ -122,7 +124,8 @@ var AssetUtil = {
                 asset.jumping = false;
                 asset.z = 0;
             }else{
-                asset.z = Util.Arc(asset.dest.x - asset.x, step, ht);
+                asset.p = asset.dest.x - asset.x; 
+                asset.z = Util.Arc(asset.p, step, ht);
             }
         }
         else if(asset.dx < 0){
@@ -132,7 +135,8 @@ var AssetUtil = {
                 asset.jumping = false;
                 asset.z = 0;
             }else{
-                asset.z = Util.Arc(asset.x - asset.dest.x, step, ht);
+                asset.p = asset.x - asset.dest.x; 
+                asset.z = Util.Arc(asset.p, step, ht);
             }
         }
         return gameAsset.scene.Content(asset.x, asset.y);
@@ -161,7 +165,16 @@ var Util = {
     },
     Rnd: function (max){
         return Math.random() * max;
-    },     
+    },  
+    SLerp: function(start, end, amt)
+    {
+        if(start>end){
+            return ((start-amt) > end) ? start-amt : end;
+        }
+        else{
+            return ((start+amt) < end) ? start+amt : end;
+        }
+    },   
     Lerp: function(start, end, amt)
     {
         return (end-start) * amt+start;

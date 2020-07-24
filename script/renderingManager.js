@@ -75,6 +75,10 @@ var Rendering = function (context, screen, border) {
     }
 
     return {
+        Box: function(x,y,w,h,c){
+            ctx.fillStyle = c || '#000000';
+            ctx.fillRect(x, y, w, h);
+        },
         PolyTile: function(x, y, plane){
             if(!bounds || ((x > bounds.minx && x < bounds.maxx) && (y > bounds.miny  && y < bounds.maxy)) ) {
                 side(x, y, plane);
@@ -83,7 +87,7 @@ var Rendering = function (context, screen, border) {
             return 0;
         },
         PolySprite: function(x, y, poly){
-            if(!bounds || ((x > bounds.minx && x < bounds.maxx) && (y > bounds.miny  && y < bounds.maxy)) )
+            if(poly && (!bounds || ((x > bounds.minx && x < bounds.maxx) && (y > bounds.miny  && y < bounds.maxy))) )
             {  
                 polygon(x, y, poly);    
                 return 1;
