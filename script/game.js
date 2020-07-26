@@ -1,32 +1,37 @@
 (function() {
     function Game(map, level) {
-        Fac.push(Util.Build([assets.pupu.leg,assets.pupu.bod],1.5,[C.col.d1,C.col.d1]));//up
-        Fac.push(Util.Build([assets.pupu.run,assets.pupu.bod],1.5,[C.col.d1,C.col.d1]));//up run
-        Fac.push(Util.Build([assets.pupd.leg,assets.pupd.bod],1.5,[C.col.d1,C.col.d1]));//down
-        Fac.push(Util.Build([assets.pupd.run,assets.pupd.bod],1.5,[C.col.d1,C.col.d1]));//down run
-        Fac.push(Util.Build([assets.pupl.leg,assets.pupl.bod],1.5,[C.col.d1,C.col.d1]));//left
-        Fac.push(Util.Build([assets.pupl.run,assets.pupl.bod],1.5,[C.col.d1,C.col.d1]));//left run
-        Fac.push(Util.Build([assets.pupr.leg,assets.pupr.bod],1.5,[C.col.d1,C.col.d1]));//right
-        Fac.push(Util.Build([assets.pupr.run,assets.pupr.bod],1.5,[C.col.d1,C.col.d1]));//right run
+        //puppy
+        for (x of [{s:1.5,c:C.col.d1}, {s:1.5,c:C.col.d1}]){
+            Fac.push(Util.Build([assets.pupu.leg,assets.pupu.bod],x.s,[x.c,x.c]));//up
+            Fac.push(Util.Build([assets.pupu.run,assets.pupu.bod],x.s,[x.c,x.c]));//up run
+            Fac.push(Util.Build([assets.pupd.leg,assets.pupd.bod],x.s,[x.c,x.c]));//down
+            Fac.push(Util.Build([assets.pupd.run,assets.pupd.bod],x.s,[x.c,x.c]));//down run
+            Fac.push(Util.Build([assets.pupl.leg,assets.pupl.bod],x.s,[x.c,x.c]));//left
+            Fac.push(Util.Build([assets.pupl.run,assets.pupl.bod],x.s,[x.c,x.c]));//left run
+            Fac.push(Util.Build([assets.pupr.leg,assets.pupr.bod],x.s,[x.c,x.c]));//right
+            Fac.push(Util.Build([assets.pupr.run,assets.pupr.bod],x.s,[x.c,x.c]));//right run            
+        }
+
+        //water particle
         Fac.push(Util.Build([assets.cube],0.3,[C.col.wt]));//splash
 
-
+        //man
         Fac.push(Util.Build([assets.man.v.leg,assets.man.bod],1,[C.col.d1,C.col.d1]));//up
         Fac.push(Util.Build([assets.man.v.leg1,assets.man.bod],1,[C.col.d1,C.col.d1]));//up
         Fac.push(Util.Build([assets.man.v.leg2,assets.man.bod],1,[C.col.d1,C.col.d1]));//up
-
         Fac.push(Util.Build([assets.man.v.leg,assets.man.bod],1,[C.col.d1,C.col.d1]));//down
         Fac.push(Util.Build([assets.man.v.leg1,assets.man.bod],1,[C.col.d1,C.col.d1]));//down
         Fac.push(Util.Build([assets.man.v.leg2,assets.man.bod],1,[C.col.d1,C.col.d1]));//down        
-
         Fac.push(Util.Build([assets.man.h.leg,assets.man.bod],1,[C.col.d1,C.col.d1]));//left
         Fac.push(Util.Build([assets.man.h.leg1,assets.man.bod],1,[C.col.d1,C.col.d1]));//left
         Fac.push(Util.Build([assets.man.h.leg2,assets.man.bod],1,[C.col.d1,C.col.d1]));//left
-
         Fac.push(Util.Build([assets.man.h.leg,assets.man.bod],1,[C.col.d1,C.col.d1]));//right
         Fac.push(Util.Build([assets.man.h.leg1,assets.man.bod],1,[C.col.d1,C.col.d1]));//right
         Fac.push(Util.Build([assets.man.h.leg2,assets.man.bod],1,[C.col.d1,C.col.d1]));//right    
 
+        //tree
+        Fac.push(Util.Build([assets.tree.bod,assets.tree.hd1],1,[C.col.d1,C.col.d1]));//tree1    
+        Fac.push(Util.Build([assets.tree.bod,assets.tree.hd2],1,[C.col.d1,C.col.d1]));//tree2    
         var isoTileSet = [ 
             Util.Build([assets.tile.sol],1.5,[C.col.gr]),
             Util.Build([assets.tile.sol],1.5,[C.col.gr+1]),            
@@ -63,40 +68,35 @@
         var tw = map.size.tile.width;
         var th = map.size.tile.height;
 
-        this.player = new Puppy(spawn.x*tw, spawn.y*th);
+        this.player = new Puppy(spawn.x*tw, spawn.y*th, C.ass.player);
         this.assets.Add(this.player);
 
-        var m = new Man((spawn.x+8)*tw, (spawn.y)*th);
-        m.target = this.player;
-
-        this.assets.Add(m);
+        this.assets.Add(new Man((spawn.x+8)*tw, (spawn.y)*th, this.player));
+        this.assets.Add( new Puppy(spawn.x*tw, (spawn.y-8)*th, C.ass.wdog, this.player));
 
         this.gameState = 0;
         this.scCol = 1;
         this.count = 64;
         this.scene.ScrollTo(this.player.x, this.player.y, 1); 
         // //mapped stumps
-        // for (var i = 0; i < map.levels[this.level].features.hard.length; i++) {
-        //     spawn = map.levels[this.level].features.hard[i];
-        //     var d = new Stump(spawn.x*tw, spawn.y*th);
-        //     this.assets.Add(d);
-        // }
+        for (var i = 0; i < map.levels[this.level].features.hard.length; i++) {
+            spawn = map.levels[this.level].features.hard[i];
+            var d = new AnimObj(spawn.x*tw, spawn.y*th, Util.OneOf([Fac[C.src.t1], Fac[C.src.t2]]), C.ass.stump);
+            this.assets.Add(d);
+        }
 
-        // //rnd stumps
-        // for (var i = 0; i < 32; i++) {            
-        //     do{
-        //         spawn = {x:Util.RndI(0, map.levels[this.level].dim.width),
-        //             y:Util.RndI(0, map.levels[this.level].dim.height)};
-        //         var t = this.scene.Content(spawn.x*tw, spawn.y*th);
-        //         var tl = this.scene.Content((spawn.x-1)*tw, spawn.y*th);//check for close to water 13,14,15
-        //         var tr = this.scene.Content((spawn.x+1)*tw, spawn.y*th);
-        //         var d = this.assets.Get([Const.actors.dood,Const.actors.stump]);
-        //         var dz = d.filter(l => (l.x == spawn.x*tw && l.y == spawn.y*th) );
-               
-        //     }while(t > 1 || tl>12 || tr>12 || dz.length != 0);
-        //     var d = new Stump(spawn.x*tw, spawn.y*th);
-        //     this.assets.Add(d);
-        // }  
+        //rnd stumps
+        for (var i = 0; i < 32; i++) {            
+            do{
+                spawn = {x:Util.RndI(0, map.levels[this.level].dim.width),
+                    y:Util.RndI(0, map.levels[this.level].dim.height)};
+                var t = this.scene.Content(spawn.x*tw, spawn.y*th);
+                var d = this.assets.Get([C.ass.null]);
+                var dz = d.filter(l => (l.x == spawn.x*tw && l.y == spawn.y*th) );               
+            }while(t > 1 || dz.length != 0);
+            var d = new AnimObj(spawn.x*tw, spawn.y*th, Util.OneOf([Fac[C.src.t1], Fac[C.src.t2]]), C.ass.stump);
+            this.assets.Add(d);
+        }  
     };
 
     Game.prototype = {
@@ -137,8 +137,10 @@
             {
                 //do move
                 if(this.gameState == 2){
-                    asses[e].Logic(dt);
-                    asses[e].Collider(asses);
+                    if(asses[e].enabled){
+                        asses[e].Logic(dt);
+                        asses[e].Collider(asses);
+                    }
                 }
                 asses[e].Update(dt);
             }        

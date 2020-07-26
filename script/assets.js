@@ -1,15 +1,17 @@
 //Player
 (function() {
 
-    function Puppy(x, y) {
-        this.type = C.ass.player;
+    function Puppy(x, y, type, targ) {
+        this.type = type;
         this.enabled = true;
 
         this.home = {x:x,y:y};
+        this.width = 48;
+        this.length = 48;
         this.x = x;
         this.y = y;
         this.z = 0;
-        this.p =0;
+        this.p = 0;
         this.dx = 0;
         this.dy = 0; 
 
@@ -22,6 +24,10 @@
         this.motion = 0;
         this.death = 0;
         this.endCount = 64;
+
+        this.logic = true;
+
+        this.target = targ;
 
         this.shadow = Util.Build([assets.tile.sol],1.5,[C.col.sw]);
         this.body= [
@@ -52,15 +58,26 @@
             if(this.death == 0){
                 if(!this.jumping)
                 {
-                    var inp = {
-                                up: (input.isDown('UP') || input.isDown('W') ),
-                                down: (input.isDown('DOWN') || input.isDown('S') ),
-                                left: (input.isDown('LEFT') || input.isDown('A') ),
-                                right: (input.isDown('RIGHT') || input.isDown('D') )
-                            };
+                    if(this.type == C.ass.player)
+                    {
+                        var inp = {
+                                    up: (input.isDown('UP') || input.isDown('W') ),
+                                    down: (input.isDown('DOWN') || input.isDown('S') ),
+                                    left: (input.isDown('LEFT') || input.isDown('A') ),
+                                    right: (input.isDown('RIGHT') || input.isDown('D') )
+                                };     
+                        AssetUtil.InputLogic(inp, this, speed, 48);                   
+                    }
+                    else{
+                        //if(this.target){
+                            var inp = AssetUtil.Dir(this.target, this);
 
-                
-                    AssetUtil.InputLogic(inp, this, speed, 48);
+                            if( inp.d < (8*32) && inp.d > (4*32) ){
+                                AssetUtil.InputLogic(inp, this, speed, 48); 
+                            }
+                        //}
+                    }              
+  
                 }
                 else
                 {
@@ -81,19 +98,17 @@
                                 this.action = C.act.sp;
                                 this.death = C.act.sp;
 
-                                for(var i=0;i<8;i++){                                              
-                                    this.anims.push(new AnimObj(0, 0, 60, 
-                                        Fac[C.act.cb], Util.RndI(6,8), true));
+                                for(var i=0;i<16;i++){                                              
+                                    this.anims.push(
+                                        new AnimObj(this.x, this.y, Fac[C.src.spl], C.ass.null,
+                                            {x: Util.Rnd(60)-30, y: Util.Rnd(60)-30, z:200}, true));    
                                 }
                             }
                             else{
                                 this.action = C.act.fl;
                                 this.death = C.act.fl;
                             }
-                        }
-                        // var c = gameAsset.scene.Cell(this.x, this.y, 48);
-                        // this.x = c.x;
-                        // this.y = c.y;                    
+                        }                 
                     }
                 }
             }
@@ -114,10 +129,9 @@
             if(this.jumping){
                 //determine if can jump
                 var d = AssetUtil.Collisions(this, perps, this.jumping);
-
-                //if(d && (d.type == C.ass.stump || d.type == C.ass.dood)){
-                //    this.reset();
-                //}
+                if(d && (d.type == C.ass.stump || d.type == C.ass.man)){
+                    this.reset();
+                }
             } 
         },
         Render: function(os){
@@ -131,10 +145,8 @@
             Renderer.PolySprite(pt.x, pt.y-this.z, this.body[this.action][this.motion] );
 
             for(var i=0;i<this.anims.length;i++){
-                if(this.anims[i].enabled){   
-                    this.anims[i].p.y = pt.y-this.z;   
-                    this.anims[i].p.x = pt.x;                   
-                    this.anims[i].Render();
+                if(this.anims[i].enabled){                  
+                    this.anims[i].Render(os);
                 }
             }
         }
@@ -145,10 +157,12 @@
 
 //Human man
 (function() {
-    function Man(x, y) {
+    function Man(x, y, targ) {
         this.type = C.ass.man;
         this.enabled = true;
 
+        this.width = 48;
+        this.length = 48;
         this.x = x;
         this.y = y;
         this.z = 0;
@@ -164,7 +178,7 @@
         this.action = C.act.dn;
         this.motion = 0;
 
-        this.target;
+        this.target = targ;
 
         this.shadow = Util.Build([assets.tile.sol],1.5,[C.col.sw]);
         this.body= [
@@ -185,19 +199,11 @@
                 var inp = AssetUtil.Dir(this.target, this);
 
                 if( inp.d < (8*32) && inp.d > (4*32) ){
-
                     AssetUtil.InputLogic(inp, this, speed, 48); 
                 }
             }
             else
             {
-                // if((this.z) > 4){
-                //     this.motion = 1;
-                // }
-                // else{
-                //     this.motion = 0;
-                // }
-
                 this.motion = this.p/12|0;
 
                 var t = AssetUtil.HopLogic(this, 48, 6);
@@ -230,33 +236,54 @@
 
 //an animated auxilary feature such as hat or splash
 (function() {
-    function AnimObj(x, y, c, b, q) {
-        this.type = C.ass.null;
+    function AnimObj(x, y, b, type, motion, die) {
+        this.type = type;
         this.enabled = true;
-
-        this.p = {x:0, y:0};
-        this.o = {x:x, y:y};
-        this.ct = c;
-        this.d = {x: Util.Rnd(64)-32, y: -(Util.Rnd(64)+32)};  
+        this.home = {x:x,y:y};
+        this.x = x;
+        this.y = y;
+        this.z = 0;
+        this.width = 48;
+        this.length = 48;
+        this.dt = motion;//{x: Util.Rnd(60)-30, y: Util.Rnd(60)-30, z:200};  
         this.body = b;
-        this.die = q;
+        this.die = die;
     };
 
     AnimObj.prototype = {
+        Logic: function(dt){
+        },
+        Collider: function(perps){
+        },
         Update: function(dt){
-            if(this.ct > 0){
-                this.ct--;
-                this.o.y += (this.d.y*dt);
-                this.o.x += (this.d.x*dt);
-                this.d.y+=2.5;
-                if(this.ct==0 && this.die)
-                {
-                    this.enabled = false;
+            if(this.enabled && this.dt){
+                this.x += this.dt.x*dt;
+                this.y += this.dt.y*dt;
+                this.z += this.dt.z*dt;
+
+                if(this.dt.z){
+                    this.dt.z -= (400*dt);
+                    if(this.z < 0 && this.die)
+                    {
+                        this.enabled = false;
+                    }
                 }
             }
+
+            // if(this.z >= 0){
+            //     this.x += this.dt.x*dt;
+            //     this.y += this.dt.y*dt;
+            //     this.z += this.dt.z*dt;
+            //     this.dt.z -= (400*dt);
+            //     if(this.z<0 && this.die)
+            //     {
+            //         this.enabled = false;
+            //     }
+            // }
         },
-        Render: function(){
-            Renderer.PolySprite(this.p.x + this.o.x, this.p.y+this.o.y,  this.body);
+        Render: function(os){
+            var pt = Util.IsoPoint(this.x-os.x, this.y-os.y);
+            Renderer.PolySprite(pt.x, pt.y-this.z,  this.body);
         }
     };
 
