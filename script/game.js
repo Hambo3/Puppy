@@ -1,7 +1,7 @@
 (function() {
     function Game(map, level) {
         //puppy
-        for (x of [{s:1.5,c:C.col.d1}, {s:1.5,c:C.col.d1}]){
+        for (x of [{s:1.2,c:C.col.d1}, {s:1.5,c:C.col.d2}, {s:1.5,c:C.col.d3}]){
             Fac.push(Util.Build([assets.pupu.leg,assets.pupu.bod],x.s,[x.c,x.c]));//up
             Fac.push(Util.Build([assets.pupu.run,assets.pupu.bod],x.s,[x.c,x.c]));//up run
             Fac.push(Util.Build([assets.pupd.leg,assets.pupd.bod],x.s,[x.c,x.c]));//down
@@ -32,61 +32,75 @@
         //tree
         Fac.push(Util.Build([assets.tree.bod,assets.tree.hd1],1,[C.col.d1,C.col.d1]));//tree1    
         Fac.push(Util.Build([assets.tree.bod,assets.tree.hd2],1,[C.col.d1,C.col.d1]));//tree2    
-        var isoTileSet = [ 
-            Util.Build([assets.tile.sol],1.5,[C.col.gr]),
-            Util.Build([assets.tile.sol],1.5,[C.col.gr+1]),            
 
-            Util.Build([assets.tile.sol],1.5,[C.col.pt]),
-            Util.Build([assets.tile.sol],1.5,[C.col.pt+1]), 
-            Util.Build([assets.tile.sol],1.5,[C.col.rd]),
-            Util.Build([assets.tile.sol],1.5,[2]),
-            Util.Build([assets.tile.sol],1.5,[2]), 
+        var i =0;
+        var set = [];
+        for (let i = 0; i < 15; i++) {
+            set.push( Util.Build([assets.tile.sol],1.5,[i]) );            
+        }
+        set[4] = Util.Build([assets.tile.sol,assets.tile.hol],1.5,[3,4]);
+        set[5] = Util.Build([assets.tile.sol,assets.tile.cor],1.5,[3,4]);
+        set[8] = Util.Build([assets.tile.sol,assets.tile.hol],1.5,[7,8]);
+        set[9] = Util.Build([assets.tile.sol,assets.tile.cor],1.5,[7,8]);
+
+            // Util.Build([assets.tile.sol],1.5,[i++]),
+            // Util.Build([assets.tile.sol],1.5,[i++]),            
+
+            // Util.Build([assets.tile.sol],1.5,[i++]),
+            // Util.Build([assets.tile.sol],1.5,[i++]), 
+            // Util.Build([assets.tile.sol],1.5,[i++]),
+            // Util.Build([assets.tile.sol],1.5,[2]),
+            // Util.Build([assets.tile.sol],1.5,[2]), 
             
-            Util.Build([assets.tile.sol],1.5,[C.col.gr]),
-            Util.Build([assets.tile.sol],1.5,[C.col.gr+1]), 
-            Util.Build([assets.tile.sol],1.5,[C.col.rd]),
+            // Util.Build([assets.tile.sol],1.5,[C.col.gr]),
+            // Util.Build([assets.tile.sol],1.5,[C.col.gr+1]), 
+            // Util.Build([assets.tile.sol],1.5,[C.col.rd]),
 
-            Util.Build([assets.tile.sol],1.5,[C.col.hl]),
-            Util.Build([assets.tile.sol,assets.tile.hol],1.5,[C.col.hl,C.col.hl+1]),    
-            Util.Build([assets.tile.sol],1.5,[C.col.hl+1]),  
+            // Util.Build([assets.tile.sol],1.5,[C.col.hl]),
+            // Util.Build([assets.tile.sol,assets.tile.hol],1.5,[C.col.hl,C.col.hl+1]),    
+            // Util.Build([assets.tile.sol],1.5,[C.col.hl+1]),  
 
-            Util.Build([assets.tile.sol],1.5,[C.col.wt]),
-            Util.Build([assets.tile.sol,assets.tile.hol],1.5,[C.col.wt,C.col.wt+1]),    
-            Util.Build([assets.tile.sol],1.5,[C.col.wt+1]),  
+            // Util.Build([assets.tile.sol],1.5,[C.col.wt]),
+            // Util.Build([assets.tile.sol,assets.tile.hol],1.5,[C.col.wt,C.col.wt+1]),    
+            // Util.Build([assets.tile.sol],1.5,[C.col.wt+1]),  
             
-            Util.Build([assets.tile.sol],1.5,[C.col.wt+1]),
-            ];  
+            // Util.Build([assets.tile.sol],1.5,[C.col.wt+1]),
+            // ];  
 
         this.level = level;    
-        this.scene = new MapManager(map.size, map.levels[this.level], isoTileSet, true);
+        this.scene = new MapManager(map.size, map.levels[this.level], set);
         this.assets = new ObjectPool(); 
 
         this.player;
         this.screen = {w:map.size.screen.width*map.size.tile.width, h:map.size.screen.height*map.size.tile.height};
-        var spawn = map.levels[this.level].features.plyrspawn;
+        var spawn = map.levels[this.level].spawn;
 
         var tw = map.size.tile.width;
         var th = map.size.tile.height;
-
-        this.player = new Puppy(spawn.x*tw, spawn.y*th, C.ass.player);
+        
+        this.player = new Dog(spawn.plr.x*tw, spawn.plr.y*th, C.ass.player);
         this.assets.Add(this.player);
 
-        this.assets.Add(new Man((spawn.x+8)*tw, (spawn.y)*th, this.player));
-        this.assets.Add( new Puppy(spawn.x*tw, (spawn.y-8)*th, C.ass.wdog, this.player));
+        for (var i = 0; i < spawn.man.length; i++) {
+            var d = new Man(spawn.man[i].x*tw, spawn.man[i].y*th, this.player);
+            this.assets.Add(d);
+        }
+        for (var i = 0; i < spawn.dog.length; i++) {            
+            var d = new Dog(spawn.dog[i].x*tw, spawn.dog[i].y*th, 
+                Util.OneOf([C.ass.gdog,C.ass.wdog])
+                , this.player);
+            this.assets.Add(d);
+        }
 
-        this.gameState = 0;
-        this.scCol = 1;
-        this.count = 64;
-        this.scene.ScrollTo(this.player.x, this.player.y, 1); 
         // //mapped stumps
-        for (var i = 0; i < map.levels[this.level].features.hard.length; i++) {
-            spawn = map.levels[this.level].features.hard[i];
-            var d = new AnimObj(spawn.x*tw, spawn.y*th, Util.OneOf([Fac[C.src.t1], Fac[C.src.t2]]), C.ass.stump);
+        for (var i = 0; i < spawn.hard.length; i++) {
+            var d = new Grunt(spawn.hard[i].x*tw, spawn.hard[i].y*th, 
+                Util.OneOf([Fac[C.src.t1], Fac[C.src.t2]]), C.ass.stump);
             this.assets.Add(d);
         }
 
         //rnd stumps
-        for (var i = 0; i < 32; i++) {            
+        for (var i = 0; i < 0; i++) {            
             do{
                 spawn = {x:Util.RndI(0, map.levels[this.level].dim.width),
                     y:Util.RndI(0, map.levels[this.level].dim.height)};
@@ -94,9 +108,14 @@
                 var d = this.assets.Get([C.ass.null]);
                 var dz = d.filter(l => (l.x == spawn.x*tw && l.y == spawn.y*th) );               
             }while(t > 1 || dz.length != 0);
-            var d = new AnimObj(spawn.x*tw, spawn.y*th, Util.OneOf([Fac[C.src.t1], Fac[C.src.t2]]), C.ass.stump);
+            var d = new Grunt(spawn.x*tw, spawn.y*th, Util.OneOf([Fac[C.src.t1], Fac[C.src.t2]]), C.ass.stump);
             this.assets.Add(d);
-        }  
+        } 
+
+        this.gameState = 0;
+        this.scCol = 1;
+        this.count = 64;
+        this.scene.ScrollTo(this.player.x, this.player.y, 1);  
     };
 
     Game.prototype = {
