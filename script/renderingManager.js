@@ -44,7 +44,7 @@ var Rendering = function (context, screen, border) {
     }
 
     //assumes upper
-    function txt(str, xs, ys, size, col) {
+    function txt(str, xs, ys, size, sc, col) {
 
         ctx.fillStyle = col || '#000000';
 
@@ -59,9 +59,9 @@ var Rendering = function (context, screen, border) {
                 xp = 0;
                 row = l[r];
                 for (var c = 0; c < row.length; c++) 
-                {
-                    szx = c==row.length-1 ? size*2 : size;
-                    szy = r==l.length-1 ? size*2 : size;
+                {                    
+                    szx = (sc && c==row.length-1) ? size*2 : size;
+                    szy = (sc && r==l.length-1) ? size*2 : size;
                     if (row[c]) {
                         ctx.fillRect(xp + xs, yp + ys, szx, szy);
                     }
@@ -94,8 +94,8 @@ var Rendering = function (context, screen, border) {
             }
             return 0;
         },   
-        Text: function(text, x, y, size, col){
-            txt(text, x, y, size, col);
+        Text: function(text, x, y, size, sc, col){
+            txt(text, x, y, size, sc, col);
         }
     }
 };

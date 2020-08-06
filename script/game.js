@@ -1,15 +1,22 @@
 (function() {
     function Game(map, level) {
         //puppy
-        for (x of [{s:1.2,c:C.col.d1}, {s:1.5,c:C.col.d2}, {s:1.5,c:C.col.d3}]){
-            Fac.push(Util.Build([assets.pupu.leg,assets.pupu.bod],x.s,[x.c,x.c]));//up
-            Fac.push(Util.Build([assets.pupu.run,assets.pupu.bod],x.s,[x.c,x.c]));//up run
-            Fac.push(Util.Build([assets.pupd.leg,assets.pupd.bod],x.s,[x.c,x.c]));//down
-            Fac.push(Util.Build([assets.pupd.run,assets.pupd.bod],x.s,[x.c,x.c]));//down run
-            Fac.push(Util.Build([assets.pupl.leg,assets.pupl.bod],x.s,[x.c,x.c]));//left
-            Fac.push(Util.Build([assets.pupl.run,assets.pupl.bod],x.s,[x.c,x.c]));//left run
-            Fac.push(Util.Build([assets.pupr.leg,assets.pupr.bod],x.s,[x.c,x.c]));//right
-            Fac.push(Util.Build([assets.pupr.run,assets.pupr.bod],x.s,[x.c,x.c]));//right run            
+        for (x of [{t:1,s:1.2,c:C.col.d1,c2:C.col.fc}, {t:0,s:1.5,c:C.col.d2,c2:C.col.fc}, {t:0,s:1.5,c:C.col.d3,c2:C.col.fc}]){
+            Fac.push(Util.Build([assets.pupu.idl,assets.pupu.fc],x.s,[x.c,x.c2]));//up idle
+            Fac.push(Util.Build([assets.pupu.leg,assets.pupu.bod, assets.pupu.fc],x.s,[x.c,x.c,x.c2]));//up stand
+            Fac.push(Util.Build([assets.pupu.run,assets.pupu.bod, assets.pupu.fc],x.s,[x.c,x.c,x.c2]));//up run
+
+            Fac.push(Util.Build([assets.pupd.idl,x.t?assets.pupd.fc:assets.pupd.fc2],x.s,[x.c,x.c2]));//dn idle
+            Fac.push(Util.Build([assets.pupd.leg,assets.pupd.bod,x.t?assets.pupd.fc:assets.pupd.fc2],x.s,[x.c,x.c,x.c2]));//down
+            Fac.push(Util.Build([assets.pupd.run,assets.pupd.bod,x.t?assets.pupd.fc:assets.pupd.fc2],x.s,[x.c,x.c,x.c2]));//down run
+
+            Fac.push(Util.Build([assets.pupl.idl,x.t?assets.pupl.fc:assets.pupl.fc2],x.s,[x.c,x.c2]));//lt idle
+            Fac.push(Util.Build([assets.pupl.leg,assets.pupl.bod,x.t?assets.pupl.fc:assets.pupl.fc2],x.s,[x.c,x.c,x.c2]));//left
+            Fac.push(Util.Build([assets.pupl.run,assets.pupl.bod,x.t?assets.pupl.fc:assets.pupl.fc2],x.s,[x.c,x.c,x.c2]));//left run
+
+            Fac.push(Util.Build([assets.pupr.idl,x.t?assets.pupr.fc:assets.pupr.fc2],x.s,[x.c,x.c2]));//rt idle
+            Fac.push(Util.Build([assets.pupr.leg,assets.pupr.bod,x.t?assets.pupr.fc:assets.pupr.fc2],x.s,[x.c,x.c,x.c2]));//right
+            Fac.push(Util.Build([assets.pupr.run,assets.pupr.bod,x.t?assets.pupr.fc:assets.pupr.fc2],x.s,[x.c,x.c,x.c2]));//right run            
         }
 
         //water particle
@@ -42,30 +49,6 @@
         set[5] = Util.Build([assets.tile.sol,assets.tile.cor],1.5,[3,4]);
         set[8] = Util.Build([assets.tile.sol,assets.tile.hol],1.5,[7,8]);
         set[9] = Util.Build([assets.tile.sol,assets.tile.cor],1.5,[7,8]);
-
-            // Util.Build([assets.tile.sol],1.5,[i++]),
-            // Util.Build([assets.tile.sol],1.5,[i++]),            
-
-            // Util.Build([assets.tile.sol],1.5,[i++]),
-            // Util.Build([assets.tile.sol],1.5,[i++]), 
-            // Util.Build([assets.tile.sol],1.5,[i++]),
-            // Util.Build([assets.tile.sol],1.5,[2]),
-            // Util.Build([assets.tile.sol],1.5,[2]), 
-            
-            // Util.Build([assets.tile.sol],1.5,[C.col.gr]),
-            // Util.Build([assets.tile.sol],1.5,[C.col.gr+1]), 
-            // Util.Build([assets.tile.sol],1.5,[C.col.rd]),
-
-            // Util.Build([assets.tile.sol],1.5,[C.col.hl]),
-            // Util.Build([assets.tile.sol,assets.tile.hol],1.5,[C.col.hl,C.col.hl+1]),    
-            // Util.Build([assets.tile.sol],1.5,[C.col.hl+1]),  
-
-            // Util.Build([assets.tile.sol],1.5,[C.col.wt]),
-            // Util.Build([assets.tile.sol,assets.tile.hol],1.5,[C.col.wt,C.col.wt+1]),    
-            // Util.Build([assets.tile.sol],1.5,[C.col.wt+1]),  
-            
-            // Util.Build([assets.tile.sol],1.5,[C.col.wt+1]),
-            // ];  
 
         this.level = level;    
         this.scene = new MapManager(map.size, map.levels[this.level], set);
@@ -100,12 +83,12 @@
         }
 
         //rnd stumps
-        for (var i = 0; i < 0; i++) {            
+        for (var i = 0; i < 64; i++) {            
             do{
                 spawn = {x:Util.RndI(0, map.levels[this.level].dim.width),
                     y:Util.RndI(0, map.levels[this.level].dim.height)};
                 var t = this.scene.Content(spawn.x*tw, spawn.y*th);
-                var d = this.assets.Get([C.ass.null]);
+                var d = this.assets.Get([C.ass.stump,C.ass.man,C.ass.wdog,C.ass.gdog,C.ass.player]);
                 var dz = d.filter(l => (l.x == spawn.x*tw && l.y == spawn.y*th) );               
             }while(t > 1 || dz.length != 0);
             var d = new Grunt(spawn.x*tw, spawn.y*th, Util.OneOf([Fac[C.src.t1], Fac[C.src.t2]]), C.ass.stump);
@@ -188,15 +171,15 @@
             switch (this.gameState) {
                 case 0:
                     Renderer.Box(0,0,this.screen.w, this.screen.h, "rgba(0, 0, 0, "+this.scCol+")");
-                    Renderer.Text("PUPPY", 260, 100, 12);                    
+                    Renderer.Text("PUPPY", 260, 100, 12,1);                    
                     break;
                 case 1:
-                    Renderer.Text("PUPPY", 260, 100, 12);
-                    Renderer.Text("PRESS START", 240, 300, 6);
+                    Renderer.Text("PUPPY", 260, 100, 12,1);
+                    Renderer.Text("PRESS START", 240, 300, 6,0);
                     break;
                 case 3:
                     //Renderer.Box(0,0,this.screen.w, this.screen.h, "rgba(0, 0, 0, "+this.scCol+")");
-                    Renderer.Text("GAME OVER", 280, 100, 8);                    
+                    Renderer.Text("GAME OVER", 280, 100, 8,0);                    
                     break;
                 default:
                     break;

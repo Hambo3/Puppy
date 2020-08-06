@@ -15,6 +15,7 @@
         this.dx = 0;
         this.dy = 0; 
 
+        this.idle = 0;
         this.jumping = false;
         this.dest = {x:0, y:0};
 
@@ -31,26 +32,26 @@
 
         this.shadow = Util.Build([assets.tile.sol],1.5,[C.col.sw]);
 
-        var bodies = [
+        var bodies = [ 
             [
-                [Fac[C.src.up],Fac[C.src.up+1]],
-                [Fac[C.src.dn],Fac[C.src.dn+1]],            
-                [Fac[C.src.lt],Fac[C.src.lt+1]],
-                [Fac[C.src.rt],Fac[C.src.rt+1]],
+                [Fac[C.src.up],Fac[C.src.up+1],Fac[C.src.up+2]],
+                [Fac[C.src.dn],Fac[C.src.dn+1],Fac[C.src.dn+2]],            
+                [Fac[C.src.lt],Fac[C.src.lt+1],Fac[C.src.lt+2]],
+                [Fac[C.src.rt],Fac[C.src.rt+1],Fac[C.src.rt+2]],
                 [],[],[]
             ],
             [
-                [Fac[C.src.up+8],Fac[C.src.up+8+1]],
-                [Fac[C.src.dn+8],Fac[C.src.dn+8+1]],            
-                [Fac[C.src.lt+8],Fac[C.src.lt+8+1]],
-                [Fac[C.src.rt+8],Fac[C.src.rt+8+1]],
+                [Fac[C.src.up+12],Fac[C.src.up+12+1],Fac[C.src.up+12+2]],
+                [Fac[C.src.dn+12],Fac[C.src.dn+12+1],Fac[C.src.dn+12+2]],            
+                [Fac[C.src.lt+12],Fac[C.src.lt+12+1],Fac[C.src.lt+12+2]],
+                [Fac[C.src.rt+12],Fac[C.src.rt+12+1],Fac[C.src.rt+12+2]],
                 [],[],[]
             ],
             [
-                [Fac[C.src.up+16],Fac[C.src.up+16+1]],
-                [Fac[C.src.dn+16],Fac[C.src.dn+16+1]],            
-                [Fac[C.src.lt+16],Fac[C.src.lt+16+1]],
-                [Fac[C.src.rt+16],Fac[C.src.rt+16+1]],
+                [Fac[C.src.up+24],Fac[C.src.up+24+1],Fac[C.src.up+24+2]],
+                [Fac[C.src.dn+24],Fac[C.src.dn+24+1],Fac[C.src.dn+24+2]],            
+                [Fac[C.src.lt+24],Fac[C.src.lt+24+1],Fac[C.src.lt+24+2]],
+                [Fac[C.src.rt+24],Fac[C.src.rt+24+1],Fac[C.src.rt+24+2]],
                 [],[],[]
             ]
         ]
@@ -89,29 +90,32 @@
                         AssetUtil.InputLogic(inp, this, speed, 48);                   
                     }
                     else{
-                        //if(this.target){
-                            var inp = AssetUtil.Dir(this.target, this);
+                        var inp = AssetUtil.Dir(this.target, this);
 
-                            if( inp.d < (8*32) && inp.d > (4*32) ){
-                                AssetUtil.InputLogic(inp, this, speed, 48); 
-                            }
-                        //}
-                    }              
-  
+                        if( inp.d < (8*32) && inp.d > (4*32) ){
+                            AssetUtil.InputLogic(inp, this, speed, 48); 
+                        }                        
+                    }
+                    if(this.idle>0){
+                        if(--this.idle == 0){
+                            this.motion = 0; 
+                        }              
+                    }
                 }
                 else
                 {
                     if((this.z) > 4){
-                        this.motion = 1;
+                        this.motion = 2;
                     }
                     else{
-                        this.motion = 0;
+                        this.motion = 1;
                     }
 
                     var t = AssetUtil.HopLogic(this, 48, 8);
                     if(!this.jumping)// landed
                     {
-                        this.motion = 0;
+                        this.idle = 64;
+                        //this.motion = 0;
                         //check what landed on
                         if(map.colliders.over.indexOf(t) != -1){
                             if(t > 6 && t < 11){//water
@@ -205,7 +209,7 @@
             [Fac[C.src.mup],Fac[C.src.mup+1],Fac[C.src.mup],Fac[C.src.mup+2]],
             [Fac[C.src.mdn],Fac[C.src.mdn+1],Fac[C.src.mdn],Fac[C.src.mdn+2]],            
             [Fac[C.src.mlt],Fac[C.src.mlt+1],Fac[C.src.mlt],Fac[C.src.mlt+2]],
-            [Fac[C.src.mrt],Fac[C.src.mrt+1],Fac[C.src.mrt],Fac[C.src.mrt+2]],
+            [Fac[C.src.mrt],Fac[C.src.mrt+2],Fac[C.src.mrt],Fac[C.src.mrt+1]],
             [],[],[]
         ];
         this.anims = [];
