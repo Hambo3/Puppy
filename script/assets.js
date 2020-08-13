@@ -29,6 +29,15 @@
         this.logic = true;
 
         this.target = targ;
+        this.patrol = {
+            rnd:(type == C.ass.wdog),
+            wait:256,
+            d:0, 
+            inp:null,
+            p:[{x:this.x+(5*48),y:this.y},
+                {x:this.x,y:this.y}],
+            pi:0    
+        };
 
         this.shadow = Util.Build([assets.tile.sol],1.5,[C.col.sw]);
 
@@ -56,7 +65,6 @@
             ]
         ]
 
-        //this.body= bodies[this.type ==  C.ass.player ? 0 : 1];
         this.body= bodies[this.type - 1];
 
         this.anims = [];
@@ -68,6 +76,8 @@
             this.dx = 0;
             this.dy = 0;
             this.z = 0;
+
+            this.patrol.inp = null;
         }        
     };
 
@@ -92,14 +102,47 @@
                     else{
                         var inp = AssetUtil.Dir(this.target, this);
 
-                        if( inp.d < (8*32) && inp.d > (4*32) ){
+                        if( inp.d < (8*48) && inp.d > (4*48) ){
                             AssetUtil.InputLogic(inp, this, speed, 48); 
-                        }                        
+                        }
+                        else
+                        {
+                            if(this.patrol.inp){                                
+                                AssetUtil.InputLogic(this.patrol.inp, this, speed, 48); 
+                                if(!this.jumping){
+                                    this.patrol.inp = null;
+                                }
+                            }
+                            else if(--this.patrol.wait==0)
+                            {
+                                var t = {x:this.x, y:this.y};
+                                var d = Util.RndI(-4, 5);
+
+                                if(this.patrol.rnd){
+
+                                    if(Util.OneIn(2)){
+                                        t.x+=d*48;
+                                    }
+                                    else{
+                                        t.y+=d*48;
+                                    }
+                                    this.patrol.wait = Util.RndI(64,256);
+                                }
+                                else{
+                                    t = this.patrol.p[this.patrol.pi];
+                                    this.patrol.pi = 1-this.patrol.pi;
+                                    this.patrol.wait = 256;
+                                }
+
+                                this.patrol.inp = AssetUtil.Dir(t, this);
+                                this.patrol.d = this.patrol.inp.d/48;
+                            }
+                        }
                     }
                     if(this.idle>0){
                         if(--this.idle == 0){
                             this.motion = 0; 
-                        }              
+                        }
                     }
                 }
                 else
@@ -114,15 +157,20 @@
                     var t = AssetUtil.HopLogic(this, 48, 8);
                     if(!this.jumping)// landed
                     {
+                        if(this.patrol.d){
+                            if(--this.patrol.d ==0)
+                            {
+                                this.patrol.inp = null;
+                            }                            
+                        }
                         this.idle = 64;
-                        //this.motion = 0;
                         //check what landed on
                         if(map.colliders.over.indexOf(t) != -1){
                             if(t > 6 && t < 11){//water
                                 this.action = C.act.sp;
                                 this.death = C.act.sp;
 
-                                for(var i=0;i<16;i++){                                              
+                                for(var i=0;i<16;i++){
                                     this.anims.push(
                                         new Grunt(this.x, this.y, Fac[C.src.spl], C.ass.null,
                                             {x: Util.Rnd(60)-30, y: Util.Rnd(60)-30, z:200}, true));    
@@ -132,7 +180,7 @@
                                 this.action = C.act.fl;
                                 this.death = C.act.fl;
                             }
-                        }                 
+                        }
                     }
                 }
             }
@@ -213,6 +261,7 @@
             [],[],[]
         ];
         this.anims = [];
+        this.anims.push(new Grunt(this.x, this.y, Fac[C.src.hat], C.ass.null));
         this.reset = function(die){
             //if(die==true){
             //    this.death = die;
@@ -233,7 +282,7 @@
                 {
                     var inp = AssetUtil.Dir(this.target, this);
 
-                    if( inp.d < (8*32) && inp.d > (4*32) ){
+                    if( inp.d < (8*48) && inp.d > (4*48) ){
                         AssetUtil.InputLogic(inp, this, speed, 48); 
                     }
                 }
@@ -251,6 +300,7 @@
                                 this.action = C.act.sp;
                                 this.death = C.act.sp;
 
+                                this.anims[0].enabled = false;
                                 for(var i=0;i<16;i++){                                              
                                     this.anims.push(
                                         new Grunt(this.x, this.y, Fac[C.src.spl], C.ass.null,
@@ -281,8 +331,16 @@
             this.y += this.dy;
 
             for(var i=0;i<this.anims.length;i++){
-                if(this.anims[i].enabled){                    
-                    this.anims[i].Update(dt);
+                if(this.anims[i].enabled){
+                    if(this.death == 0){
+                        this.anims[i].x = this.x;
+                        this.anims[i].y = this.y;
+                        this.anims[i].z = this.z+56;
+                    }
+                    else{
+                        this.anims[i].Update(dt);
+                    }
+
                 }
             }
         },
@@ -318,15 +376,32 @@
         this.z = 0;
         this.width = 48;
         this.length = 48;
-        this.dt = motion;//{x: Util.Rnd(60)-30, y: Util.Rnd(60)-30, z:200};  
+        this.dt = motion;
         this.body = b;
         this.die = die;
+        this.dest = {x:0, y:0};
+        this.desty;
     };
 
     Grunt.prototype = {
         Logic: function(dt){
+            var t = gameAsset.scene.Content(this.x, this.y);
+            if(map.colliders.fend.indexOf(t) != -1){  
+                this.enabled = false;
+            }
+            this.dest.x = this.type == C.ass.carl ? this.x-(this.width) : this.x+(this.width);
+            this.dest.y = this.y; 
         },
         Collider: function(perps){
+            if(this.type == C.ass.carl || this.type == C.ass.carr)
+            {
+                //predictive collison only with cars, checking a few tiles ahead
+                var d = AssetUtil.Collisions(this, perps, true);
+                if(d && (d.type == C.ass.carl || d.type == C.ass.carr))
+                {
+                    this.dt.x = d.dt.x;
+                }
+            }
         },
         Update: function(dt){
             if(this.enabled && this.dt){
@@ -342,17 +417,6 @@
                     }
                 }
             }
-
-            // if(this.z >= 0){
-            //     this.x += this.dt.x*dt;
-            //     this.y += this.dt.y*dt;
-            //     this.z += this.dt.z*dt;
-            //     this.dt.z -= (400*dt);
-            //     if(this.z<0 && this.die)
-            //     {
-            //         this.enabled = false;
-            //     }
-            // }
         },
         Render: function(os){
             var pt = Util.IsoPoint(this.x-os.x, this.y-os.y);

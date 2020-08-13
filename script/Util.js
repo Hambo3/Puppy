@@ -141,11 +141,11 @@ var AssetUtil = {
         }
         return gameAsset.scene.Content(asset.x, asset.y);
     },
-    CarSpawn: function(list, assets, type, tw, th){
+    CarSpawn: function(list, assets, type,sz){
         for (var i = 0; i < assets.length; i++) {
             list.push({ready:100, 
-                x:assets[i].x*tw, 
-                y:assets[i].y*th,
+                x:assets[i].x*sz, 
+                y:assets[i].y*sz,
                 type:type});
         }  
     }
@@ -219,14 +219,16 @@ var ObjectPool = function () {
     var list = [];
 
     return {
-        Add: function(obj){
+        Is: function(type){
             for (var i = 0; i < list.length; i++) {
-                if (list[i].enabled == false && list[i].type == obj.type)
+                if (list[i].enabled == false && list[i].type == type)
                 {
-                    list[i] = obj;
                     return list[i];
                 }
             }
+            return null;
+        },
+        Add: function(obj){
             list.push(obj);         
         },
         Get: function(type){

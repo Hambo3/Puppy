@@ -1,7 +1,9 @@
 (function() {
     function Game(map, level) {
         //puppy
-        for (x of [{t:1,s:1.2,c:C.col.d1,c2:C.col.fc}, {t:0,s:1.5,c:C.col.d2,c2:C.col.fc}, {t:0,s:1.5,c:C.col.d3,c2:C.col.fc}]){
+        var aa = C.col.aa;
+        var mn = C.col.mn;
+        for (x of [{t:1,s:1.2,c:C.col.d1,c2:aa}, {t:0,s:1.5,c:C.col.d2,c2:aa}, {t:0,s:1.5,c:C.col.d3,c2:aa}]){
             Fac.push(Util.Build([assets.pupu.idl,assets.pupu.fc],x.s,[x.c,x.c2]));//up idle
             Fac.push(Util.Build([assets.pupu.leg,assets.pupu.bod, assets.pupu.fc],x.s,[x.c,x.c,x.c2]));//up stand
             Fac.push(Util.Build([assets.pupu.run,assets.pupu.bod, assets.pupu.fc],x.s,[x.c,x.c,x.c2]));//up run
@@ -23,22 +25,27 @@
         Fac.push(Util.Build([assets.cube],0.3,[C.col.wt]));//splash
 
         //man
-        Fac.push(Util.Build([assets.man.v.leg,assets.man.bod],1,[C.col.d1,C.col.d1]));//up
-        Fac.push(Util.Build([assets.man.v.leg1,assets.man.bod],1,[C.col.d1,C.col.d1]));//up
-        Fac.push(Util.Build([assets.man.v.leg2,assets.man.bod],1,[C.col.d1,C.col.d1]));//up
-        Fac.push(Util.Build([assets.man.v.leg,assets.man.bod],1,[C.col.d1,C.col.d1]));//down
-        Fac.push(Util.Build([assets.man.v.leg1,assets.man.bod],1,[C.col.d1,C.col.d1]));//down
-        Fac.push(Util.Build([assets.man.v.leg2,assets.man.bod],1,[C.col.d1,C.col.d1]));//down        
-        Fac.push(Util.Build([assets.man.h.leg,assets.man.bod],1,[C.col.d1,C.col.d1]));//left
-        Fac.push(Util.Build([assets.man.h.leg1,assets.man.bod],1,[C.col.d1,C.col.d1]));//left
-        Fac.push(Util.Build([assets.man.h.leg2,assets.man.bod],1,[C.col.d1,C.col.d1]));//left
-        Fac.push(Util.Build([assets.man.h.leg,assets.man.bod],1,[C.col.d1,C.col.d1]));//right
-        Fac.push(Util.Build([assets.man.h.leg1,assets.man.bod],1,[C.col.d1,C.col.d1]));//right
-        Fac.push(Util.Build([assets.man.h.leg2,assets.man.bod],1,[C.col.d1,C.col.d1]));//right    
+        Fac.push(Util.Build([assets.man.v.leg,assets.man.bod,assets.man.v.ex],1,[mn,mn,mn]));//up
+        Fac.push(Util.Build([assets.man.v.leg1,assets.man.bod,assets.man.v.ex],1,[mn,mn,mn]));//up
+        Fac.push(Util.Build([assets.man.v.leg2,assets.man.bod,assets.man.v.ex],1,[mn,mn,mn]));//up
+        Fac.push(Util.Build([assets.man.v.leg,assets.man.bod,assets.man.v.ex],1,[mn,mn,mn]));//down
+        Fac.push(Util.Build([assets.man.v.leg1,assets.man.bod,assets.man.v.ex],1,[mn,mn,mn]));//down
+        Fac.push(Util.Build([assets.man.v.leg2,assets.man.bod,assets.man.v.ex],1,[mn,mn,mn]));//down        
+        Fac.push(Util.Build([assets.man.h.leg,assets.man.bod,assets.man.h.ex],1,[mn,mn,mn]));//left
+        Fac.push(Util.Build([assets.man.h.leg1,assets.man.bod,assets.man.h.ex],1,[mn,mn,mn]));//left
+        Fac.push(Util.Build([assets.man.h.leg2,assets.man.bod,assets.man.h.ex],1,[mn,mn,mn]));//left
+        Fac.push(Util.Build([assets.man.h.leg,assets.man.bod,assets.man.h.ex],1,[mn,mn,mn]));//right
+        Fac.push(Util.Build([assets.man.h.leg1,assets.man.bod,assets.man.h.ex],1,[mn,mn,mn]));//right
+        Fac.push(Util.Build([assets.man.h.leg2,assets.man.bod,assets.man.h.ex],1,[mn,mn,mn]));//right    
 
         //tree
-        Fac.push(Util.Build([assets.tree.bod,assets.tree.hd1],1,[C.col.d1,C.col.d1]));//tree1    
-        Fac.push(Util.Build([assets.tree.bod,assets.tree.hd2],1,[C.col.d1,C.col.d1]));//tree2    
+        Fac.push(Util.Build([assets.tree.bod,assets.tree.hd1],1,[C.col.d3,C.col.tr]));//tree1    
+        Fac.push(Util.Build([assets.tree.bod,assets.tree.hd2],1,[C.col.d3,C.col.tr]));//tree2    
+
+        Fac.push(Util.Build([assets.hat],0.3,[aa]));//hat
+
+        Fac.push(Util.Build([assets.car.bod, assets.car.win, assets.car.ltf],1.3,[C.col.d2, aa,aa]));//car
+        Fac.push(Util.Build([assets.car.bod, assets.car.win, assets.car.ltr],1.3,[C.col.d2, aa,aa]));//car
 
         var i =0;
         var set = [];
@@ -53,6 +60,8 @@
         this.level = level;    
         this.scene = new MapManager(map.size, map.levels[this.level], set);
         this.assets = new ObjectPool(); 
+
+        this.carSpawn = [];
 
         this.player;
         this.screen = {w:map.size.screen.width*map.size.tile.width, h:map.size.screen.height*map.size.tile.height};
@@ -81,6 +90,9 @@
                 Util.OneOf([Fac[C.src.t1], Fac[C.src.t2]]), C.ass.stump);
             this.assets.Add(d);
         }
+
+        AssetUtil.CarSpawn(this.carSpawn, spawn.carl, C.ass.carl,tw);
+        AssetUtil.CarSpawn(this.carSpawn, spawn.carr, C.ass.carr,tw);
 
         //rnd stumps
         for (var i = 0; i < 64; i++) {            
@@ -123,7 +135,36 @@
                         this.gameState = 2;
                     } 
                     break; 
-                case 2:
+                case 2://game
+                    for (var i = 0; i < this.carSpawn.length; i++) {
+                        if(this.carSpawn[i].ready == 0){
+                            var sp = Util.RndI(100, 300);
+                            var a = Fac[C.src.car];
+                            if(this.carSpawn[i].type == C.ass.carl)
+                            {
+                                sp = -sp;
+                                a = Fac[C.src.car+1];
+                            }
+                            var c = this.assets.Is(this.carSpawn[i].type);
+                            if(c){
+                                c.enabled = true;
+                                c.x = this.carSpawn[i].x;
+                                c.dt.x = sp;
+                            }
+                            else{
+                                var g = new Grunt(this.carSpawn[i].x, this.carSpawn[i].y, a, 
+                                    this.carSpawn[i].type, {x: sp, y: 0, z:0}, true);
+                                g.width = 96;
+                                this.assets.Add(g);
+                            }
+
+                            this.carSpawn[i].ready = Util.RndI(200, 400);
+                        }
+                        else{
+                            this.carSpawn[i].ready--;
+                        }
+                    }
+                    
                     if(this.player.death){
                         if(--this.count == 0)
                         {
@@ -177,6 +218,10 @@
                     Renderer.Text("PUPPY", 260, 100, 12,1);
                     Renderer.Text("PRESS START", 240, 300, 6,0);
                     break;
+                case 2:
+                    var l = asses.length;
+                    Renderer.Text(""+l, 100, 100, 8,0);
+                    break;
                 case 3:
                     //Renderer.Box(0,0,this.screen.w, this.screen.h, "rgba(0, 0, 0, "+this.scCol+")");
                     Renderer.Text("GAME OVER", 280, 100, 8,0);                    
@@ -185,7 +230,8 @@
                     break;
             }
 
-            // Renderer.Text("ABCDEFFGHIJKL", 100, 100, 8);
+
+
             // Renderer.Text("MNOPQRSTUVWXYZ", 100, 160, 8);
             // Renderer.Text("0123456789", 100, 220, 8);
         }
