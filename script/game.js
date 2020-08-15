@@ -47,6 +47,8 @@
         Fac.push(Util.Build([assets.car.bod, assets.car.win, assets.car.ltf],1.3,[C.col.d2, aa,aa]));//car
         Fac.push(Util.Build([assets.car.bod, assets.car.win, assets.car.ltr],1.3,[C.col.d2, aa,aa]));//car
 
+        Fac.push(Util.Build([assets.flat],1,[aa]));//flat pup
+
         var i =0;
         var set = [];
         for (let i = 0; i < 15; i++) {

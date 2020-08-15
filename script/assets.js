@@ -47,21 +47,21 @@
                 [Fac[C.src.dn],Fac[C.src.dn+1],Fac[C.src.dn+2]],            
                 [Fac[C.src.lt],Fac[C.src.lt+1],Fac[C.src.lt+2]],
                 [Fac[C.src.rt],Fac[C.src.rt+1],Fac[C.src.rt+2]],
-                [],[],[]
+                [Fac[C.src.flat]],[]
             ],
             [
                 [Fac[C.src.up+12],Fac[C.src.up+12+1],Fac[C.src.up+12+2]],
                 [Fac[C.src.dn+12],Fac[C.src.dn+12+1],Fac[C.src.dn+12+2]],            
                 [Fac[C.src.lt+12],Fac[C.src.lt+12+1],Fac[C.src.lt+12+2]],
                 [Fac[C.src.rt+12],Fac[C.src.rt+12+1],Fac[C.src.rt+12+2]],
-                [],[],[]
+                [Fac[C.src.flat]],[]
             ],
             [
                 [Fac[C.src.up+24],Fac[C.src.up+24+1],Fac[C.src.up+24+2]],
                 [Fac[C.src.dn+24],Fac[C.src.dn+24+1],Fac[C.src.dn+24+2]],            
                 [Fac[C.src.lt+24],Fac[C.src.lt+24+1],Fac[C.src.lt+24+2]],
                 [Fac[C.src.rt+24],Fac[C.src.rt+24+1],Fac[C.src.rt+24+2]],
-                [],[],[]
+                [Fac[C.src.flat]],[]
             ]
         ]
 
@@ -69,9 +69,9 @@
 
         this.anims = [];
         this.reset = function(die){
-            //if(die==true){
-            //    this.death = die;
-            //}
+            if(die){
+                this.death = die;
+            }
             this.jumping = false;
             this.dx = 0;
             this.dy = 0;
@@ -167,8 +167,8 @@
                         //check what landed on
                         if(map.colliders.over.indexOf(t) != -1){
                             if(t > 6 && t < 11){//water
-                                this.action = C.act.sp;
-                                this.death = C.act.sp;
+                                this.action = C.act.dd;
+                                this.death = C.act.dd;
 
                                 for(var i=0;i<16;i++){
                                     this.anims.push(
@@ -200,11 +200,19 @@
         Collider: function(perps){
             if(this.jumping){
                 //determine if can jump
-                var d = AssetUtil.Collisions(this, perps, this.jumping);
-                if(d && (d.type == C.ass.stump || d.type == C.ass.man || d.type == C.ass.wdog || d.type == C.ass.gdog)){
+                var d = AssetUtil.Collisions(this, perps, true);
+                if(d && (d.type == C.ass.stump || d.type == C.ass.man || d.type == C.ass.wdog || d.type == C.ass.gdog))
+                {
                     this.reset();
                 }
             } 
+
+            var d = AssetUtil.Collisions(this, perps, false);
+            if(d && (d.type == C.ass.carl || d.type == C.ass.carl )){
+                this.motion = 0;
+                this.action = C.act.sq;
+                this.reset(C.act.sq);
+            }
         },
         Render: function(os){
             var x = this.x;
@@ -214,7 +222,9 @@
             if(this.death == 0){
                 Renderer.PolySprite(pt.x, pt.y, this.shadow);
             }
-            Renderer.PolySprite(pt.x, pt.y-this.z, this.body[this.action][this.motion] );
+            if(this.action < C.act.dd){
+                Renderer.PolySprite(pt.x, pt.y-this.z, this.body[this.action][this.motion] );
+            }
 
             for(var i=0;i<this.anims.length;i++){
                 if(this.anims[i].enabled){                  
@@ -258,14 +268,14 @@
             [Fac[C.src.mdn],Fac[C.src.mdn+1],Fac[C.src.mdn],Fac[C.src.mdn+2]],            
             [Fac[C.src.mlt],Fac[C.src.mlt+1],Fac[C.src.mlt],Fac[C.src.mlt+2]],
             [Fac[C.src.mrt],Fac[C.src.mrt+2],Fac[C.src.mrt],Fac[C.src.mrt+1]],
-            [],[],[]
+            [Fac[C.src.flat]],[]
         ];
         this.anims = [];
         this.anims.push(new Grunt(this.x, this.y, Fac[C.src.hat], C.ass.null));
         this.reset = function(die){
-            //if(die==true){
-            //    this.death = die;
-            //}
+            if(die){
+                this.death = die;
+            }
             this.jumping = false;
             this.dx = 0;
             this.dy = 0;
@@ -297,8 +307,8 @@
                         //check what landed on
                         if(map.colliders.over.indexOf(t) != -1){
                             if(t > 6 && t < 11){//water
-                                this.action = C.act.sp;
-                                this.death = C.act.sp;
+                                this.action = C.act.dd;
+                                this.death = C.act.dd;
 
                                 this.anims[0].enabled = false;
                                 for(var i=0;i<16;i++){                                              
@@ -308,8 +318,8 @@
                                 }
                             }
                             else{
-                                this.action = C.act.fl;
-                                this.death = C.act.fl;
+                                this.action = C.act.dd;
+                                this.death = C.act.dd;
                             }
                         } 
                     }
@@ -320,11 +330,19 @@
         Collider: function(perps){
             if(this.jumping){
                 //determine if can jump
-                var d = AssetUtil.Collisions(this, perps, this.jumping);
+                var d = AssetUtil.Collisions(this, perps, true);
                 if(d && (d.type == C.ass.stump || d.type == C.ass.man || d.type == C.ass.wdog || d.type == C.ass.gdog)){
                     this.reset();
                 }
             } 
+            else{
+                var d = AssetUtil.Collisions(this, perps, false);
+                if(d && (d.type == C.ass.carl || d.type == C.ass.carl )){
+                    this.motion = 0;
+                    this.action = C.act.sq;
+                    this.reset(C.act.sq);
+                }
+            }
         },
         Update: function(dt){
             this.x += this.dx;
@@ -352,7 +370,9 @@
             if(this.death == 0){
                 Renderer.PolySprite(pt.x, pt.y, this.shadow);
             }
-            Renderer.PolySprite(pt.x, pt.y-this.z, this.body[this.action][this.motion] );
+            if(this.action < C.act.dd){
+                Renderer.PolySprite(pt.x, pt.y-this.z, this.body[this.action][this.motion] );
+            }
 
             for(var i=0;i<this.anims.length;i++){
                 if(this.anims[i].enabled){                  
