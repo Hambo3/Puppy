@@ -109,6 +109,7 @@
             this.assets.Add(d);
         } 
 
+        this.splats = [];
         this.gameState = 0;
         this.scCol = 1;
         this.count = 64;
@@ -207,6 +208,14 @@
 
             this.scene.Render();
 
+            for(var e = 0; e < this.splats.length; e++) {
+                var pt = Util.IsoPoint(this.splats[e].x-mp.x, this.splats[e].y-mp.y);
+                Renderer.PolySprite(
+                    pt.x, 
+                    pt.y, 
+                    this.splats[e].src);
+            }  
+
             for(var e = 0; e < asses.length; e++) {
                 asses[e].Render(mp);
             }     
@@ -231,8 +240,6 @@
                 default:
                     break;
             }
-
-
 
             // Renderer.Text("MNOPQRSTUVWXYZ", 100, 160, 8);
             // Renderer.Text("0123456789", 100, 220, 8);

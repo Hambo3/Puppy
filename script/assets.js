@@ -198,20 +198,24 @@
 
         },
         Collider: function(perps){
-            if(this.jumping){
-                //determine if can jump
-                var d = AssetUtil.Collisions(this, perps, true);
-                if(d && (d.type == C.ass.stump || d.type == C.ass.man || d.type == C.ass.wdog || d.type == C.ass.gdog))
-                {
-                    this.reset();
-                }
-            } 
+            if(this.death == 0){
+                if(this.jumping){
+                    //determine if can jump
+                    var d = AssetUtil.Collisions(this, perps, true);
+                    if(d && (d.type == C.ass.stump || d.type == C.ass.man || d.type == C.ass.wdog || d.type == C.ass.gdog))
+                    {
+                        this.reset();
+                    }
+                } 
 
-            var d = AssetUtil.Collisions(this, perps, false);
-            if(d && (d.type == C.ass.carl || d.type == C.ass.carl )){
-                this.motion = 0;
-                this.action = C.act.sq;
-                this.reset(C.act.sq);
+                var d = AssetUtil.Collisions(this, perps, false);
+                if(d && (d.type == C.ass.carl || d.type == C.ass.carr )){
+                    this.motion = 0;
+                    this.action = C.act.sq;
+                    this.type = C.ass.null;
+                    this.reset(C.act.sq);
+                    gameAsset.splats.push({x:this.x,y:this.y,src:this.body[this.action][0]});
+                }
             }
         },
         Render: function(os){
@@ -222,7 +226,7 @@
             if(this.death == 0){
                 Renderer.PolySprite(pt.x, pt.y, this.shadow);
             }
-            if(this.action < C.act.dd){
+            if(this.action < C.act.sq){
                 Renderer.PolySprite(pt.x, pt.y-this.z, this.body[this.action][this.motion] );
             }
 
@@ -271,7 +275,7 @@
             [Fac[C.src.flat]],[]
         ];
         this.anims = [];
-        this.anims.push(new Grunt(this.x, this.y, Fac[C.src.hat], C.ass.null));
+        this.anims.push(new Grunt(this.x, this.y, Fac[C.src.hat], C.ass.null,null,true));
         this.reset = function(die){
             if(die){
                 this.death = die;
@@ -328,19 +332,27 @@
 
         },
         Collider: function(perps){
-            if(this.jumping){
-                //determine if can jump
-                var d = AssetUtil.Collisions(this, perps, true);
-                if(d && (d.type == C.ass.stump || d.type == C.ass.man || d.type == C.ass.wdog || d.type == C.ass.gdog)){
-                    this.reset();
-                }
-            } 
-            else{
-                var d = AssetUtil.Collisions(this, perps, false);
-                if(d && (d.type == C.ass.carl || d.type == C.ass.carl )){
-                    this.motion = 0;
-                    this.action = C.act.sq;
-                    this.reset(C.act.sq);
+            if(this.death == 0){
+                if(this.jumping){
+                    //determine if can jump
+                    var d = AssetUtil.Collisions(this, perps, true);
+                    if(d && (d.type == C.ass.stump || d.type == C.ass.man || d.type == C.ass.wdog || d.type == C.ass.gdog)){
+                        this.reset();
+                    }
+                } 
+                else{
+                    var d = AssetUtil.Collisions(this, perps, false);
+                    if(d && (d.type == C.ass.carl || d.type == C.ass.carr )){
+                        this.motion = 0;
+                        this.action = C.act.sq;
+                        this.type = C.ass.null;
+                        this.reset(C.act.sq);
+                        gameAsset.splats.push({x:this.x,y:this.y,src:this.body[this.action][0]});
+
+                        for(var i=0;i<this.anims.length;i++){                                              
+                            this.anims[i].dt = {x: Util.Rnd(60)-30, y: Util.Rnd(60)-30, z:200};
+                        }
+                    }
                 }
             }
         },
@@ -370,7 +382,7 @@
             if(this.death == 0){
                 Renderer.PolySprite(pt.x, pt.y, this.shadow);
             }
-            if(this.action < C.act.dd){
+            if(this.action < C.act.sq){
                 Renderer.PolySprite(pt.x, pt.y-this.z, this.body[this.action][this.motion] );
             }
 
