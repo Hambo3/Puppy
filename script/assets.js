@@ -177,8 +177,8 @@
                                 }
                             }
                             else{
-                                this.action = C.act.fl;
-                                this.death = C.act.fl;
+                                this.action = C.act.dd;
+                                this.death = C.act.dd;
                             }
                         }
                     }

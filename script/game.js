@@ -61,59 +61,61 @@
 
         this.level = level;    
         this.scene = new MapManager(map.size, map.levels[this.level], set);
-        this.assets = new ObjectPool(); 
-
-        this.carSpawn = [];
-
-        this.player;
         this.screen = {w:map.size.screen.width*map.size.tile.width, h:map.size.screen.height*map.size.tile.height};
-        var spawn = map.levels[this.level].spawn;
 
-        var tw = map.size.tile.width;
-        var th = map.size.tile.height;
-        
-        this.player = new Dog(spawn.plr.x*tw, spawn.plr.y*th, C.ass.player);
-        this.assets.Add(this.player);
+        this.reset = function(){
+            this.carSpawn = [];
+            this.splats = [];
+            this.gameState = 0;
+            this.scCol = 1;
+            this.count = 64;
+            this.assets = new ObjectPool(); 
 
-        for (var i = 0; i < spawn.man.length; i++) {
-            var d = new Man(spawn.man[i].x*tw, spawn.man[i].y*th, this.player);
-            this.assets.Add(d);
-        }
-        for (var i = 0; i < spawn.dog.length; i++) {            
-            var d = new Dog(spawn.dog[i].x*tw, spawn.dog[i].y*th, 
-                Util.OneOf([C.ass.gdog,C.ass.wdog])
-                , this.player);
-            this.assets.Add(d);
-        }
+            var spawn = map.levels[this.level].spawn;
+            var tw = map.size.tile.width;
+            var th = map.size.tile.height;
+    
+            AssetUtil.CarSpawn(this.carSpawn, spawn.carl, C.ass.carl,tw);
+            AssetUtil.CarSpawn(this.carSpawn, spawn.carr, C.ass.carr,tw);
 
-        // //mapped stumps
-        for (var i = 0; i < spawn.hard.length; i++) {
-            var d = new Grunt(spawn.hard[i].x*tw, spawn.hard[i].y*th, 
-                Util.OneOf([Fac[C.src.t1], Fac[C.src.t2]]), C.ass.stump);
-            this.assets.Add(d);
-        }
+            this.player = new Dog(spawn.plr.x*tw, spawn.plr.y*th, C.ass.player);
+            this.assets.Add(this.player);
 
-        AssetUtil.CarSpawn(this.carSpawn, spawn.carl, C.ass.carl,tw);
-        AssetUtil.CarSpawn(this.carSpawn, spawn.carr, C.ass.carr,tw);
+            for (var i = 0; i < spawn.man.length; i++) {
+                var d = new Man(spawn.man[i].x*tw, spawn.man[i].y*th, this.player);
+                this.assets.Add(d);
+            }
+            for (var i = 0; i < spawn.dog.length; i++) {            
+                var d = new Dog(spawn.dog[i].x*tw, spawn.dog[i].y*th, 
+                    Util.OneOf([C.ass.gdog,C.ass.wdog])
+                    , this.player);
+                this.assets.Add(d);
+            }
+    
+            // //mapped stumps
+            for (var i = 0; i < spawn.hard.length; i++) {
+                var d = new Grunt(spawn.hard[i].x*tw, spawn.hard[i].y*th, 
+                    Util.OneOf([Fac[C.src.t1], Fac[C.src.t2]]), C.ass.stump);
+                this.assets.Add(d);
+            }
 
-        //rnd stumps
-        for (var i = 0; i < 64; i++) {            
-            do{
-                spawn = {x:Util.RndI(0, map.levels[this.level].dim.width),
-                    y:Util.RndI(0, map.levels[this.level].dim.height)};
-                var t = this.scene.Content(spawn.x*tw, spawn.y*th);
-                var d = this.assets.Get([C.ass.stump,C.ass.man,C.ass.wdog,C.ass.gdog,C.ass.player]);
-                var dz = d.filter(l => (l.x == spawn.x*tw && l.y == spawn.y*th) );               
-            }while(t > 1 || dz.length != 0);
-            var d = new Grunt(spawn.x*tw, spawn.y*th, Util.OneOf([Fac[C.src.t1], Fac[C.src.t2]]), C.ass.stump);
-            this.assets.Add(d);
-        } 
+            //rnd stumps
+            for (var i = 0; i < 64; i++) {            
+                do{
+                    spawn = {x:Util.RndI(0, map.levels[this.level].dim.width),
+                        y:Util.RndI(0, map.levels[this.level].dim.height)};
+                    var t = this.scene.Content(spawn.x*tw, spawn.y*th);
+                    var d = this.assets.Get([C.ass.stump,C.ass.man,C.ass.wdog,C.ass.gdog,C.ass.player]);
+                    var dz = d.filter(l => (l.x == spawn.x*tw && l.y == spawn.y*th) );               
+                }while(t > 1 || dz.length != 0);
+                var d = new Grunt(spawn.x*tw, spawn.y*th, Util.OneOf([Fac[C.src.t1], Fac[C.src.t2]]), C.ass.stump);
+                this.assets.Add(d);
+            } 
 
-        this.splats = [];
-        this.gameState = 0;
-        this.scCol = 1;
-        this.count = 64;
-        this.scene.ScrollTo(this.player.x, this.player.y, 1);  
+            this.scene.ScrollTo(this.player.x, this.player.y, 1);  
+        };
+
+        this.reset();
     };
 
     Game.prototype = {
@@ -171,9 +173,26 @@
                     if(this.player.death){
                         if(--this.count == 0)
                         {
+                            this.count = 64;
                             this.gameState = 3;
                         }
                     }
+                    break; 
+                case 3:
+                    if(--this.count == 0){
+                        this.count = 64;
+                        this.gameState = 4;
+                        this.scCol = 0;
+                    } 
+                    break; 
+                case 4:
+                    this.scCol = Util.SLerp(this.scCol, 1, 0.01);
+                    if(this.scCol>0.9){
+                        this.gameState = 0;
+                        this.scCol = 1;
+                        this.count = 64;
+                        this.reset();
+                    } 
                     break; 
                 default:
                     break;
@@ -234,7 +253,10 @@
                     Renderer.Text(""+l, 100, 100, 8,0);
                     break;
                 case 3:
-                    //Renderer.Box(0,0,this.screen.w, this.screen.h, "rgba(0, 0, 0, "+this.scCol+")");
+                    Renderer.Text("GAME OVER", 280, 100, 8,0);                    
+                    break;
+                case 4:
+                    Renderer.Box(0,0,this.screen.w, this.screen.h, "rgba(0, 0, 0, "+this.scCol+")");
                     Renderer.Text("GAME OVER", 280, 100, 8,0);                    
                     break;
                 default:
