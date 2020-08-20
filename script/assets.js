@@ -24,9 +24,8 @@
         this.action = C.act.dn;
         this.motion = 0;
         this.death = 0;
-        this.endCount = 64;
-
-        this.logic = true;
+        this.woof = 32;
+        this.power = 0;
 
         this.target = targ;
         this.patrol = {
@@ -91,19 +90,22 @@
                 {
                     if(this.type == C.ass.player)
                     {
-                        var inp = {
-                                    up: (input.isDown('UP') || input.isDown('W') ),
-                                    down: (input.isDown('DOWN') || input.isDown('S') ),
-                                    left: (input.isDown('LEFT') || input.isDown('A') ),
-                                    right: (input.isDown('RIGHT') || input.isDown('D') )
-                                };     
-                        AssetUtil.InputLogic(inp, this, speed, 48);                   
+                        if( !gameAsset.dlog.active)
+                        {
+                            var inp = {
+                                        up: (input.isDown('UP') || input.isDown('W') ),
+                                        down: (input.isDown('DOWN') || input.isDown('S') ),
+                                        left: (input.isDown('LEFT') || input.isDown('A') ),
+                                        right: (input.isDown('RIGHT') || input.isDown('D') )
+                                    };     
+                            AssetUtil.InputLogic(inp, this, speed, 48);                            
+                        }
                     }
                     else{
                         var inp = AssetUtil.Dir(this.target, this);
 
-                        if( inp.d < (8*48) && inp.d > (4*48) ){
-                            AssetUtil.InputLogic(inp, this, speed, 48); 
+                        if( inp.d < (6*48) ){
+                            AssetUtil.InputLogic(inp, this, speed * 1.2, 48); 
                         }
                         else
                         {
@@ -139,10 +141,8 @@
                             }
                         }
                     }
-                    if(this.idle>0){
-                        if(--this.idle == 0){
-                            this.motion = 0; 
-                        }
+                    if(this.idle > 0 && --this.idle == 0){
+                        this.motion = 0;                        
                     }
                 }
                 else
@@ -158,7 +158,7 @@
                     if(!this.jumping)// landed
                     {
                         if(this.patrol.d){
-                            if(--this.patrol.d ==0)
+                            if(--this.patrol.d == 0)
                             {
                                 this.patrol.inp = null;
                             }                            
@@ -183,6 +183,21 @@
                         }
                     }
                 }
+
+                if(this.woof > 0){
+                    this.woof--;
+                }
+                if(this.type == C.ass.player && this.woof == 0){
+                    if(input.isUp('SPACE')){
+                        gameAsset.AddChat("WOOF", this.x, this.y);
+                        this.woof = 64;
+                        var inp = AssetUtil.Dir(this.target, this);
+                        if(inp.d < 4*48){
+                            gameAsset.dlog.active = true;
+                        }
+                    } 
+                }
+
             }
 
         },
@@ -209,7 +224,7 @@
                 } 
 
                 var d = AssetUtil.Collisions(this, perps, false);
-                if(d && (d.type == C.ass.carl || d.type == C.ass.carr )){
+                if(d && (d.type == C.ass.carl || d.type == C.ass.carr || d.type == C.ass.wdog || d.type == C.ass.gdog)){
                     this.motion = 0;
                     this.action = C.act.sq;
                     this.type = C.ass.null;
@@ -294,10 +309,12 @@
             {
                 if(!this.jumping)
                 {
-                    var inp = AssetUtil.Dir(this.target, this);
+                    if(this.target){
+                        var inp = AssetUtil.Dir(this.target, this);
 
-                    if( inp.d < (8*48) && inp.d > (4*48) ){
-                        AssetUtil.InputLogic(inp, this, speed, 48); 
+                        if( inp.d < (8*48) && inp.d > (4*48) ){
+                            AssetUtil.InputLogic(inp, this, speed, 48); 
+                        }
                     }
                 }
                 else

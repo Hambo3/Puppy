@@ -63,7 +63,9 @@
         this.scene = new MapManager(map.size, map.levels[this.level], set);
         this.screen = {w:map.size.screen.width*map.size.tile.width, h:map.size.screen.height*map.size.tile.height};
 
+        this.dlog = {active:false, p:0, r:3, tx:["WOOF","WOOF WOOF","BARK","BARK BARK WOOF"]};
         this.reset = function(){
+            this.chat = [];
             this.carSpawn = [];
             this.splats = [];
             this.gameState = 0;
@@ -82,7 +84,8 @@
             this.assets.Add(this.player);
 
             for (var i = 0; i < spawn.man.length; i++) {
-                var d = new Man(spawn.man[i].x*tw, spawn.man[i].y*th, this.player);
+                var d = new Man(spawn.man[i].x*tw, spawn.man[i].y*th, null);
+                this.player.target = d;
                 this.assets.Add(d);
             }
             for (var i = 0; i < spawn.dog.length; i++) {            
@@ -114,6 +117,11 @@
 
             this.scene.ScrollTo(this.player.x, this.player.y, 1);  
         };
+        
+        this.AddChat = function(txt, x, y){
+            var mp = this.scene.ScrollOffset(); 
+            this.chat.push({w:txt,tm:64, x:x-mp.x, y:y-mp.y});
+        }
 
         this.reset();
     };
@@ -170,6 +178,19 @@
                         }
                     }
                     
+                    if(this.dlog.active){
+                        if(input.isUp('UP')){
+                            if(this.dlog.p >0) {this.dlog.p--};
+                        }
+                        if(input.isUp('DOWN')){
+                            if(this.dlog.p < 3) {this.dlog.p++};
+                        }
+                        if(input.isUp('SPACE')){
+                            this.player.speak.tm =64;
+                            this.player.speak.w = this.dlog.tx[this.dlog.p];
+                        }
+                    }
+
                     if(this.player.death){
                         if(--this.count == 0)
                         {
@@ -249,8 +270,24 @@
                     Renderer.Text("PRESS START", 240, 300, 6,0);
                     break;
                 case 2:
-                    var l = asses.length;
-                    Renderer.Text(""+l, 100, 100, 8,0);
+                    //score panel thing
+
+                    //txts
+                    for(var e = 0; e < this.chat.length; e++) {
+                        if(this.chat[e].tm > 0){
+                            Renderer.Text(this.chat[e].w, this.chat[e].x, this.chat[e].y, 4,1);   
+                            this.chat[e].tm--;           
+                        }
+                    }
+
+                    //if active, dialog panel
+                    if(this.dlog.active){
+                        var h = 480;
+                        Renderer.Box(0,h,this.screen.w, this.screen.h, "rgba(0, 0, 0, 0.7)");
+                        for(var e = 0; e < this.dlog.tx.length; e++) {
+                            Renderer.Text( this.dlog.tx[e], 260, h+16+(e*28), 4,0, this.dlog.p == e ? PAL[41] : PAL[38]); 
+                        }
+                    }
                     break;
                 case 3:
                     Renderer.Text("GAME OVER", 280, 100, 8,0);                    
