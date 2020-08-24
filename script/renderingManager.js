@@ -47,30 +47,41 @@ var Rendering = function (context, screen, border) {
     function txt(str, xs, ys, size, sc, col) {
 
         ctx.fillStyle = col || '#000000';
+        cr = xs;
 
         for (i = 0; i < str.length; i++) {
-            l = FONT[str.charAt(i)];
-
             xp = 0;
             yp = 0;
-            mx = 0;
-            for (var r = 0; r < l.length; r++) 
-            {                
-                xp = 0;
-                row = l[r];
-                for (var c = 0; c < row.length; c++) 
-                {                    
-                    szx = (sc && c==row.length-1) ? size*2 : size;
-                    szy = (sc && r==l.length-1) ? size*2 : size;
-                    if (row[c]) {
-                        ctx.fillRect(xp + xs, yp + ys, szx, szy);
-                    }
-                    xp += szx;
-                }
-                mx = xp>mx ? xp : mx;                
-                yp += szy;
+            mx = 0; 
+
+            c = str.charAt(i);                     
+            if(c == '+')
+            {
+                ys += (size*8);
+                xs=cr;
             }
-            xs += mx + size;
+            else
+            {
+                l = FONT[str.charAt(i)];
+
+                for (var r = 0; r < l.length; r++) 
+                {                
+                    xp = 0;
+                    row = l[r];
+                    for (var c = 0; c < row.length; c++) 
+                    {                    
+                        szx = (sc && c==row.length-1) ? size*2 : size;
+                        szy = (sc && r==l.length-1) ? size*2 : size;
+                        if (row[c]) {
+                            ctx.fillRect(Math.round(xp + xs), Math.round(yp + ys), szx, szy);
+                        }
+                        xp += szx;
+                    }
+                    mx = xp>mx ? xp : mx;                
+                    yp += szy;
+                }
+                xs += mx + size; 
+            }          
         }
     }
 

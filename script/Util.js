@@ -56,6 +56,13 @@ var AssetUtil = {
 
         return null;
     },
+    WhichDir: function(src, list){
+        for(var i = 0; i < list.length; i++) {
+            if(src == list[i].v){
+                return list[i].r;
+            }
+        }
+    },
     InputLogic: function(inp, prop, speed, step){
         var x = prop.x;
         var y = prop.y;

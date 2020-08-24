@@ -63,7 +63,6 @@
         this.scene = new MapManager(map.size, map.levels[this.level], set);
         this.screen = {w:map.size.screen.width*map.size.tile.width, h:map.size.screen.height*map.size.tile.height};
 
-        this.dlog = {active:false, p:0, r:3, tx:["WOOF","WOOF WOOF","BARK","BARK BARK WOOF"]};
         this.reset = function(){
             this.chat = [];
             this.carSpawn = [];
@@ -72,7 +71,13 @@
             this.scCol = 1;
             this.count = 64;
             this.assets = new ObjectPool(); 
-
+            this.dlog = {active:0, p:0, r:3, 
+                wt:0,
+                tx:[SP[0]+" "+SP[0],
+                SP[0]+" "+SP[0]+" "+SP[1],
+                SP[1]+" "+SP[1]+" "+SP[0],
+                SP[0]+" "+SP[1]+" "+SP[0]+" "+SP[0]+" "+SP[1]],
+                rp:[SP[4],SP[6],SP[5],SP[3]]};
             var spawn = map.levels[this.level].spawn;
             var tw = map.size.tile.width;
             var th = map.size.tile.height;
@@ -83,11 +88,10 @@
             this.player = new Dog(spawn.plr.x*tw, spawn.plr.y*th, C.ass.player);
             this.assets.Add(this.player);
 
-            for (var i = 0; i < spawn.man.length; i++) {
-                var d = new Man(spawn.man[i].x*tw, spawn.man[i].y*th, null);
-                this.player.target = d;
-                this.assets.Add(d);
-            }
+            this.man = new Man(spawn.man.x*tw, spawn.man.y*th, null);
+            this.player.target = this.man;
+            this.assets.Add(this.man);
+
             for (var i = 0; i < spawn.dog.length; i++) {            
                 var d = new Dog(spawn.dog[i].x*tw, spawn.dog[i].y*th, 
                     Util.OneOf([C.ass.gdog,C.ass.wdog])
@@ -118,9 +122,11 @@
             this.scene.ScrollTo(this.player.x, this.player.y, 1);  
         };
         
-        this.AddChat = function(txt, x, y){
-            var mp = this.scene.ScrollOffset(); 
-            this.chat.push({w:txt,tm:64, x:x-mp.x, y:y-mp.y});
+        this.AddChat = function(txt, x, y, wt, next){
+            this.chat.push({w:txt,tm:64, x:x, y:y, wt:wt, nt:next});
+        }
+        this.StartChat = function(){
+            if(this.dlog.active == 0){this.dlog.active = 1;}
         }
 
         this.reset();
@@ -167,7 +173,7 @@
                             else{
                                 var g = new Grunt(this.carSpawn[i].x, this.carSpawn[i].y, a, 
                                     this.carSpawn[i].type, {x: sp, y: 0, z:0}, true);
-                                g.width = 96;
+                                g.width = 96; 
                                 this.assets.Add(g);
                             }
 
@@ -178,20 +184,39 @@
                         }
                     }
                     
-                    if(this.dlog.active){
-                        if(input.isUp('UP')){
-                            if(this.dlog.p >0) {this.dlog.p--};
-                        }
-                        if(input.isUp('DOWN')){
-                            if(this.dlog.p < 3) {this.dlog.p++};
-                        }
-                        if(input.isUp('SPACE')){
-                            this.player.speak.tm =64;
-                            this.player.speak.w = this.dlog.tx[this.dlog.p];
+                    if(this.dlog.active == 1){
+                        if(this.dlog.wt == 0){
+                            if(input.isUp('UP')){
+                                if(this.dlog.p >0) {this.dlog.p--};
+                            }
+                            if(input.isUp('DOWN')){
+                                if(this.dlog.p < 3) {this.dlog.p++};
+                            }
+                            if(input.isUp('SPACE')){
+                                var t = this;
+                                var d = {x:t.player.x-100, y:t.player.y-200};
+
+                                t.dlog.wt = 1;
+                                gameAsset.AddChat(this.dlog.tx[t.dlog.p], d.x, d.y, 0, function(){
+                                        gameAsset.AddChat(t.dlog.rp[t.dlog.p], d.x, d.y, 32, function(){ 
+                                            if(t.dlog.p == t.dlog.r){
+                                                gameAsset.AddChat(SP[2], d.x, d.y, 32, function(){
+                                                    t.dlog.wt=0;
+                                                    t.dlog.active = 2;
+                                                    t.player.woof=48;                                                                                                
+                                                });
+                                            }  
+                                            else{
+                                                t.dlog.wt=0;  
+                                            }                                          
+                                        });
+                                });                            
+
+                            }
                         }
                     }
 
-                    if(this.player.death){
+                    if(this.player.death || this.man.death){
                         if(--this.count == 0)
                         {
                             this.count = 64;
@@ -275,13 +300,24 @@
                     //txts
                     for(var e = 0; e < this.chat.length; e++) {
                         if(this.chat[e].tm > 0){
-                            Renderer.Text(this.chat[e].w, this.chat[e].x, this.chat[e].y, 4,1);   
-                            this.chat[e].tm--;           
+                            if(this.chat[e].wt>0){
+                                this.chat[e].wt--;   
+                            }
+                            else{                             
+                                var pt = Util.IsoPoint(this.chat[e].x-mp.x, this.chat[e].y-mp.y);
+                                Renderer.Text(this.chat[e].w, pt.x, pt.y, 4,1);   
+
+                                //this.chat[e].tm--;
+                                if(--this.chat[e].tm == 0 && this.chat[e].nt){
+                                    this.chat[e].nt();
+                                }
+                            }
+
                         }
                     }
 
                     //if active, dialog panel
-                    if(this.dlog.active){
+                    if(this.dlog.active == 1){
                         var h = 480;
                         Renderer.Box(0,h,this.screen.w, this.screen.h, "rgba(0, 0, 0, 0.7)");
                         for(var e = 0; e < this.dlog.tx.length; e++) {

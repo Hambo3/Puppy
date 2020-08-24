@@ -1,5 +1,15 @@
 var Fac = [];
 
+var SP = [
+    "WOOF",
+    "BARK",
+    "LETS GO PUPPY",    
+    "WHAT TONY HAS FALLEN DOWN A+WELL AND HAS MINUTES TO LIVE?",
+    "HELLO BOY",
+    "GOOD DOG",
+    "WANNA TREAT FELLA?"
+];
+
 var C = {
     col:{
         sw:36,
@@ -178,7 +188,7 @@ var assets ={
 };
 
 
-var FONT = {
+var FONT = {    
     'A': [
         [, 1],
         [1, , 1],
@@ -437,5 +447,13 @@ var FONT = {
         [, ,],
         [, ,],
         [, ,]
-    ]
+    ],
+    '?': [
+        [1,1,1],
+        [1,0,1],
+        [0,1,1],
+        [0,1,0],
+        [0,1,0]
+    ],
+    '+':[]
 };

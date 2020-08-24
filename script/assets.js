@@ -90,7 +90,7 @@
                 {
                     if(this.type == C.ass.player)
                     {
-                        if( !gameAsset.dlog.active)
+                        if( gameAsset.dlog.active != 1)
                         {
                             var inp = {
                                         up: (input.isDown('UP') || input.isDown('W') ),
@@ -187,19 +187,26 @@
                 if(this.woof > 0){
                     this.woof--;
                 }
-                if(this.type == C.ass.player && this.woof == 0){
+
+                if(this.type == C.ass.player && gameAsset.dlog.active !=1 && this.woof == 0){
                     if(input.isUp('SPACE')){
-                        gameAsset.AddChat("WOOF", this.x, this.y);
-                        this.woof = 64;
+
+                        var d = AssetUtil.WhichDir(this.action,[
+                            {v:C.act.rt, r:{x:this.x+48, y:this.y-48}},
+                            {v:C.act.lt, r:{x:this.x-144, y:this.y-48}},
+                            {v:C.act.up, r:{x:this.x-48, y:this.y-96}},
+                            {v:C.act.dn, r:{x:this.x-48, y:this.y+48}}]);
+
+                        gameAsset.AddChat(SP[0], d.x, d.y);
+                        this.woof = 48;
                         var inp = AssetUtil.Dir(this.target, this);
-                        if(inp.d < 4*48){
-                            gameAsset.dlog.active = true;
+                        if(inp.d < 5*48){
+                            this.target.target = this;
+                            gameAsset.StartChat();
                         }
                     } 
                 }
-
             }
-
         },
         Update: function(dt){
             this.x += this.dx;
@@ -312,9 +319,28 @@
                     if(this.target){
                         var inp = AssetUtil.Dir(this.target, this);
 
-                        if( inp.d < (8*48) && inp.d > (4*48) ){
-                            AssetUtil.InputLogic(inp, this, speed, 48); 
+                        if(gameAsset.dlog.active == 1){
+
+                            this.action =AssetUtil.WhichDir(true,[
+                                {v:inp.right, r:C.act.rt},
+                                {v:inp.left, r:C.act.lt},
+                                {v:inp.up, r:C.act.up},
+                                {v:inp.down, r:C.act.dn}]);
+                            // if(inp.right){
+                            //     this.action = C.act.rt;
+                            // }
+                            // else if (inp.left){
+                            //     this.action =  C.act.lt;
+                            // }
+                            // else if (inp.up){
+                            //     this.action = C.act.up;
+                            // }else if (inp.down){
+                            //     this.action = C.act.dn; 
+                            // }
                         }
+                        else if( inp.d < (8*48) && inp.d > (3*48) ){
+                            AssetUtil.InputLogic(inp, this, speed, 48); 
+                        }                        
                     }
                 }
                 else
@@ -341,6 +367,10 @@
                             else{
                                 this.action = C.act.dd;
                                 this.death = C.act.dd;
+                                for(var i=0;i<this.anims.length;i++){                                              
+                                    this.anims[i].dt = {x: 0, y: 0, z:100};
+                                    this.anims[i].die = true;
+                                }
                             }
                         } 
                     }
