@@ -122,8 +122,8 @@
             this.scene.ScrollTo(this.player.x, this.player.y, 1);  
         };
         
-        this.AddChat = function(txt, x, y, wt, next){
-            this.chat.push({w:txt,tm:64, x:x, y:y, wt:wt, nt:next});
+        this.AddChat = function(txt, x, y, c, tm, wt, next){
+            this.chat.push({w:txt,tm:tm||64, x:x, y:y, c:c, wt:wt, nt:next});
         }
         this.StartChat = function(){
             if(this.dlog.active == 0){this.dlog.active = 1;}
@@ -194,13 +194,14 @@
                             }
                             if(input.isUp('SPACE')){
                                 var t = this;
-                                var d = {x:t.player.x-100, y:t.player.y-200};
+                                var d = {x:t.player.x-140, y:t.player.y+120};
 
                                 t.dlog.wt = 1;
-                                gameAsset.AddChat(this.dlog.tx[t.dlog.p], d.x, d.y, 0, function(){
-                                        gameAsset.AddChat(t.dlog.rp[t.dlog.p], d.x, d.y, 32, function(){ 
+                                gameAsset.AddChat(this.dlog.tx[t.dlog.p], d.x, d.y, PAL[15], 128, 0, function(){
+                                        gameAsset.AddChat(t.dlog.rp[t.dlog.p], d.x, d.y, PAL[31], 
+                                            t.dlog.p == t.dlog.r ? 256 : 128,32, function(){ 
                                             if(t.dlog.p == t.dlog.r){
-                                                gameAsset.AddChat(SP[2], d.x, d.y, 32, function(){
+                                                gameAsset.AddChat(SP[2], d.x, d.y, PAL[31],128,32, function(){
                                                     t.dlog.wt=0;
                                                     t.dlog.active = 2;
                                                     t.player.woof=48;                                                                                                
@@ -305,9 +306,8 @@
                             }
                             else{                             
                                 var pt = Util.IsoPoint(this.chat[e].x-mp.x, this.chat[e].y-mp.y);
-                                Renderer.Text(this.chat[e].w, pt.x, pt.y, 4,1);   
+                                Renderer.Text(this.chat[e].w, pt.x, pt.y, 4,1, this.chat[e].c);   
 
-                                //this.chat[e].tm--;
                                 if(--this.chat[e].tm == 0 && this.chat[e].nt){
                                     this.chat[e].nt();
                                 }
@@ -321,7 +321,8 @@
                         var h = 480;
                         Renderer.Box(0,h,this.screen.w, this.screen.h, "rgba(0, 0, 0, 0.7)");
                         for(var e = 0; e < this.dlog.tx.length; e++) {
-                            Renderer.Text( this.dlog.tx[e], 260, h+16+(e*28), 4,0, this.dlog.p == e ? PAL[41] : PAL[38]); 
+                            Renderer.Text( this.dlog.tx[e], 180, h+16+(e*28), 4,0, 
+                            this.dlog.wt == 1 ?  PAL[39] : this.dlog.p == e ? PAL[41] : PAL[40]); 
                         }
                     }
                     break;

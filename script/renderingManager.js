@@ -77,11 +77,11 @@ var Rendering = function (context, screen, border) {
                         }
                         xp += szx;
                     }
-                    mx = xp>mx ? xp : mx;                
+                    mx = xp>mx ? xp : mx;
                     yp += szy;
                 }
                 xs += mx + size; 
-            }          
+            }
         }
     }
 
