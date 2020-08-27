@@ -86,6 +86,9 @@ var Rendering = function (context, screen, border) {
     }
 
     return {
+        Set:function(n){
+            scale = n;
+        },
         Box: function(x,y,w,h,c){
             ctx.fillStyle = c || '#000000';
             ctx.fillRect(x, y, w, h);

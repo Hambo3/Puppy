@@ -46,8 +46,10 @@
 
         Fac.push(Util.Build([assets.car.bod, assets.car.win, assets.car.ltf],1.3,[C.col.d2, aa,aa]));//car
         Fac.push(Util.Build([assets.car.bod, assets.car.win, assets.car.ltr],1.3,[C.col.d2, aa,aa]));//car
+        
+        Fac.push(Util.Build([assets.well],1.5,[C.col.d1]));//well
+        Fac.push(Util.Build([assets.flat],1,[C.col.d1]));//flat pup
 
-        Fac.push(Util.Build([assets.flat],1,[aa]));//flat pup
 
         var i =0;
         var set = [];
@@ -63,13 +65,17 @@
         this.scene = new MapManager(map.size, map.levels[this.level], set);
         this.screen = {w:map.size.screen.width*map.size.tile.width, h:map.size.screen.height*map.size.tile.height};
 
-        this.reset = function(){
+        this.gameState = 0;
+        this.scCol = 1;
+        this.count = 16;
+
+        this.reset = function(sc){
+            Renderer.Set(sc||1);
+            this.scene.Set(sc);
             this.chat = [];
             this.carSpawn = [];
             this.splats = [];
-            this.gameState = 0;
-            this.scCol = 1;
-            this.count = 64;
+
             this.assets = new ObjectPool(); 
             this.dlog = {active:0, p:0, r:3, 
                 wt:0,
@@ -105,19 +111,26 @@
                     Util.OneOf([Fac[C.src.t1], Fac[C.src.t2]]), C.ass.stump);
                 this.assets.Add(d);
             }
-
-            //rnd stumps
-            for (var i = 0; i < 64; i++) {            
-                do{
-                    spawn = {x:Util.RndI(0, map.levels[this.level].dim.width),
-                        y:Util.RndI(0, map.levels[this.level].dim.height)};
-                    var t = this.scene.Content(spawn.x*tw, spawn.y*th);
-                    var d = this.assets.Get([C.ass.stump,C.ass.man,C.ass.wdog,C.ass.gdog,C.ass.player]);
-                    var dz = d.filter(l => (l.x == spawn.x*tw && l.y == spawn.y*th) );               
-                }while(t > 1 || dz.length != 0);
-                var d = new Grunt(spawn.x*tw, spawn.y*th, Util.OneOf([Fac[C.src.t1], Fac[C.src.t2]]), C.ass.stump);
+            for (var i = 0; i < spawn.end.length; i++) {
+                var d = new Grunt(spawn.end[i].x*tw, spawn.end[i].y*th, 
+                   Fac[C.src.well], C.ass.stump);
                 this.assets.Add(d);
-            } 
+            }
+
+            if(!sc){
+                //rnd stumps
+                for (var i = 0; i < 64; i++) {            
+                    do{
+                        spawn = {x:Util.RndI(0, map.levels[this.level].dim.width),
+                            y:Util.RndI(0, map.levels[this.level].dim.height)};
+                        var t = this.scene.Content(spawn.x*tw, spawn.y*th);
+                        var d = this.assets.Get([C.ass.stump,C.ass.man,C.ass.wdog,C.ass.gdog,C.ass.player]);
+                        var dz = d.filter(l => (l.x == spawn.x*tw && l.y == spawn.y*th) );               
+                    }while(t > 1 || dz.length != 0);
+                    var d = new Grunt(spawn.x*tw, spawn.y*th, Util.OneOf([Fac[C.src.t1], Fac[C.src.t2]]), C.ass.stump);
+                    this.assets.Add(d);
+                } 
+            }
 
             this.scene.ScrollTo(this.player.x, this.player.y, 1);  
         };
@@ -129,7 +142,7 @@
             if(this.dlog.active == 0){this.dlog.active = 1;}
         }
 
-        this.reset();
+        this.reset(2);
     };
 
     Game.prototype = {
@@ -138,7 +151,7 @@
             
             switch (this.gameState) {
                 case 0:     //app start
-                    if(this.count == 0){                        
+                    if(this.count == 0){
                         this.scCol = Util.SLerp(this.scCol, 0, 0.01);
                         if(this.scCol < 0.1){
                             this.gameState = 1;
@@ -150,11 +163,24 @@
                     break;
                 case 1:
                     if(input.isUp("SPACE")){
-                        this.count = 64;
                         this.gameState = 2;
                     } 
                     break; 
-                case 2://game
+                case 2:
+                    this.scCol = Util.SLerp(this.scCol, 1, 0.01);
+                    if(this.scCol > 0.9){
+                        this.gameState = 3;
+                        this.count = 64;
+                        this.reset();
+                    }
+                    break; 
+                case 3:
+                    this.scCol = Util.SLerp(this.scCol, 0, 0.01);
+                    if(this.scCol < 0.1){
+                        this.gameState = 4;
+                    }
+                    break;                     
+                case 4://game
                     for (var i = 0; i < this.carSpawn.length; i++) {
                         if(this.carSpawn[i].ready == 0){
                             var sp = Util.RndI(100, 300);
@@ -204,14 +230,14 @@
                                                 gameAsset.AddChat(SP[2], d.x, d.y, PAL[31],128,32, function(){
                                                     t.dlog.wt=0;
                                                     t.dlog.active = 2;
-                                                    t.player.woof=48;                                                                                                
+                                                    t.player.woof=48;
                                                 });
                                             }  
                                             else{
                                                 t.dlog.wt=0;  
-                                            }                                          
+                                            }
                                         });
-                                });                            
+                                });
 
                             }
                         }
@@ -221,24 +247,24 @@
                         if(--this.count == 0)
                         {
                             this.count = 64;
-                            this.gameState = 3;
+                            this.gameState = 5;
                         }
                     }
                     break; 
-                case 3:
+                case 5:
                     if(--this.count == 0){
                         this.count = 64;
-                        this.gameState = 4;
+                        this.gameState = 6;
                         this.scCol = 0;
                     } 
                     break; 
-                case 4:
+                case 6:
                     this.scCol = Util.SLerp(this.scCol, 1, 0.01);
                     if(this.scCol>0.9){
                         this.gameState = 0;
                         this.scCol = 1;
                         this.count = 64;
-                        this.reset();
+                        this.reset(2);
                     } 
                     break; 
                 default:
@@ -248,7 +274,7 @@
             for(var e = 0; e < asses.length; e++) 
             {
                 //do move
-                if(this.gameState == 2){
+                if(this.gameState == 4){
                     if(asses[e].enabled){
                         asses[e].Logic(dt);
                         asses[e].Collider(asses);
@@ -289,22 +315,27 @@
             switch (this.gameState) {
                 case 0:
                     Renderer.Box(0,0,this.screen.w, this.screen.h, "rgba(0, 0, 0, "+this.scCol+")");
-                    Renderer.Text("PUPPY", 260, 100, 12,1);                    
+                    Renderer.Text("PUPPY", 260, 100, 12,1);
                     break;
                 case 1:
                     Renderer.Text("PUPPY", 260, 100, 12,1);
                     Renderer.Text("PRESS START", 240, 300, 6,0);
                     break;
-                case 2:
+                case 2:    
+                case 3:
+                    Renderer.Box(0,0,this.screen.w, this.screen.h, "rgba(0, 0, 0, "+this.scCol+")");
+                    break;
+                case 4:
                     //score panel thing
-
+                    Renderer.Box(0,0,this.screen.w, 48, "rgba(0, 0, 0, 0.7)");
+                        
                     //txts
                     for(var e = 0; e < this.chat.length; e++) {
                         if(this.chat[e].tm > 0){
                             if(this.chat[e].wt>0){
                                 this.chat[e].wt--;   
                             }
-                            else{                             
+                            else{
                                 var pt = Util.IsoPoint(this.chat[e].x-mp.x, this.chat[e].y-mp.y);
                                 Renderer.Text(this.chat[e].w, pt.x, pt.y, 4,1, this.chat[e].c);   
 
@@ -326,19 +357,17 @@
                         }
                     }
                     break;
-                case 3:
-                    Renderer.Text("GAME OVER", 280, 100, 8,0);                    
+                case 5:
+                    Renderer.Text("GAME OVER", 280, 100, 8,0);
                     break;
-                case 4:
+                case 6:
                     Renderer.Box(0,0,this.screen.w, this.screen.h, "rgba(0, 0, 0, "+this.scCol+")");
-                    Renderer.Text("GAME OVER", 280, 100, 8,0);                    
+                    Renderer.Text("GAME OVER", 280, 100, 8,0);
                     break;
                 default:
                     break;
             }
 
-            // Renderer.Text("MNOPQRSTUVWXYZ", 100, 160, 8);
-            // Renderer.Text("0123456789", 100, 220, 8);
         }
     };
 

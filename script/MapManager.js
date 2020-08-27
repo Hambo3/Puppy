@@ -83,6 +83,9 @@ var MapManager = function (mapdim, mapdata, set) {
     }
 
     return {  
+        Set:function(z){
+            offset = (z) ? {x:-323,y:-431} :{x:-64,y:-270}
+        },
         Content: function (x, y) {
             return content(x, y);
         },  
