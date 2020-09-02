@@ -155,6 +155,19 @@ var AssetUtil = {
                 y:assets[i].y*sz,
                 type:type});
         }  
+    },
+    PlaceAssets: function(qty, tw, width, height, map, assets, avoid, oneof, type){
+        for (var i = 0; i < qty; i++) {            
+            do{
+                var spawn = {x:Util.RndI(0, width),
+                    y:Util.RndI(0, height)};
+                var t = map.Content(spawn.x*tw, spawn.y*tw);
+                var d = assets.Get(avoid);
+                var dz = d.filter(l => (l.x == spawn.x*tw && l.y == spawn.y*tw) );               
+            }while(t > 1 || dz.length != 0);
+            var d = new Grunt(spawn.x*tw, spawn.y*tw, Util.OneOf(oneof), type);
+            assets.Add(d);
+        }
     }
 }
 

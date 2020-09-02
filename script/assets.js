@@ -25,9 +25,10 @@
         this.motion = 0;
         this.death = 0;
         this.woof = 32;
-        this.power = 0;
+        this.power = 1;
 
         this.target = targ;
+        this.altTarget = null;
         this.patrol = {
             rnd:(type == C.ass.wdog),
             wait:256,
@@ -92,13 +93,20 @@
                     {
                         if( gameAsset.dlog.active != 1)
                         {
-                            var inp = {
-                                        up: (input.isDown('UP') || input.isDown('W') ),
-                                        down: (input.isDown('DOWN') || input.isDown('S') ),
-                                        left: (input.isDown('LEFT') || input.isDown('A') ),
-                                        right: (input.isDown('RIGHT') || input.isDown('D') )
-                                    };     
-                            AssetUtil.InputLogic(inp, this, speed, 48);                            
+                            if(this.altTarget){
+
+                                var inp = AssetUtil.Dir(this.altTarget, this); 
+                                AssetUtil.InputLogic(inp, this, 100*dt, 48); 
+                            }
+                            else{
+                                var inp = {
+                                            up: (input.isDown('UP') || input.isDown('W') ),
+                                            down: (input.isDown('DOWN') || input.isDown('S') ),
+                                            left: (input.isDown('LEFT') || input.isDown('A') ),
+                                            right: (input.isDown('RIGHT') || input.isDown('D') )
+                                        };     
+                                AssetUtil.InputLogic(inp, this, speed, 48); 
+                            }                           
                         }
                     }
                     else{
@@ -231,13 +239,25 @@
                 } 
 
                 var d = AssetUtil.Collisions(this, perps, false);
-                if(d && (d.type == C.ass.carl || d.type == C.ass.carr || d.type == C.ass.wdog || d.type == C.ass.gdog)){
-                    this.motion = 0;
-                    this.action = C.act.sq;
-                    this.type = C.ass.null;
-                    this.reset(C.act.sq);
-                    gameAsset.splats.push({x:this.x,y:this.y,src:this.body[this.action][0]});
+                if(d)
+                {
+                    if(d.type == C.ass.carl || d.type == C.ass.carr || d.type == C.ass.wdog || d.type == C.ass.gdog){
+                        this.motion = 0;
+                        this.action = C.act.sq;
+                        this.type = C.ass.null;
+                        this.reset(C.act.sq);
+                        gameAsset.splats.push({x:this.x,y:this.y,src:this.body[this.action][0]});
+                    }
+                    else if(d.type == C.ass.toy &&this.type == C.ass.player){
+                        gameAsset.time+=10;
+                        d.enabled = false;
+                    }
+                    else if(d.type == C.ass.treat && this.type == C.ass.player){
+                        this.power ++;
+                        d.enabled = false;
+                    }
                 }
+
             }
         },
         Render: function(os){
@@ -287,6 +307,7 @@
         this.motion = 0;
         this.death = 0;
         this.target = targ;
+        this.targMin = 3;
 
         this.shadow = Util.Build([assets.tile.sol],1.5,[C.col.sw]);
         this.body= [
@@ -296,8 +317,9 @@
             [Fac[C.src.mrt],Fac[C.src.mrt+2],Fac[C.src.mrt],Fac[C.src.mrt+1]],
             [Fac[C.src.flat]],[]
         ];
+        this.hat = 56;
         this.anims = [];
-        this.anims.push(new Grunt(this.x, this.y, Fac[C.src.hat], C.ass.null,null,true));
+        this.anims.push(new Grunt(this.x, this.y, Fac[C.src.hat], C.ass.null,null,false));
         this.reset = function(die){
             if(die){
                 this.death = die;
@@ -326,19 +348,9 @@
                                 {v:inp.left, r:C.act.lt},
                                 {v:inp.up, r:C.act.up},
                                 {v:inp.down, r:C.act.dn}]);
-                            // if(inp.right){
-                            //     this.action = C.act.rt;
-                            // }
-                            // else if (inp.left){
-                            //     this.action =  C.act.lt;
-                            // }
-                            // else if (inp.up){
-                            //     this.action = C.act.up;
-                            // }else if (inp.down){
-                            //     this.action = C.act.dn; 
-                            // }
+
                         }
-                        else if( inp.d < (8*48) && inp.d > (3*48) ){
+                        else if( inp.d < (8*48) && inp.d > (this.targMin*48) ){
                             AssetUtil.InputLogic(inp, this, speed, 48); 
                         }                        
                     }
@@ -412,7 +424,7 @@
                     if(this.death == 0){
                         this.anims[i].x = this.x;
                         this.anims[i].y = this.y;
-                        this.anims[i].z = this.z+56;
+                        this.anims[i].z = this.z+this.hat;
                     }
                     else{
                         this.anims[i].Update(dt);
@@ -490,9 +502,10 @@
 
                 if(this.dt.z){
                     this.dt.z -= (400*dt);
-                    if(this.z < 0 && this.die)
+                    if(this.z < 0)// && this.die)
                     {
-                        this.enabled = false;
+                        this.enabled = !this.die;
+                        this.dt=null;
                     }
                 }
             }

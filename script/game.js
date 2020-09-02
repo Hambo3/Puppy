@@ -1,5 +1,5 @@
 (function() {
-    function Game(map, level) {
+    function Game(map) {
         //puppy
         var aa = C.col.aa;
         var mn = C.col.mn;
@@ -25,12 +25,12 @@
         Fac.push(Util.Build([assets.cube],0.3,[C.col.wt]));//splash
 
         //man
-        Fac.push(Util.Build([assets.man.v.leg,assets.man.bod,assets.man.v.ex],1,[mn,mn,mn]));//up
-        Fac.push(Util.Build([assets.man.v.leg1,assets.man.bod,assets.man.v.ex],1,[mn,mn,mn]));//up
-        Fac.push(Util.Build([assets.man.v.leg2,assets.man.bod,assets.man.v.ex],1,[mn,mn,mn]));//up
-        Fac.push(Util.Build([assets.man.v.leg,assets.man.bod,assets.man.v.ex],1,[mn,mn,mn]));//down
-        Fac.push(Util.Build([assets.man.v.leg1,assets.man.bod,assets.man.v.ex],1,[mn,mn,mn]));//down
-        Fac.push(Util.Build([assets.man.v.leg2,assets.man.bod,assets.man.v.ex],1,[mn,mn,mn]));//down        
+        Fac.push(Util.Build([assets.man.v.leg,assets.man.bod,assets.man.v.ex,assets.man.v.fceu],1,[mn,mn,mn]));//up
+        Fac.push(Util.Build([assets.man.v.leg1,assets.man.bod,assets.man.v.ex,assets.man.v.fceu],1,[mn,mn,mn]));//up
+        Fac.push(Util.Build([assets.man.v.leg2,assets.man.bod,assets.man.v.ex,assets.man.v.fceu],1,[mn,mn,mn]));//up
+        Fac.push(Util.Build([assets.man.v.leg,assets.man.bod,assets.man.v.ex,assets.man.v.fced],1,[mn,mn,mn]));//down
+        Fac.push(Util.Build([assets.man.v.leg1,assets.man.bod,assets.man.v.ex,assets.man.v.fced],1,[mn,mn,mn]));//down
+        Fac.push(Util.Build([assets.man.v.leg2,assets.man.bod,assets.man.v.ex,assets.man.v.fced],1,[mn,mn,mn]));//down        
         Fac.push(Util.Build([assets.man.h.leg,assets.man.bod,assets.man.h.ex],1,[mn,mn,mn]));//left
         Fac.push(Util.Build([assets.man.h.leg1,assets.man.bod,assets.man.h.ex],1,[mn,mn,mn]));//left
         Fac.push(Util.Build([assets.man.h.leg2,assets.man.bod,assets.man.h.ex],1,[mn,mn,mn]));//left
@@ -50,25 +50,31 @@
         Fac.push(Util.Build([assets.well],1.5,[C.col.d1]));//well
         Fac.push(Util.Build([assets.flat],1,[C.col.d1]));//flat pup
 
+        //tony
+        Fac.push(Util.Build([assets.man.h.leg,assets.man.bod,assets.man.h.ex],0.8,[mn,mn,mn]));//right
+        Fac.push(Util.Build([assets.man.h.leg1,assets.man.bod,assets.man.h.ex],0.8,[mn,mn,mn]));//right
+        Fac.push(Util.Build([assets.man.h.leg2,assets.man.bod,assets.man.h.ex],0.8,[mn,mn,mn]));//right  
+
+        Fac.push(Util.Build([assets.cube],0.2,[C.col.wt]));//treat
+        Fac.push(Util.Build([assets.cube],0.4,[C.col.wt]));//toy
 
         var i =0;
         var set = [];
-        for (let i = 0; i < 15; i++) {
+        for (let i = 0; i < 17; i++) {
             set.push( Util.Build([assets.tile.sol],1.5,[i]) );            
         }
         set[4] = Util.Build([assets.tile.sol,assets.tile.hol],1.5,[3,4]);
         set[5] = Util.Build([assets.tile.sol,assets.tile.cor],1.5,[3,4]);
         set[8] = Util.Build([assets.tile.sol,assets.tile.hol],1.5,[7,8]);
         set[9] = Util.Build([assets.tile.sol,assets.tile.cor],1.5,[7,8]);
-
-        this.level = level;    
-        this.scene = new MapManager(map.size, map.levels[this.level], set);
+  
+        this.scene = new MapManager(map.size, map.level, set);
         this.screen = {w:map.size.screen.width*map.size.tile.width, h:map.size.screen.height*map.size.tile.height};
 
         this.gameState = 0;
         this.scCol = 1;
         this.count = 16;
-
+        this.endCheck = true;
         this.reset = function(sc){
             Renderer.Set(sc||1);
             this.scene.Set(sc);
@@ -76,6 +82,9 @@
             this.carSpawn = [];
             this.splats = [];
 
+            this.level = 0;
+
+            this.assets = [];
             this.assets = new ObjectPool(); 
             this.dlog = {active:0, p:0, r:3, 
                 wt:0,
@@ -84,17 +93,17 @@
                 SP[1]+" "+SP[1]+" "+SP[0],
                 SP[0]+" "+SP[1]+" "+SP[0]+" "+SP[0]+" "+SP[1]],
                 rp:[SP[4],SP[6],SP[5],SP[3]]};
-            var spawn = map.levels[this.level].spawn;
+            var spawn = map.level.spawn;
             var tw = map.size.tile.width;
             var th = map.size.tile.height;
     
             AssetUtil.CarSpawn(this.carSpawn, spawn.carl, C.ass.carl,tw);
             AssetUtil.CarSpawn(this.carSpawn, spawn.carr, C.ass.carr,tw);
 
-            this.player = new Dog(spawn.plr.x*tw, spawn.plr.y*th, C.ass.player);
+            this.player = new Dog(spawn.plr[0].x*tw, spawn.plr[0].y*th, C.ass.player);
             this.assets.Add(this.player);
 
-            this.man = new Man(spawn.man.x*tw, spawn.man.y*th, null);
+            this.man = new Man(spawn.man[this.level].x*tw, spawn.man[this.level].y*th, null);
             this.player.target = this.man;
             this.assets.Add(this.man);
 
@@ -111,32 +120,147 @@
                     Util.OneOf([Fac[C.src.t1], Fac[C.src.t2]]), C.ass.stump);
                 this.assets.Add(d);
             }
-            for (var i = 0; i < spawn.end.length; i++) {
-                var d = new Grunt(spawn.end[i].x*tw, spawn.end[i].y*th, 
+            //well
+            var w= spawn.hme;
+            var well = [
+                {x:w.x-1, y:w.y-1}, {x:w.x, y:w.y-1}, {x:w.x+1, y:w.y-1},
+                {x:w.x-1, y:w.y}, {x:w.x+1, y:w.y},
+                {x:w.x-1, y:w.y+1}, {x:w.x, y:w.y+1}, {x:w.x+1, y:w.y+1}
+            ];
+            this.home = {x:w.x*48,y:w.y*48};
+
+            for (var i = 0; i < well.length; i++) {
+                var d = new Grunt(well[i].x*tw, well[i].y*th, 
                    Fac[C.src.well], C.ass.stump);
                 this.assets.Add(d);
             }
 
             if(!sc){
-                //rnd stumps
-                for (var i = 0; i < 64; i++) {            
-                    do{
-                        spawn = {x:Util.RndI(0, map.levels[this.level].dim.width),
-                            y:Util.RndI(0, map.levels[this.level].dim.height)};
-                        var t = this.scene.Content(spawn.x*tw, spawn.y*th);
-                        var d = this.assets.Get([C.ass.stump,C.ass.man,C.ass.wdog,C.ass.gdog,C.ass.player]);
-                        var dz = d.filter(l => (l.x == spawn.x*tw && l.y == spawn.y*th) );               
-                    }while(t > 1 || dz.length != 0);
-                    var d = new Grunt(spawn.x*tw, spawn.y*th, Util.OneOf([Fac[C.src.t1], Fac[C.src.t2]]), C.ass.stump);
-                    this.assets.Add(d);
-                } 
-            }
+                this.tony = new Man(spawn.tony[0].x*tw, spawn.tony[0].y*th, {x:spawn.tony[1].x*tw, y:spawn.tony[1].y*th});
+                this.tony.action = C.act.rt;
+                this.tony.targMin = 0;
+                this.tony.hat = 56*0.8;
+                this.tony.body = [
+                    [], [], [],
+                    [Fac[C.src.tony],Fac[C.src.tony+2],Fac[C.src.tony],Fac[C.src.tony+1]],
+                    [Fac[C.src.flat]],[]
+                ];
+    
+                this.assets.Add(this.tony);
 
+                //rnd stumps
+                AssetUtil.PlaceAssets(64, tw, map.level.dim.width, map.level.dim.height,
+                    this.scene, this.assets, [C.ass.stump,C.ass.man,C.ass.wdog,C.ass.gdog,C.ass.player],
+                    [Fac[C.src.t1], Fac[C.src.t2]], C.ass.stump);
+
+                //treats
+                AssetUtil.PlaceAssets(8, tw, map.level.dim.width, map.level.dim.height,
+                    this.scene, this.assets, [C.ass.stump,C.ass.man,C.ass.wdog,C.ass.gdog,C.ass.player],
+                    [Fac[C.src.treat]], C.ass.treat);
+
+                AssetUtil.PlaceAssets(8, tw, map.level.dim.width, map.level.dim.height,
+                    this.scene, this.assets, [C.ass.stump,C.ass.man,C.ass.wdog,C.ass.gdog,C.ass.player,C.ass.toy,C.ass.treat],
+                    [Fac[C.src.toy]], C.ass.toy);
+            }
+            this.time = 60;
+            this.subTime = 256;
+            this.subTick = 256
+            this.scriptStage = 0;
+            this.scriptStop = 4;
+            this.player.altTarget ={x:spawn.plr[1].x*tw, y:spawn.plr[1].y*th};
             this.scene.ScrollTo(this.player.x, this.player.y, 1);  
         };
         
-        this.AddChat = function(txt, x, y, c, tm, wt, next){
-            this.chat.push({w:txt,tm:tm||64, x:x, y:y, c:c, wt:wt, nt:next});
+        
+        var t = this;
+        this.script=[
+            function(){
+                if(t.player.x == t.player.altTarget.x){
+                    t.scriptStage ++;
+                    t.player.altTarget = null;
+                }
+            },
+            function(){
+                t.scCol = Util.SLerp(t.scCol, 1, 0.02);
+                if(t.scCol > 0.9){
+                    t.scriptStage ++;
+                    t.count = 100;
+                }
+            },
+            function(){
+                t.scCol = 1;
+                if(--t.count == 0){
+                    t.scriptStage ++;
+                    t.tony.x = t.home.x;
+                    t.tony.y = t.home.y;
+                }
+            },
+            function(){
+                t.scCol = Util.SLerp(t.scCol, 0, 0.02);
+                if(t.scCol < 0.1){
+                    t.scriptStage ++;
+                    t.player.script = false; 
+                    t.count=64;
+                   
+                    t.tony.action = C.act.dd;
+                    t.tony.death = C.act.dd;
+                                            
+                    t.tony.anims[0].dt = {x: 0, y: 0, z:100};
+                    t.tony.anims[0].die = true;
+
+                    gameAsset.AddChat(SP[7], t.tony.x-100, t.tony.y-100, PAL[39], 4, 80, 32, function(){
+                        gameAsset.AddChat(SP[8], t.tony.x-100, t.tony.y-100, PAL[39], 4, 80,32);
+                    });
+                }
+            },
+            function(){
+                t.scCol = Util.SLerp(t.scCol, 1, 0.02);
+                if(t.scCol > 0.9){
+                    t.scriptStage ++;
+                    t.count = 100;
+                }
+            },
+            function(){
+                t.scCol = 1;
+                if(--t.count == 0){
+                    t.scriptStage ++;
+                    
+                    var g = new Grunt(t.tony.x, t.tony.y, Fac[C.src.hat], C.ass.null,                        
+                             {x: 0, y: 0, z:100},true);
+                    g.z = 56*0.8;
+                    t.assets.Add(g);
+
+                    //reset man    
+                    t.level++;
+                    
+                    var spawn = map.level.spawn;
+                    var tw = map.size.tile.width;
+                    t.man.x = spawn.man[t.level].x*tw;
+                    t.man.y = spawn.man[t.level].y*tw;
+                    t.man.target = null;
+                    t.dlog.active = 0;
+                    t.endCheck = true;
+                    //t.scriptStage = 4;
+                    //t.scriptStop = 4;
+                }
+            },
+            function(){
+                t.scCol = Util.SLerp(t.scCol, 0, 0.02);
+                if(t.scCol < 0.1){
+                    t.scriptStage ++;
+                    t.count=64;
+                   
+                    t.tony.action = C.act.dd;
+                    t.tony.death = C.act.dd;                                           
+
+                    gameAsset.AddChat(SP[7], t.tony.x-100, t.tony.y-100, PAL[39], 4, 80, 32, function(){
+                        gameAsset.AddChat(SP[8], t.tony.x-100, t.tony.y-100, PAL[39], 4, 80,32);
+                    });
+                }
+            },
+        ];
+        this.AddChat = function(txt, x, y, c, sz, tm, wt, next){
+            this.chat.push({w:txt,tm:tm||64, sz:sz||4, x:x, y:y, c:c, wt:wt, nt:next});
         }
         this.StartChat = function(){
             if(this.dlog.active == 0){this.dlog.active = 1;}
@@ -147,7 +271,7 @@
 
     Game.prototype = {
         Update: function(dt){
-            var asses = this.assets.Get();
+            var asses = this.assets.Get();            
             
             switch (this.gameState) {
                 case 0:     //app start
@@ -167,7 +291,7 @@
                     } 
                     break; 
                 case 2:
-                    this.scCol = Util.SLerp(this.scCol, 1, 0.01);
+                    this.scCol = Util.SLerp(this.scCol, 1, 0.02);
                     if(this.scCol > 0.9){
                         this.gameState = 3;
                         this.count = 64;
@@ -175,12 +299,16 @@
                     }
                     break; 
                 case 3:
-                    this.scCol = Util.SLerp(this.scCol, 0, 0.01);
+                    this.scCol = Util.SLerp(this.scCol, 0, 0.02);
                     if(this.scCol < 0.1){
-                        this.gameState = 4;
+                        this.gameState = C.state.game;                        
                     }
-                    break;                     
-                case 4://game
+                    break;  
+                 
+                case C.state.game://game
+                    if(this.scriptStage < this.scriptStop){
+                        this.script[this.scriptStage]();
+                    }
                     for (var i = 0; i < this.carSpawn.length; i++) {
                         if(this.carSpawn[i].ready == 0){
                             var sp = Util.RndI(100, 300);
@@ -223,11 +351,12 @@
                                 var d = {x:t.player.x-140, y:t.player.y+120};
 
                                 t.dlog.wt = 1;
-                                gameAsset.AddChat(this.dlog.tx[t.dlog.p], d.x, d.y, PAL[15], 128, 0, function(){
-                                        gameAsset.AddChat(t.dlog.rp[t.dlog.p], d.x, d.y, PAL[31], 
+                                gameAsset.AddChat(this.dlog.tx[t.dlog.p], d.x, d.y, PAL[39], 3, 128, 0, function(){
+                                        gameAsset.AddChat(
+                                            t.dlog.rp[t.dlog.p].replace("{*}",t.time), d.x, d.y, PAL[39], 3,
                                             t.dlog.p == t.dlog.r ? 256 : 128,32, function(){ 
                                             if(t.dlog.p == t.dlog.r){
-                                                gameAsset.AddChat(SP[2], d.x, d.y, PAL[31],128,32, function(){
+                                                gameAsset.AddChat(SP[2], d.x, d.y, PAL[39], 3, 128,32, function(){
                                                     t.dlog.wt=0;
                                                     t.dlog.active = 2;
                                                     t.player.woof=48;
@@ -242,7 +371,29 @@
                             }
                         }
                     }
+                    else if(--this.subTick <= 0)
+                    {
+                        this.time--;
+                        this.subTick = this.subTime;
 
+                        if(this.time==0){
+                            this.count = 64;
+                            this.gameState = 5;
+                        }
+                    }
+
+                    var hm = AssetUtil.Dir(this.home, this.man);
+                    if(this.endCheck && hm.d < (5*48)){
+                        this.endCheck = false;
+                        if(this.level < 2){
+                            this.scriptStop = 7;
+                            this.scriptStage = 4;
+                        }
+                        else{
+                            this.count = 64;
+                            this.gameState = 5;//Game completed??
+                        }
+                    }
                     if(this.player.death || this.man.death){
                         if(--this.count == 0)
                         {
@@ -274,7 +425,7 @@
             for(var e = 0; e < asses.length; e++) 
             {
                 //do move
-                if(this.gameState == 4){
+                if(this.gameState ==  C.state.game){
                     if(asses[e].enabled){
                         asses[e].Logic(dt);
                         asses[e].Collider(asses);
@@ -325,22 +476,34 @@
                 case 3:
                     Renderer.Box(0,0,this.screen.w, this.screen.h, "rgba(0, 0, 0, "+this.scCol+")");
                     break;
-                case 4:
+                case  C.state.game:
+                    Renderer.Text("C:"+this.count, 300, 200, 4, 0, PAL[39]); 
+                    if(this.scriptStage < this.scriptStop){
+                        Renderer.Box(0,0,this.screen.w, this.screen.h, "rgba(0, 0, 0, "+this.scCol+")");
+                    }
+                    else{
                     //score panel thing
-                    Renderer.Box(0,0,this.screen.w, 48, "rgba(0, 0, 0, 0.7)");
-                        
+                        Renderer.Box(0,0,this.screen.w, 48, "rgba(0, 0, 0, 0.7)");
+                        Renderer.Text("TIME", this.screen.w-200, 8, 3, 0, PAL[39]);  
+                        Renderer.Text("TO LIVE", this.screen.w-200, 26, 3, 0, PAL[39]);  
+                        Renderer.Text(""+this.time, this.screen.w-100, 10, 6, 0, PAL[39]); 
+
+                        Renderer.Text("BARK", 60, 14, 4, 0, PAL[39]); 
+                        Renderer.Box(140,20,this.player.power * 8, 16, PAL[40]);
+                    }
                     //txts
                     for(var e = 0; e < this.chat.length; e++) {
-                        if(this.chat[e].tm > 0){
-                            if(this.chat[e].wt>0){
-                                this.chat[e].wt--;   
+                        var cht = this.chat[e];
+                        if(cht.tm > 0){
+                            if(cht.wt>0){
+                                cht.wt--;   
                             }
                             else{
-                                var pt = Util.IsoPoint(this.chat[e].x-mp.x, this.chat[e].y-mp.y);
-                                Renderer.Text(this.chat[e].w, pt.x, pt.y, 4,1, this.chat[e].c);   
+                                var pt = Util.IsoPoint(cht.x-mp.x, cht.y-mp.y);
+                                Renderer.Text(cht.w, pt.x, pt.y, cht.sz,1, cht.c);   
 
-                                if(--this.chat[e].tm == 0 && this.chat[e].nt){
-                                    this.chat[e].nt();
+                                if(--cht.tm == 0 && cht.nt){
+                                    cht.nt();
                                 }
                             }
 

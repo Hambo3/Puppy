@@ -63,24 +63,25 @@ var Rendering = function (context, screen, border) {
             else
             {
                 l = FONT[str.charAt(i)];
-
-                for (var r = 0; r < l.length; r++) 
-                {                
-                    xp = 0;
-                    row = l[r];
-                    for (var c = 0; c < row.length; c++) 
-                    {                    
-                        szx = (sc && c==row.length-1) ? size*2 : size;
-                        szy = (sc && r==l.length-1) ? size*2 : size;
-                        if (row[c]) {
-                            ctx.fillRect(Math.round(xp + xs), Math.round(yp + ys), szx, szy);
+                if(l){
+                    for (var r = 0; r < l.length; r++) 
+                    {                
+                        xp = 0;
+                        row = l[r];
+                        for (var c = 0; c < row.length; c++) 
+                        {                    
+                            szx = (sc && c==row.length-1) ? size*2 : size;
+                            szy = (sc && r==l.length-1) ? size*2 : size;
+                            if (row[c]) {
+                                ctx.fillRect(Math.round(xp + xs), Math.round(yp + ys), szx, szy);
+                            }
+                            xp += szx;
                         }
-                        xp += szx;
+                        mx = xp>mx ? xp : mx;
+                        yp += szy;
                     }
-                    mx = xp>mx ? xp : mx;
-                    yp += szy;
+                    xs += mx + size; 
                 }
-                xs += mx + size; 
             }
         }
     }
