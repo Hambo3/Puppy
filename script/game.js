@@ -3,40 +3,45 @@
         //puppy
         var aa = C.col.aa;
         var mn = C.col.mn;
+        var pu =assets.pupu;
+        var pd =assets.pupd;
+        var pl =assets.pupl;
+        var pr =assets.pupr;
         for (x of [{t:1,s:1.2,c:C.col.d1,c2:aa}, {t:0,s:1.5,c:C.col.d2,c2:aa}, {t:0,s:1.5,c:C.col.d3,c2:aa}]){
-            Fac.push(Util.Build([assets.pupu.idl,assets.pupu.fc],x.s,[x.c,x.c2]));//up idle
-            Fac.push(Util.Build([assets.pupu.leg,assets.pupu.bod, assets.pupu.fc],x.s,[x.c,x.c,x.c2]));//up stand
-            Fac.push(Util.Build([assets.pupu.run,assets.pupu.bod, assets.pupu.fc],x.s,[x.c,x.c,x.c2]));//up run
+            Fac.push(Util.Build([pu.idl,pu.fc],x.s,[x.c,x.c2]));//up idle
+            Fac.push(Util.Build([pu.leg,pu.bod, pu.fc],x.s,[x.c,x.c,x.c2]));//up stand
+            Fac.push(Util.Build([pu.run,pu.bod, pu.fc],x.s,[x.c,x.c,x.c2]));//up run
 
-            Fac.push(Util.Build([assets.pupd.idl,x.t?assets.pupd.fc:assets.pupd.fc2],x.s,[x.c,x.c2]));//dn idle
-            Fac.push(Util.Build([assets.pupd.leg,assets.pupd.bod,x.t?assets.pupd.fc:assets.pupd.fc2],x.s,[x.c,x.c,x.c2]));//down
-            Fac.push(Util.Build([assets.pupd.run,assets.pupd.bod,x.t?assets.pupd.fc:assets.pupd.fc2],x.s,[x.c,x.c,x.c2]));//down run
+            Fac.push(Util.Build([pd.idl,x.t?pd.fc:pd.fc2],x.s,[x.c,x.c2]));//dn idle
+            Fac.push(Util.Build([pd.leg,pd.bod,x.t?pd.fc:pd.fc2],x.s,[x.c,x.c,x.c2]));//down
+            Fac.push(Util.Build([pd.run,pd.bod,x.t?pd.fc:pd.fc2],x.s,[x.c,x.c,x.c2]));//down run
 
-            Fac.push(Util.Build([assets.pupl.idl,x.t?assets.pupl.fc:assets.pupl.fc2],x.s,[x.c,x.c2]));//lt idle
-            Fac.push(Util.Build([assets.pupl.leg,assets.pupl.bod,x.t?assets.pupl.fc:assets.pupl.fc2],x.s,[x.c,x.c,x.c2]));//left
-            Fac.push(Util.Build([assets.pupl.run,assets.pupl.bod,x.t?assets.pupl.fc:assets.pupl.fc2],x.s,[x.c,x.c,x.c2]));//left run
+            Fac.push(Util.Build([pl.idl,x.t?pl.fc:pl.fc2],x.s,[x.c,x.c2]));//lt idle
+            Fac.push(Util.Build([pl.leg,pl.bod,x.t?pl.fc:pl.fc2],x.s,[x.c,x.c,x.c2]));//left
+            Fac.push(Util.Build([pl.run,pl.bod,x.t?pl.fc:pl.fc2],x.s,[x.c,x.c,x.c2]));//left run
 
-            Fac.push(Util.Build([assets.pupr.idl,x.t?assets.pupr.fc:assets.pupr.fc2],x.s,[x.c,x.c2]));//rt idle
-            Fac.push(Util.Build([assets.pupr.leg,assets.pupr.bod,x.t?assets.pupr.fc:assets.pupr.fc2],x.s,[x.c,x.c,x.c2]));//right
-            Fac.push(Util.Build([assets.pupr.run,assets.pupr.bod,x.t?assets.pupr.fc:assets.pupr.fc2],x.s,[x.c,x.c,x.c2]));//right run            
+            Fac.push(Util.Build([pr.idl,x.t?pr.fc:pr.fc2],x.s,[x.c,x.c2]));//rt idle
+            Fac.push(Util.Build([pr.leg,pr.bod,x.t?pr.fc:pr.fc2],x.s,[x.c,x.c,x.c2]));//right
+            Fac.push(Util.Build([pr.run,pr.bod,x.t?pr.fc:pr.fc2],x.s,[x.c,x.c,x.c2]));//right run            
         }
 
         //water particle
         Fac.push(Util.Build([assets.cube],0.3,[C.col.wt]));//splash
 
         //man
-        Fac.push(Util.Build([assets.man.v.leg,assets.man.bod,assets.man.v.ex,assets.man.v.fceu],1,[mn,mn,mn]));//up
-        Fac.push(Util.Build([assets.man.v.leg1,assets.man.bod,assets.man.v.ex,assets.man.v.fceu],1,[mn,mn,mn]));//up
-        Fac.push(Util.Build([assets.man.v.leg2,assets.man.bod,assets.man.v.ex,assets.man.v.fceu],1,[mn,mn,mn]));//up
-        Fac.push(Util.Build([assets.man.v.leg,assets.man.bod,assets.man.v.ex,assets.man.v.fced],1,[mn,mn,mn]));//down
-        Fac.push(Util.Build([assets.man.v.leg1,assets.man.bod,assets.man.v.ex,assets.man.v.fced],1,[mn,mn,mn]));//down
-        Fac.push(Util.Build([assets.man.v.leg2,assets.man.bod,assets.man.v.ex,assets.man.v.fced],1,[mn,mn,mn]));//down        
-        Fac.push(Util.Build([assets.man.h.leg,assets.man.bod,assets.man.h.ex],1,[mn,mn,mn]));//left
-        Fac.push(Util.Build([assets.man.h.leg1,assets.man.bod,assets.man.h.ex],1,[mn,mn,mn]));//left
-        Fac.push(Util.Build([assets.man.h.leg2,assets.man.bod,assets.man.h.ex],1,[mn,mn,mn]));//left
-        Fac.push(Util.Build([assets.man.h.leg,assets.man.bod,assets.man.h.ex],1,[mn,mn,mn]));//right
-        Fac.push(Util.Build([assets.man.h.leg1,assets.man.bod,assets.man.h.ex],1,[mn,mn,mn]));//right
-        Fac.push(Util.Build([assets.man.h.leg2,assets.man.bod,assets.man.h.ex],1,[mn,mn,mn]));//right    
+        var m = assets.man;
+        Fac.push(Util.Build([m.v.leg,m.bod,m.v.ex,m.v.fceu],1,[mn,mn,mn]));//up
+        Fac.push(Util.Build([m.v.leg1,m.bod,m.v.ex,m.v.fceu],1,[mn,mn,mn]));//up
+        Fac.push(Util.Build([m.v.leg2,m.bod,m.v.ex,m.v.fceu],1,[mn,mn,mn]));//up
+        Fac.push(Util.Build([m.v.leg,m.bod,m.v.ex,m.v.fced],1,[mn,mn,mn]));//down
+        Fac.push(Util.Build([m.v.leg1,m.bod,m.v.ex,m.v.fced],1,[mn,mn,mn]));//down
+        Fac.push(Util.Build([m.v.leg2,m.bod,m.v.ex,m.v.fced],1,[mn,mn,mn]));//down        
+        Fac.push(Util.Build([m.h.leg,m.bod,m.h.ex],1,[mn,mn,mn]));//left
+        Fac.push(Util.Build([m.h.leg1,m.bod,m.h.ex],1,[mn,mn,mn]));//left
+        Fac.push(Util.Build([m.h.leg2,m.bod,m.h.ex],1,[mn,mn,mn]));//left
+        Fac.push(Util.Build([m.h.leg,m.bod,m.h.ex],1,[mn,mn,mn]));//right
+        Fac.push(Util.Build([m.h.leg1,m.bod,m.h.ex],1,[mn,mn,mn]));//right
+        Fac.push(Util.Build([m.h.leg2,m.bod,m.h.ex],1,[mn,mn,mn]));//right    
 
         //tree
         Fac.push(Util.Build([assets.tree.bod,assets.tree.hd1],1,[C.col.d3,C.col.tr]));//tree1    
@@ -51,9 +56,9 @@
         Fac.push(Util.Build([assets.flat],1,[C.col.d1]));//flat pup
 
         //tony
-        Fac.push(Util.Build([assets.man.h.leg,assets.man.bod,assets.man.h.ex],0.8,[mn,mn,mn]));//right
-        Fac.push(Util.Build([assets.man.h.leg1,assets.man.bod,assets.man.h.ex],0.8,[mn,mn,mn]));//right
-        Fac.push(Util.Build([assets.man.h.leg2,assets.man.bod,assets.man.h.ex],0.8,[mn,mn,mn]));//right  
+        Fac.push(Util.Build([m.h.leg,m.bod,m.h.ex],0.8,[mn,mn,mn]));//right
+        Fac.push(Util.Build([m.h.leg1,m.bod,m.h.ex],0.8,[mn,mn,mn]));//right
+        Fac.push(Util.Build([m.h.leg2,m.bod,m.h.ex],0.8,[mn,mn,mn]));//right  
 
         Fac.push(Util.Build([assets.cube],0.2,[C.col.wt]));//treat
         Fac.push(Util.Build([assets.cube],0.4,[C.col.wt]));//toy
@@ -107,13 +112,18 @@
             this.player.target = this.man;
             this.assets.Add(this.man);
 
-            for (var i = 0; i < spawn.dog.length; i++) {            
-                var d = new Dog(spawn.dog[i].x*tw, spawn.dog[i].y*th, 
-                    Util.OneOf([C.ass.gdog,C.ass.wdog])
-                    , this.player);
+            for (var i = 0; i < spawn.wdog.length; i++) {            
+                var d = new Dog(spawn.wdog[i].x*tw, spawn.wdog[i].y*th, C.ass.wdog, this.player);
                 this.assets.Add(d);
             }
-    
+
+            for (var i = 0; i < spawn.gdog.length; i++) {            
+                var d = new Dog(spawn.gdog[i].s.x*tw, spawn.gdog[i].s.y*th, C.ass.gdog, this.player);
+                d.patrol.p[0] = {x:spawn.gdog[i].e.x*tw, y:spawn.gdog[i].e.y*th};
+                d.patrol.rnd = false;
+                this.assets.Add(d);
+            }
+
             // //mapped stumps
             for (var i = 0; i < spawn.hard.length; i++) {
                 var d = new Grunt(spawn.hard[i].x*tw, spawn.hard[i].y*th, 
@@ -240,8 +250,6 @@
                     t.man.target = null;
                     t.dlog.active = 0;
                     t.endCheck = true;
-                    //t.scriptStage = 4;
-                    //t.scriptStop = 4;
                 }
             },
             function(){
@@ -477,7 +485,6 @@
                     Renderer.Box(0,0,this.screen.w, this.screen.h, "rgba(0, 0, 0, "+this.scCol+")");
                     break;
                 case  C.state.game:
-                    Renderer.Text("C:"+this.count, 300, 200, 4, 0, PAL[39]); 
                     if(this.scriptStage < this.scriptStop){
                         Renderer.Box(0,0,this.screen.w, this.screen.h, "rgba(0, 0, 0, "+this.scCol+")");
                     }

@@ -30,12 +30,11 @@
         this.target = targ;
         this.altTarget = null;
         this.patrol = {
-            rnd:(type == C.ass.wdog),
+            rnd:true,
             wait:256,
             d:0, 
             inp:null,
-            p:[{x:this.x+(5*48),y:this.y},
-                {x:this.x,y:this.y}],
+            p:[{x:0,y:0},{x:this.x,y:this.y}],
             pi:0    
         };
 
