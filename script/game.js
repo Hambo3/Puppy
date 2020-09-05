@@ -30,18 +30,18 @@
 
         //man
         var m = assets.man;
-        Fac.push(Util.Build([m.v.leg,m.bod,m.v.ex,m.v.fceu],1,[mn,mn,mn]));//up
-        Fac.push(Util.Build([m.v.leg1,m.bod,m.v.ex,m.v.fceu],1,[mn,mn,mn]));//up
-        Fac.push(Util.Build([m.v.leg2,m.bod,m.v.ex,m.v.fceu],1,[mn,mn,mn]));//up
-        Fac.push(Util.Build([m.v.leg,m.bod,m.v.ex,m.v.fced],1,[mn,mn,mn]));//down
-        Fac.push(Util.Build([m.v.leg1,m.bod,m.v.ex,m.v.fced],1,[mn,mn,mn]));//down
-        Fac.push(Util.Build([m.v.leg2,m.bod,m.v.ex,m.v.fced],1,[mn,mn,mn]));//down        
-        Fac.push(Util.Build([m.h.leg,m.bod,m.h.ex],1,[mn,mn,mn]));//left
-        Fac.push(Util.Build([m.h.leg1,m.bod,m.h.ex],1,[mn,mn,mn]));//left
-        Fac.push(Util.Build([m.h.leg2,m.bod,m.h.ex],1,[mn,mn,mn]));//left
-        Fac.push(Util.Build([m.h.leg,m.bod,m.h.ex],1,[mn,mn,mn]));//right
-        Fac.push(Util.Build([m.h.leg1,m.bod,m.h.ex],1,[mn,mn,mn]));//right
-        Fac.push(Util.Build([m.h.leg2,m.bod,m.h.ex],1,[mn,mn,mn]));//right    
+        Fac.push(Util.Build([m.v.leg,m.bod,m.v.ex,m.v.fceu],1,[mn,mn,mn,aa]));//up
+        Fac.push(Util.Build([m.v.leg1,m.bod,m.v.ex,m.v.fceu],1,[mn,mn,mn,aa]));//up
+        Fac.push(Util.Build([m.v.leg2,m.bod,m.v.ex,m.v.fceu],1,[mn,mn,mn,aa]));//up
+        Fac.push(Util.Build([m.v.leg,m.bod,m.v.ex,m.v.fced],1,[mn,mn,mn,aa]));//down
+        Fac.push(Util.Build([m.v.leg1,m.bod,m.v.ex,m.v.fced],1,[mn,mn,mn,aa]));//down
+        Fac.push(Util.Build([m.v.leg2,m.bod,m.v.ex,m.v.fced],1,[mn,mn,mn,aa]));//down        
+        Fac.push(Util.Build([m.h.leg,m.bod,m.h.ex,m.h.fcel],1,[mn,mn,mn,aa]));//left
+        Fac.push(Util.Build([m.h.leg1,m.bod,m.h.ex,m.h.fcel],1,[mn,mn,mn,aa]));//left
+        Fac.push(Util.Build([m.h.leg2,m.bod,m.h.ex,m.h.fcel],1,[mn,mn,mn,aa]));//left
+        Fac.push(Util.Build([m.h.leg,m.bod,m.h.ex,m.h.fcer],1,[mn,mn,mn,aa]));//right
+        Fac.push(Util.Build([m.h.leg1,m.bod,m.h.ex,m.h.fcer],1,[mn,mn,mn,aa]));//right
+        Fac.push(Util.Build([m.h.leg2,m.bod,m.h.ex,m.h.fcer],1,[mn,mn,mn,aa]));//right    
 
         //tree
         Fac.push(Util.Build([assets.tree.bod,assets.tree.hd1],1,[C.col.d3,C.col.tr]));//tree1    
@@ -49,19 +49,25 @@
 
         Fac.push(Util.Build([assets.hat],0.3,[aa]));//hat
 
+        Fac.push(Util.Build([assets.car.bod, assets.car.win, assets.car.ltf],1.3,[C.col.c1, aa,aa]));//car
+        Fac.push(Util.Build([assets.car.bod, assets.car.win, assets.car.ltr],1.3,[C.col.c1, aa,aa]));//car
+
+        Fac.push(Util.Build([assets.car.bod, assets.car.win, assets.car.ltf],1.3,[C.col.c2, aa,aa]));//car
+        Fac.push(Util.Build([assets.car.bod, assets.car.win, assets.car.ltr],1.3,[C.col.c2, aa,aa]));//car
+
         Fac.push(Util.Build([assets.car.bod, assets.car.win, assets.car.ltf],1.3,[C.col.d2, aa,aa]));//car
         Fac.push(Util.Build([assets.car.bod, assets.car.win, assets.car.ltr],1.3,[C.col.d2, aa,aa]));//car
-        
+
         Fac.push(Util.Build([assets.well],1.5,[C.col.d1]));//well
         Fac.push(Util.Build([assets.flat],1,[C.col.d1]));//flat pup
 
         //tony
-        Fac.push(Util.Build([m.h.leg,m.bod,m.h.ex],0.8,[mn,mn,mn]));//right
-        Fac.push(Util.Build([m.h.leg1,m.bod,m.h.ex],0.8,[mn,mn,mn]));//right
-        Fac.push(Util.Build([m.h.leg2,m.bod,m.h.ex],0.8,[mn,mn,mn]));//right  
+        Fac.push(Util.Build([m.h.leg,m.bod,m.h.ex,m.h.fcer],0.8,[mn,mn,mn,aa]));//right
+        Fac.push(Util.Build([m.h.leg1,m.bod,m.h.ex,m.h.fcer],0.8,[mn,mn,mn,aa]));//right
+        Fac.push(Util.Build([m.h.leg2,m.bod,m.h.ex,m.h.fcer],0.8,[mn,mn,mn,aa]));//right  
 
-        Fac.push(Util.Build([assets.cube],0.2,[C.col.wt]));//treat
-        Fac.push(Util.Build([assets.cube],0.4,[C.col.wt]));//toy
+        Fac.push(Util.Build([assets.cube],0.2,[C.col.d1]));//treat
+        Fac.push(Util.Build([assets.cube],0.4,[C.col.c1]));//toy
 
         var i =0;
         var set = [];
@@ -172,9 +178,10 @@
                     this.scene, this.assets, [C.ass.stump,C.ass.man,C.ass.wdog,C.ass.gdog,C.ass.player,C.ass.toy,C.ass.treat],
                     [Fac[C.src.toy]], C.ass.toy);
             }
+            this.subTick = 128            
             this.time = 60;
-            this.subTime = 256;
-            this.subTick = 256
+            this.subTime = this.subTick;
+
             this.scriptStage = 0;
             this.scriptStop = 4;
             this.player.altTarget ={x:spawn.plr[1].x*tw, y:spawn.plr[1].y*th};
@@ -218,8 +225,8 @@
                     t.tony.anims[0].dt = {x: 0, y: 0, z:100};
                     t.tony.anims[0].die = true;
 
-                    gameAsset.AddChat(SP[7], t.tony.x-100, t.tony.y-100, PAL[39], 4, 80, 32, function(){
-                        gameAsset.AddChat(SP[8], t.tony.x-100, t.tony.y-100, PAL[39], 4, 80,32);
+                    gameAsset.AddChat(SP[7], t.tony.x-100, t.tony.y-100, PAL[C.col.aa], 4, 80, 32, function(){
+                        gameAsset.AddChat(SP[8], t.tony.x-100, t.tony.y-100, PAL[C.col.aa], 4, 80,32);
                     });
                 }
             },
@@ -320,11 +327,12 @@
                     for (var i = 0; i < this.carSpawn.length; i++) {
                         if(this.carSpawn[i].ready == 0){
                             var sp = Util.RndI(100, 300);
-                            var a = Fac[C.src.car];
+                            var o = Util.OneOf([C.src.car,C.src.car+2,C.src.car+4]);
+                            var a = Fac[o];
                             if(this.carSpawn[i].type == C.ass.carl)
                             {
                                 sp = -sp;
-                                a = Fac[C.src.car+1];
+                                a = Fac[o+1];
                             }
                             var c = this.assets.Is(this.carSpawn[i].type);
                             if(c){
@@ -359,12 +367,12 @@
                                 var d = {x:t.player.x-140, y:t.player.y+120};
 
                                 t.dlog.wt = 1;
-                                gameAsset.AddChat(this.dlog.tx[t.dlog.p], d.x, d.y, PAL[39], 3, 128, 0, function(){
+                                gameAsset.AddChat(this.dlog.tx[t.dlog.p], d.x, d.y, PAL[C.col.aa], 3, 128, 0, function(){
                                         gameAsset.AddChat(
-                                            t.dlog.rp[t.dlog.p].replace("{*}",t.time), d.x, d.y, PAL[39], 3,
+                                            t.dlog.rp[t.dlog.p].replace("{*}",t.time), d.x, d.y, PAL[C.col.mn+1], 3,
                                             t.dlog.p == t.dlog.r ? 256 : 128,32, function(){ 
                                             if(t.dlog.p == t.dlog.r){
-                                                gameAsset.AddChat(SP[2], d.x, d.y, PAL[39], 3, 128,32, function(){
+                                                gameAsset.AddChat(SP[2], d.x, d.y, PAL[C.col.mn+1], 3, 128,32, function(){
                                                     t.dlog.wt=0;
                                                     t.dlog.active = 2;
                                                     t.player.woof=48;
@@ -491,12 +499,12 @@
                     else{
                     //score panel thing
                         Renderer.Box(0,0,this.screen.w, 48, "rgba(0, 0, 0, 0.7)");
-                        Renderer.Text("TIME", this.screen.w-200, 8, 3, 0, PAL[39]);  
-                        Renderer.Text("TO LIVE", this.screen.w-200, 26, 3, 0, PAL[39]);  
-                        Renderer.Text(""+this.time, this.screen.w-100, 10, 6, 0, PAL[39]); 
+                        Renderer.Text("TIME", this.screen.w-200, 8, 3, 0, PAL[51]);  
+                        Renderer.Text("TO LIVE", this.screen.w-200, 26, 3, 0, PAL[51]);  
+                        Renderer.Text(""+this.time, this.screen.w-100, 10, 6, 0, PAL[51]); 
 
-                        Renderer.Text("BARK", 60, 14, 4, 0, PAL[39]); 
-                        Renderer.Box(140,20,this.player.power * 8, 16, PAL[40]);
+                        Renderer.Text("BARK", 60, 14, 4, 0, PAL[51]); 
+                        Renderer.Box(140,20,this.player.power * 8, 16, PAL[51]);
                     }
                     //txts
                     for(var e = 0; e < this.chat.length; e++) {
@@ -523,7 +531,7 @@
                         Renderer.Box(0,h,this.screen.w, this.screen.h, "rgba(0, 0, 0, 0.7)");
                         for(var e = 0; e < this.dlog.tx.length; e++) {
                             Renderer.Text( this.dlog.tx[e], 180, h+16+(e*28), 4,0, 
-                            this.dlog.wt == 1 ?  PAL[39] : this.dlog.p == e ? PAL[41] : PAL[40]); 
+                            this.dlog.wt == 1 ?  PAL[49] : this.dlog.p == e ? PAL[C.col.mn] : PAL[C.col.mn+2]); 
                         }
                     }
                     break;
