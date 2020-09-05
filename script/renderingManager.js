@@ -21,8 +21,8 @@ var Rendering = function (context, screen, border) {
         };    
     }
 
-    function PT(p){
-        return Math.round(p*scale);
+    function PT(p,s){
+        return Math.round(p*(s||scale));
     }
     function polygon(x, y, poly){
         for(var i = 0; i < poly.length; i++) 
@@ -42,6 +42,16 @@ var Rendering = function (context, screen, border) {
         ctx.closePath();
         ctx.fill();
     }
+
+     function gray(p) {
+        var d = p.data;
+        for (var i=0; i<d.length; i+=4) {
+          var r = d[i],g = d[i+1],b = d[i+2];
+          var v = 0.2126*r + 0.7152*g + 0.0722*b;
+          d[i] = d[i+1] = d[i+2] = v
+        }
+        return p;
+      }
 
     //assumes upper
     function txt(str, xs, ys, size, sc, col) {
@@ -73,7 +83,7 @@ var Rendering = function (context, screen, border) {
                             szx = (sc && c==row.length-1) ? size*2 : size;
                             szy = (sc && r==l.length-1) ? size*2 : size;
                             if (row[c]) {
-                                ctx.fillRect(Math.round(xp + xs), Math.round(yp + ys), szx, szy);
+                                ctx.fillRect(PT(xp + xs,1), PT(yp + ys,1), szx, szy);
                             }
                             xp += szx;
                         }
@@ -87,6 +97,12 @@ var Rendering = function (context, screen, border) {
     }
 
     return {
+        Get:function(x,y, w,h){
+            return ctx.getImageData(x, y, w, h);
+        },
+        Put:function(data, x, y){
+            ctx.putImageData(gray(data), x, y);
+        },
         Set:function(n){
             scale = n;
         },

@@ -86,6 +86,9 @@
         this.scCol = 1;
         this.count = 16;
         this.endCheck = true;
+
+        this.photo = null;
+
         this.reset = function(sc){
             Renderer.Set(sc||1);
             this.scene.Set(sc);
@@ -146,8 +149,7 @@
             this.home = {x:w.x*48,y:w.y*48};
 
             for (var i = 0; i < well.length; i++) {
-                var d = new Grunt(well[i].x*tw, well[i].y*th, 
-                   Fac[C.src.well], C.ass.stump);
+                var d = new Grunt(well[i].x*tw, well[i].y*th, Fac[C.src.well], C.ass.stump);
                 this.assets.Add(d);
             }
 
@@ -413,17 +415,21 @@
                     if(this.player.death || this.man.death){
                         if(--this.count == 0)
                         {
+                            var os = this.scene.ScrollOffset(); 
+                            var pt = Util.IsoPoint(this.player.x-os.x, this.player.y-os.y);
+                            this.photo = Renderer.Get(pt.x-100,pt.y-100,200,200);
+
                             this.count = 64;
                             this.gameState = 5;
                         }
                     }
                     break; 
                 case 5:
-                    if(--this.count == 0){
+                    if(input.isUp("SPACE")){
                         this.count = 64;
                         this.gameState = 6;
                         this.scCol = 0;
-                    } 
+                    }
                     break; 
                 case 6:
                     this.scCol = Util.SLerp(this.scCol, 1, 0.01);
@@ -482,7 +488,7 @@
             switch (this.gameState) {
                 case 0:
                     Renderer.Box(0,0,this.screen.w, this.screen.h, "rgba(0, 0, 0, "+this.scCol+")");
-                    Renderer.Text("PUPPY", 260, 100, 12,1);
+                    Renderer.Text("PUPPY", 260, 100, 12,1);                    
                     break;
                 case 1:
                     Renderer.Text("PUPPY", 260, 100, 12,1);
@@ -535,8 +541,15 @@
                         }
                     }
                     break;
-                case 5:
+                case 5:                  
+                    Renderer.Box(0,0,this.screen.w, this.screen.h, "#FFFFFF");
+                    Renderer.Box(4,4,this.screen.w-8, this.screen.h-8, "#000000");
+                    Renderer.Box(8,8,this.screen.w-16, this.screen.h-16, "#FFFFFF");
                     Renderer.Text("GAME OVER", 280, 100, 8,0);
+                    for (let i = 0; i < 10; i++) {
+                        Renderer.Text("BLAH BLAH BLAH BLAH BLAH", 240, 200 + (i * 16), 3, 0);                        
+                    }
+                    Renderer.Put(this.photo, 400,300);
                     break;
                 case 6:
                     Renderer.Box(0,0,this.screen.w, this.screen.h, "rgba(0, 0, 0, "+this.scCol+")");
