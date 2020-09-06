@@ -42,7 +42,10 @@ var Rendering = function (context, screen, border) {
         ctx.closePath();
         ctx.fill();
     }
-
+    function box(x,y,w,h,c){
+        ctx.fillStyle = c || '#000000';
+        ctx.fillRect(x, y, w, h);
+    }
      function gray(p) {
         var d = p.data;
         for (var i=0; i<d.length; i+=4) {
@@ -96,19 +99,46 @@ var Rendering = function (context, screen, border) {
         }
     }
 
+    function para(tx,x, y, len, w){
+        var t=0;
+        var c = r = 0;
+        for (let i = 0; i < len; i++) {
+            txt(tx[t], x + c, y + r, 3, 0);
+            t=t==4?0:t+1;
+            c+=12;
+            if(c > w){
+                c=0;
+                r+=16;
+            }
+        }
+    }
+
     return {
+        News:function(w,h, pic){
+            box(0,0,w, h, "#FFFFFF");
+            box(4,4,w-8, h-8, "#000000");
+            box(8,8,w-16, h-16, "#FFFFFF");
+            box(8,140,w-8, 2, "#000000");
+            txt("DAILY BULLSHIT", 180, 60, 10,0);
+            txt("FIRST WITH ENTIRELY FACTUAL NEWS FROM THE LOCAL AREA PROBABLY", 20, 120, 3,0);
+
+            txt(NT[1], 20, 154, 6,0);
+            para(NT[0], 18, 195, 200, 250 );
+            para(NT[0], 18, 400, 200, 250 );
+            para(NT[0], 280, 400, 200, 250 );
+            para(NT[0], 550, 195, 200, 250 );
+            para(NT[0], 550, 400, 200, 250 );
+
+            ctx.putImageData(gray(pic), 280, 195);
+        },
         Get:function(x,y, w,h){
             return ctx.getImageData(x, y, w, h);
-        },
-        Put:function(data, x, y){
-            ctx.putImageData(gray(data), x, y);
         },
         Set:function(n){
             scale = n;
         },
         Box: function(x,y,w,h,c){
-            ctx.fillStyle = c || '#000000';
-            ctx.fillRect(x, y, w, h);
+            box(x,y,w,h,c);
         },
         PolyTile: function(x, y, plane){
             if(!bounds || ((x > bounds.minx && x < bounds.maxx) && (y > bounds.miny  && y < bounds.maxy)) ) {

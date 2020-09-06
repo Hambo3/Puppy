@@ -304,6 +304,7 @@
                     break;
                 case 1:
                     if(input.isUp("SPACE")){
+                        this.photo = Renderer.Get(300,200,200,200);
                         this.gameState = 2;
                     } 
                     break; 
@@ -396,7 +397,7 @@
 
                         if(this.time==0){
                             this.count = 64;
-                            this.gameState = 5;
+                            this.gameState = 5;//out of time
                         }
                     }
 
@@ -420,26 +421,20 @@
                             this.photo = Renderer.Get(pt.x-100,pt.y-100,200,200);
 
                             this.count = 64;
-                            this.gameState = 5;
+                            this.gameState = 5;//game over
                         }
                     }
                     break; 
                 case 5:
                     if(input.isUp("SPACE")){
                         this.count = 64;
-                        this.gameState = 6;
-                        this.scCol = 0;
-                    }
-                    break; 
-                case 6:
-                    this.scCol = Util.SLerp(this.scCol, 1, 0.01);
-                    if(this.scCol>0.9){
                         this.gameState = 0;
                         this.scCol = 1;
                         this.count = 64;
                         this.reset(2);
-                    } 
+                    }
                     break; 
+
                 default:
                     break;
             }
@@ -492,7 +487,7 @@
                     break;
                 case 1:
                     Renderer.Text("PUPPY", 260, 100, 12,1);
-                    Renderer.Text("PRESS START", 240, 300, 6,0);
+                    Renderer.Text("PRESS START", 280, 480, 6,0);
                     break;
                 case 2:    
                 case 3:
@@ -541,19 +536,8 @@
                         }
                     }
                     break;
-                case 5:                  
-                    Renderer.Box(0,0,this.screen.w, this.screen.h, "#FFFFFF");
-                    Renderer.Box(4,4,this.screen.w-8, this.screen.h-8, "#000000");
-                    Renderer.Box(8,8,this.screen.w-16, this.screen.h-16, "#FFFFFF");
-                    Renderer.Text("GAME OVER", 280, 100, 8,0);
-                    for (let i = 0; i < 10; i++) {
-                        Renderer.Text("BLAH BLAH BLAH BLAH BLAH", 240, 200 + (i * 16), 3, 0);                        
-                    }
-                    Renderer.Put(this.photo, 400,300);
-                    break;
-                case 6:
-                    Renderer.Box(0,0,this.screen.w, this.screen.h, "rgba(0, 0, 0, "+this.scCol+")");
-                    Renderer.Text("GAME OVER", 280, 100, 8,0);
+                case 5:
+                    Renderer.News(this.screen.w, this.screen.h, this.photo);
                     break;
                 default:
                     break;
