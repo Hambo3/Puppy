@@ -25,7 +25,9 @@
         this.motion = 0;
         this.death = 0;
         this.woof = 32;
-        this.power = 1;
+        this.power = 0;
+
+        this.help = null;
 
         this.target = targ;
         this.altTarget = null;
@@ -108,7 +110,8 @@
                             }                           
                         }
                     }
-                    else{
+                    else
+                    {
                         var inp = AssetUtil.Dir(this.target, this);
 
                         if( inp.d < (6*48) ){
@@ -170,6 +173,45 @@
                                 this.patrol.inp = null;
                             }                            
                         }
+                        if(this.altTarget == null && this.help){
+                            if(this.help.brk && this.power>0){
+                                if(this.help.trt==0){
+                                    gameAsset.AddChat(HT[3], this.x-140, this.y+(this.action == C.act.dn?80:-80), null,3,100);
+                                        this.help.brk = 0;
+                                }
+                            }
+                            if(this.help.toy){
+                                var x = gameAsset.assets.Get([C.ass.toy]);
+                                for (var i = 0; i < x.length; i++) {
+                                    var hm = AssetUtil.Dir(x[i], this);
+                                    if(hm.d < 5*48){                                        
+                                        gameAsset.AddChat(HT[0], x[i].x-140, x[i].y+(hm.up?64:-64), null,3,100);
+                                        this.help.toy = 0;
+                                    }
+                                }
+                            }
+                            if(this.help.trt){
+                                var x = gameAsset.assets.Get([C.ass.treat]);
+                                for (var i = 0; i < x.length; i++) {
+                                    var hm = AssetUtil.Dir(x[i], this);
+                                    if(hm.d < 5*48){                                        
+                                        gameAsset.AddChat(HT[1], x[i].x-140, x[i].y+(hm.up?64:-64), null, 3,100);
+                                        this.help.trt = 0;
+                                    }
+                                }
+                            }
+
+                            if(this.help.dog){
+                                var x = gameAsset.assets.Get([C.ass.gdog,C.ass.wdog]);
+                                for (var i = 0; i < x.length; i++) {
+                                    var hm = AssetUtil.Dir(x[i], this);
+                                    if(hm.d < 10*48){                                        
+                                        gameAsset.AddChat(HT[2], this.x+(hm.left?-210:0), this.y+(hm.up?-64:64), null,3,100);
+                                        this.help.dog = 0;
+                                    }
+                                }
+                            }
+                        }
                         this.idle = 64;
                         //check what landed on
                         if(map.colliders.over.indexOf(t) != -1){
@@ -206,11 +248,21 @@
 
                         gameAsset.AddChat(SP[0], d.x, d.y);
                         this.woof = 48;
+                        
                         var inp = AssetUtil.Dir(this.target, this);
+
                         if(inp.d < 5*48){
                             this.target.target = this;
                             gameAsset.StartChat();
                         }
+                        else{
+                            if(inp.d < ((this.power*8)*48)){
+                                gameAsset.AddChat("!!", this.x+(this.target.x > this.x?300:-300), 
+                                this.y+(this.target.y>this.y?180:-180),null,6,100);
+                            }                            
+                        }
+
+                        this.power--;
                     } 
                 }
             }
@@ -265,10 +317,10 @@
 
             var pt = Util.IsoPoint(x-os.x, y-os.y);
             if(this.death == 0){
-                Renderer.PolySprite(pt.x, pt.y, this.shadow);
+                R.PolySprite(pt.x, pt.y, this.shadow);
             }
             if(this.action < C.act.sq){
-                Renderer.PolySprite(pt.x, pt.y-this.z, this.body[this.action][this.motion] );
+                R.PolySprite(pt.x, pt.y-this.z, this.body[this.action][this.motion] );
             }
 
             for(var i=0;i<this.anims.length;i++){
@@ -438,10 +490,10 @@
 
             var pt = Util.IsoPoint(x-os.x, y-os.y);
             if(this.death == 0){
-                Renderer.PolySprite(pt.x, pt.y, this.shadow);
+                R.PolySprite(pt.x, pt.y, this.shadow);
             }
             if(this.action < C.act.sq){
-                Renderer.PolySprite(pt.x, pt.y-this.z, this.body[this.action][this.motion] );
+                R.PolySprite(pt.x, pt.y-this.z, this.body[this.action][this.motion] );
             }
 
             for(var i=0;i<this.anims.length;i++){
@@ -511,7 +563,7 @@
         },
         Render: function(os){
             var pt = Util.IsoPoint(this.x-os.x, this.y-os.y);
-            Renderer.PolySprite(pt.x, pt.y-this.z,  this.body);
+            R.PolySprite(pt.x, pt.y-this.z,  this.body);
         }
     };
 

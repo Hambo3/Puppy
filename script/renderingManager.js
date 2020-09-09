@@ -118,9 +118,10 @@ var Rendering = function (context, screen, border) {
             box(0,0,w, h, "#FFFFFF");
             box(4,4,w-8, h-8, "#000000");
             box(8,8,w-16, h-16, "#FFFFFF");
-            box(8,140,w-8, 2, "#000000");
-            txt("DAILY BULLSHIT", 180, 60, 10,0);
-            txt("FIRST WITH ENTIRELY FACTUAL NEWS FROM THE LOCAL AREA PROBABLY", 20, 120, 3,0);
+            box(8,140,w-16, 2, "#000000");
+            txt("4 APRIL", 740, 12, 2,0);
+            txt("DAILY BLAH", 200, 60, 10,0);
+            txt("PROBABLY ENTIRELY FACTUAL", 240, 120, 3,0);
 
             txt(NT[1], 20, 154, 6,0);
             para(NT[0], 18, 195, 200, 250 );

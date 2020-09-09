@@ -7,6 +7,7 @@ var MapManager = function (mapdim, mapdata, set) {
     var offset = {x:-64,y:-270};
     var scroll = {x:0, y:0,
         xoffset:0,yoffset:0};
+    var tileSize = mapSize.tile.width;
 
     var tileset = set;
 
@@ -38,8 +39,8 @@ var MapManager = function (mapdim, mapdata, set) {
         return Math.floor(p / h);
     }
     function cell(x, y){
-        var h = hpoint(x, mapSize.tile.width);
-        var v = vpoint(y, mapSize.tile.height);
+        var h = hpoint(x, tileSize);
+        var v = vpoint(y, tileSize);
         var p = h + (v * mapWidth);
         return p;
     }
@@ -63,17 +64,17 @@ var MapManager = function (mapdim, mapdata, set) {
             {
                 m = ((r+scroll.yoffset) * mcols) + (c+scroll.xoffset);
                 p = map[m];
-                var pt = Util.IsoPoint( (c * mapSize.tile.width) + scroll.x + offset.x, 
-                    (r * mapSize.tile.height) + scroll.y + offset.y);                     
+                var pt = Util.IsoPoint( (c * tileSize) + scroll.x + offset.x, 
+                    (r * tileSize) + scroll.y + offset.y);                     
                   
                 if(tileset[p].length){
-                    tc+=Renderer.PolySprite(
+                    tc+=R.PolySprite(
                         pt.x, 
                         pt.y, 
                         tileset[p]); 
                 }
                 else{
-                    tc+=Renderer.PolyTile(
+                    tc+=R.PolyTile(
                         pt.x, 
                         pt.y, 
                         tileset[p]);  
@@ -90,29 +91,29 @@ var MapManager = function (mapdim, mapdata, set) {
             return content(x, y);
         },  
         ScrollOffset: function () {
-            return {x:(scroll.xoffset*mapSize.tile.width)-scroll.x-offset.x,
-                y:(scroll.yoffset*mapSize.tile.height)-scroll.y-offset.y};
+            return {x:(scroll.xoffset*tileSize)-scroll.x-offset.x,
+                y:(scroll.yoffset*tileSize)-scroll.y-offset.y};
         }, 
         ScrollTo: function(x, y, r){
-            var midx = ( mapSize.iso.width*mapSize.tile.width) / 2;
-            var midy = ( mapSize.iso.height*mapSize.tile.height) / 2;
-            var maxx = (mapWidth * mapSize.tile.width) - ( mapSize.iso.width*mapSize.tile.width);
-            var maxy = (mapHeight * mapSize.tile.height) - ( mapSize.iso.height*mapSize.tile.height);
+            var midx = ( mapSize.iso.width*tileSize) / 2;
+            var midy = ( mapSize.iso.height*tileSize) / 2;
+            var maxx = (mapWidth * tileSize) - ( mapSize.iso.width*tileSize);
+            var maxy = (mapHeight * tileSize) - ( mapSize.iso.height*tileSize);
 
-            var cpx = (scroll.xoffset*mapSize.tile.width)-scroll.x;
-            var cpy = (scroll.yoffset*mapSize.tile.height)-scroll.y;
+            var cpx = (scroll.xoffset*tileSize)-scroll.x;
+            var cpy = (scroll.yoffset*tileSize)-scroll.y;
             var destx = Util.Lerp(cpx, (x-midx), r||0.04);
             var desty = Util.Lerp(cpy, (y-midy), r||0.04);
 
             if(destx > 0 && destx < maxx)
             {
-                scroll.x = -destx % mapSize.tile.width;
-                scroll.xoffset = parseInt(destx / mapSize.tile.width);
+                scroll.x = -destx % tileSize;
+                scroll.xoffset = parseInt(destx / tileSize);
             }
             if(desty > 0 && desty < maxy)
             {
-                scroll.y = -desty % mapSize.tile.height;
-                scroll.yoffset = parseInt(desty / mapSize.tile.height);
+                scroll.y = -desty % tileSize;
+                scroll.yoffset = parseInt(desty / tileSize);
             }
 
         },     

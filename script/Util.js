@@ -156,11 +156,11 @@ var AssetUtil = {
                 type:type});
         }  
     },
-    PlaceAssets: function(qty, tw, width, height, map, assets, avoid, oneof, type){
+    PlaceAssets: function(qty, tw, b, width, height, map, assets, avoid, oneof, type){
         for (var i = 0; i < qty; i++) {            
             do{
-                var spawn = {x:Util.RndI(0, width),
-                    y:Util.RndI(0, height)};
+                var spawn = {x:Util.RndI(b, width-b),
+                    y:Util.RndI(b, height-b)};
                 var t = map.Content(spawn.x*tw, spawn.y*tw);
                 var d = assets.Get(avoid);
                 var dz = d.filter(l => (l.x == spawn.x*tw && l.y == spawn.y*tw) );               

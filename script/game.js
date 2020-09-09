@@ -49,14 +49,11 @@
 
         Fac.push(Util.Build([assets.hat],0.3,[aa]));//hat
 
-        Fac.push(Util.Build([assets.car.bod, assets.car.win, assets.car.ltf],1.3,[C.col.c1, aa,aa]));//car
-        Fac.push(Util.Build([assets.car.bod, assets.car.win, assets.car.ltr],1.3,[C.col.c1, aa,aa]));//car
-
-        Fac.push(Util.Build([assets.car.bod, assets.car.win, assets.car.ltf],1.3,[C.col.c2, aa,aa]));//car
-        Fac.push(Util.Build([assets.car.bod, assets.car.win, assets.car.ltr],1.3,[C.col.c2, aa,aa]));//car
-
-        Fac.push(Util.Build([assets.car.bod, assets.car.win, assets.car.ltf],1.3,[C.col.d2, aa,aa]));//car
-        Fac.push(Util.Build([assets.car.bod, assets.car.win, assets.car.ltr],1.3,[C.col.d2, aa,aa]));//car
+        var cc = [C.col.c1,C.col.c2,C.col.d2];
+        for (var i = 0; i < cc.length; i++) {            
+            Fac.push(Util.Build([assets.car.bod, assets.car.win, assets.car.ltf],1.3,[cc[i], aa,aa]));//car
+            Fac.push(Util.Build([assets.car.bod, assets.car.win, assets.car.ltr],1.3,[cc[i], aa,aa]));//car 
+        }
 
         Fac.push(Util.Build([assets.well],1.5,[C.col.d1]));//well
         Fac.push(Util.Build([assets.flat],1,[C.col.d1]));//flat pup
@@ -90,7 +87,7 @@
         this.photo = null;
 
         this.reset = function(sc){
-            Renderer.Set(sc||1);
+            R.Set(sc||1);
             this.scene.Set(sc);
             this.chat = [];
             this.carSpawn = [];
@@ -98,7 +95,6 @@
 
             this.level = 0;
 
-            this.assets = [];
             this.assets = new ObjectPool(); 
             this.dlog = {active:0, p:0, r:3, 
                 wt:0,
@@ -167,16 +163,16 @@
                 this.assets.Add(this.tony);
 
                 //rnd stumps
-                AssetUtil.PlaceAssets(64, tw, map.level.dim.width, map.level.dim.height,
+                AssetUtil.PlaceAssets(180, tw, 4, map.level.dim.width, map.level.dim.height,
                     this.scene, this.assets, [C.ass.stump,C.ass.man,C.ass.wdog,C.ass.gdog,C.ass.player],
                     [Fac[C.src.t1], Fac[C.src.t2]], C.ass.stump);
 
                 //treats
-                AssetUtil.PlaceAssets(8, tw, map.level.dim.width, map.level.dim.height,
+                AssetUtil.PlaceAssets(16, tw, 8, map.level.dim.width, map.level.dim.height,
                     this.scene, this.assets, [C.ass.stump,C.ass.man,C.ass.wdog,C.ass.gdog,C.ass.player],
                     [Fac[C.src.treat]], C.ass.treat);
 
-                AssetUtil.PlaceAssets(8, tw, map.level.dim.width, map.level.dim.height,
+                AssetUtil.PlaceAssets(8, tw, 8, map.level.dim.width, map.level.dim.height,
                     this.scene, this.assets, [C.ass.stump,C.ass.man,C.ass.wdog,C.ass.gdog,C.ass.player,C.ass.toy,C.ass.treat],
                     [Fac[C.src.toy]], C.ass.toy);
             }
@@ -187,6 +183,8 @@
             this.scriptStage = 0;
             this.scriptStop = 4;
             this.player.altTarget ={x:spawn.plr[1].x*tw, y:spawn.plr[1].y*th};
+
+            this.player.help = {toy:1,trt:1,dog:1,brk:1};
             this.scene.ScrollTo(this.player.x, this.player.y, 1);  
         };
         
@@ -288,7 +286,7 @@
 
     Game.prototype = {
         Update: function(dt){
-            var asses = this.assets.Get();            
+            var asses = this.assets.Get();
             
             switch (this.gameState) {
                 case 0:     //app start
@@ -304,7 +302,7 @@
                     break;
                 case 1:
                     if(input.isUp("SPACE")){
-                        this.photo = Renderer.Get(300,200,200,200);
+                        this.photo = R.Get(300,200,200,200);
                         this.gameState = 2;
                     } 
                     break; 
@@ -350,7 +348,7 @@
                                 this.assets.Add(g);
                             }
 
-                            this.carSpawn[i].ready = Util.RndI(200, 400);
+                            this.carSpawn[i].ready = Util.RndI(300, 500);
                         }
                         else{
                             this.carSpawn[i].ready--;
@@ -418,7 +416,7 @@
                         {
                             var os = this.scene.ScrollOffset(); 
                             var pt = Util.IsoPoint(this.player.x-os.x, this.player.y-os.y);
-                            this.photo = Renderer.Get(pt.x-100,pt.y-100,200,200);
+                            this.photo = R.Get(pt.x-100,pt.y-100,200,200);
 
                             this.count = 64;
                             this.gameState = 5;//game over
@@ -470,7 +468,7 @@
 
             for(var e = 0; e < this.splats.length; e++) {
                 var pt = Util.IsoPoint(this.splats[e].x-mp.x, this.splats[e].y-mp.y);
-                Renderer.PolySprite(
+                R.PolySprite(
                     pt.x, 
                     pt.y, 
                     this.splats[e].src);
@@ -482,30 +480,30 @@
 
             switch (this.gameState) {
                 case 0:
-                    Renderer.Box(0,0,this.screen.w, this.screen.h, "rgba(0, 0, 0, "+this.scCol+")");
-                    Renderer.Text("PUPPY", 260, 100, 12,1);                    
+                    R.Box(0,0,this.screen.w, this.screen.h, "rgba(0, 0, 0, "+this.scCol+")");
+                    R.Text("PUPPY", 260, 100, 12,1);                    
                     break;
                 case 1:
-                    Renderer.Text("PUPPY", 260, 100, 12,1);
-                    Renderer.Text("PRESS START", 280, 480, 6,0);
+                    R.Text("PUPPY", 260, 100, 12,1);
+                    R.Text("PRESS START", 280, 480, 6,0);
                     break;
                 case 2:    
                 case 3:
-                    Renderer.Box(0,0,this.screen.w, this.screen.h, "rgba(0, 0, 0, "+this.scCol+")");
+                    R.Box(0,0,this.screen.w, this.screen.h, "rgba(0, 0, 0, "+this.scCol+")");
                     break;
                 case  C.state.game:
                     if(this.scriptStage < this.scriptStop){
-                        Renderer.Box(0,0,this.screen.w, this.screen.h, "rgba(0, 0, 0, "+this.scCol+")");
+                        R.Box(0,0,this.screen.w, this.screen.h, "rgba(0, 0, 0, "+this.scCol+")");
                     }
                     else{
                     //score panel thing
-                        Renderer.Box(0,0,this.screen.w, 48, "rgba(0, 0, 0, 0.7)");
-                        Renderer.Text("TIME", this.screen.w-200, 8, 3, 0, PAL[51]);  
-                        Renderer.Text("TO LIVE", this.screen.w-200, 26, 3, 0, PAL[51]);  
-                        Renderer.Text(""+this.time, this.screen.w-100, 10, 6, 0, PAL[51]); 
+                        R.Box(0,0,this.screen.w, 48, "rgba(0, 0, 0, 0.7)");
+                        R.Text("TIME", this.screen.w-200, 8, 3, 0, PAL[51]);  
+                        R.Text("TO LIVE", this.screen.w-200, 26, 3, 0, PAL[51]);  
+                        R.Text(""+this.time, this.screen.w-100, 10, 6, 0, PAL[51]); 
 
-                        Renderer.Text("BARK", 60, 14, 4, 0, PAL[51]); 
-                        Renderer.Box(140,20,this.player.power * 8, 16, PAL[51]);
+                        R.Text("BARK", 60, 14, 4, 0, PAL[51]); 
+                        R.Box(140,20,this.player.power * 8, 16, PAL[51]);
                     }
                     //txts
                     for(var e = 0; e < this.chat.length; e++) {
@@ -516,7 +514,7 @@
                             }
                             else{
                                 var pt = Util.IsoPoint(cht.x-mp.x, cht.y-mp.y);
-                                Renderer.Text(cht.w, pt.x, pt.y, cht.sz,1, cht.c);   
+                                R.Text(cht.w, pt.x, pt.y, cht.sz,1, cht.c);   
 
                                 if(--cht.tm == 0 && cht.nt){
                                     cht.nt();
@@ -529,15 +527,15 @@
                     //if active, dialog panel
                     if(this.dlog.active == 1){
                         var h = 480;
-                        Renderer.Box(0,h,this.screen.w, this.screen.h, "rgba(0, 0, 0, 0.7)");
+                        R.Box(0,h,this.screen.w, this.screen.h, "rgba(0, 0, 0, 0.7)");
                         for(var e = 0; e < this.dlog.tx.length; e++) {
-                            Renderer.Text( this.dlog.tx[e], 180, h+16+(e*28), 4,0, 
+                            R.Text( this.dlog.tx[e], 180, h+16+(e*28), 4,0, 
                             this.dlog.wt == 1 ?  PAL[49] : this.dlog.p == e ? PAL[C.col.mn] : PAL[C.col.mn+2]); 
                         }
                     }
                     break;
                 case 5:
-                    Renderer.News(this.screen.w, this.screen.h, this.photo);
+                    R.News(this.screen.w, this.screen.h, this.photo);
                     break;
                 default:
                     break;
