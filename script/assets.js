@@ -214,7 +214,7 @@
                         }
                         this.idle = 64;
                         //check what landed on
-                        if(map.colliders.over.indexOf(t) != -1){
+                        if(map.colliders.over.indexOf(t) != -1){ 
                             if(t > 6 && t < 11){//water
                                 this.action = C.act.dd;
                                 this.death = C.act.dd;
@@ -262,7 +262,7 @@
                             }                            
                         }
 
-                        this.power--;
+                        if(this.power>0)this.power--;
                     } 
                 }
             }

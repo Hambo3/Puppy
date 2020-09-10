@@ -130,6 +130,7 @@ var Rendering = function (context, screen, border) {
             para(NT[0], 550, 195, 200, 250 );
             para(NT[0], 550, 400, 200, 250 );
 
+            txt(TT[1], 580, 580, 4,0);
             ctx.putImageData(gray(pic), 280, 195);
         },
         Get:function(x,y, w,h){

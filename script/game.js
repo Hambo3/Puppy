@@ -163,7 +163,7 @@
                 this.assets.Add(this.tony);
 
                 //rnd stumps
-                AssetUtil.PlaceAssets(180, tw, 4, map.level.dim.width, map.level.dim.height,
+                AssetUtil.PlaceAssets(120, tw, 4, map.level.dim.width, map.level.dim.height,
                     this.scene, this.assets, [C.ass.stump,C.ass.man,C.ass.wdog,C.ass.gdog,C.ass.player],
                     [Fac[C.src.t1], Fac[C.src.t2]], C.ass.stump);
 
@@ -201,16 +201,17 @@
                 t.scCol = Util.SLerp(t.scCol, 1, 0.02);
                 if(t.scCol > 0.9){
                     t.scriptStage ++;
-                    t.count = 100;
+                    t.count = 300;
                 }
             },
-            function(){
+            function(){                
                 t.scCol = 1;
-                if(--t.count == 0){
+                if(input.isUp("SPACE")){
                     t.scriptStage ++;
                     t.tony.x = t.home.x;
                     t.tony.y = t.home.y;
-                }
+                    input.Clr();
+                } 
             },
             function(){
                 t.scCol = Util.SLerp(t.scCol, 0, 0.02);
@@ -310,17 +311,22 @@
                     this.scCol = Util.SLerp(this.scCol, 1, 0.02);
                     if(this.scCol > 0.9){
                         this.gameState = 3;
-                        this.count = 64;
-                        this.reset();
+                        this.count = 240;
                     }
                     break; 
                 case 3:
-                    this.scCol = Util.SLerp(this.scCol, 0, 0.02);
-                    if(this.scCol < 0.1){
-                        this.gameState = C.state.game;                        
+                    if(--this.count == 0){
+                        this.gameState = 4;   
+                        this.reset();                      
                     }
                     break;  
-                 
+                case 4:
+                    this.scCol = Util.SLerp(this.scCol, 0, 0.02);
+                    if(this.scCol < 0.1){
+                        this.gameState = C.state.game;  
+                        this.count = 64;                   
+                    }
+                    break; 
                 case C.state.game://game
                     if(this.scriptStage < this.scriptStop){
                         this.script[this.scriptStage]();
@@ -395,7 +401,7 @@
 
                         if(this.time==0){
                             this.count = 64;
-                            this.gameState = 5;//out of time
+                            this.gameState = C.state.game+1;//out of time
                         }
                     }
 
@@ -408,7 +414,7 @@
                         }
                         else{
                             this.count = 64;
-                            this.gameState = 5;//Game completed??
+                            this.gameState = C.state.game+1;//Game completed??
                         }
                     }
                     if(this.player.death || this.man.death){
@@ -419,11 +425,11 @@
                             this.photo = R.Get(pt.x-100,pt.y-100,200,200);
 
                             this.count = 64;
-                            this.gameState = 5;//game over
+                            this.gameState = C.state.game+1;//game over
                         }
                     }
                     break; 
-                case 5:
+                case 6:
                     if(input.isUp("SPACE")){
                         this.count = 64;
                         this.gameState = 0;
@@ -481,19 +487,32 @@
             switch (this.gameState) {
                 case 0:
                     R.Box(0,0,this.screen.w, this.screen.h, "rgba(0, 0, 0, "+this.scCol+")");
-                    R.Text("PUPPY", 260, 100, 12,1);                    
+                    R.Text(TT[0], 260, 100, 12,1);                    
                     break;
                 case 1:
-                    R.Text("PUPPY", 260, 100, 12,1);
-                    R.Text("PRESS START", 280, 480, 6,0);
+                    R.Text(TT[0], 260, 100, 12,1);
+                    R.Text(TT[1], 280, 480, 6,0);
                     break;
                 case 2:    
-                case 3:
                     R.Box(0,0,this.screen.w, this.screen.h, "rgba(0, 0, 0, "+this.scCol+")");
                     break;
+                case 3:
+                    R.Box(0,0,this.screen.w, this.screen.h, "rgba(0, 0, 0, 1)");
+                    R.Text("TONY WAS OUT WALKING WITH HIS+FAITHFULL COMPANION", 20, 100, 5,0,PAL[51]);
+                    break;
+                case 4:
+                    R.Box(0,0,this.screen.w, this.screen.h, "rgba(0, 0, 0, "+this.scCol+")");
+                    break;    
                 case  C.state.game:
                     if(this.scriptStage < this.scriptStop){
                         R.Box(0,0,this.screen.w, this.screen.h, "rgba(0, 0, 0, "+this.scCol+")");
+                        if(this.scriptStage == 2){
+                            R.Text("WHEN THEY CAME ACROSS AN OLD WELL.", 20, 100, 4,0,PAL[51]);
+                            R.Text("MAKE A WISH PUPPY, TONY SAID", 20, 134, 4,0,PAL[51]);
+                            R.Text("AND HE LEANED OVER TO THROW A PENNY", 20, 168, 4,0,PAL[51]);
+                            R.Text("INTO THE WELL...", 20, 202, 4,0,PAL[51]);
+                            R.Text(TT[1], 580, 580, 4,0,PAL[51]);                            
+                        }
                     }
                     else{
                     //score panel thing
@@ -534,7 +553,7 @@
                         }
                     }
                     break;
-                case 5:
+                case 6:
                     R.News(this.screen.w, this.screen.h, this.photo);
                     break;
                 default:
