@@ -256,14 +256,14 @@
                             gameAsset.StartChat();
                         }
                         else{
-                            if(inp.d < ((this.power*8)*48)){
+                            if(inp.d < ((this.power*12)*48)){
                                 gameAsset.AddChat("!!", this.x+(this.target.x > this.x?300:-300), 
                                 this.y+(this.target.y>this.y?180:-180),null,6,100);
                             }                            
                         }
 
                         if(this.power>0)this.power--;
-                    } 
+                     } 
                 }
             }
         },

@@ -85,7 +85,7 @@
         this.endCheck = true;
 
         this.photo = null;
-
+        
         this.reset = function(sc){
             R.Set(sc||1);
             this.scene.Set(sc);
@@ -94,6 +94,7 @@
             this.splats = [];
 
             this.level = 0;
+            this.win = 0;
 
             this.assets = new ObjectPool(); 
             this.dlog = {active:0, p:0, r:3, 
@@ -315,10 +316,10 @@
                     }
                     break; 
                 case 3:
-                    if(--this.count == 0){
+                    if(input.isUp("SPACE")){
                         this.gameState = 4;   
-                        this.reset();                      
-                    }
+                        this.reset();  
+                    } 
                     break;  
                 case 4:
                     this.scCol = Util.SLerp(this.scCol, 0, 0.02);
@@ -402,6 +403,7 @@
                         if(this.time==0){
                             this.count = 64;
                             this.gameState = C.state.game+1;//out of time
+                            this.win = 3;
                         }
                     }
 
@@ -415,6 +417,7 @@
                         else{
                             this.count = 64;
                             this.gameState = C.state.game+1;//Game completed??
+                            this.win = 1;
                         }
                     }
                     if(this.player.death || this.man.death){
@@ -426,6 +429,7 @@
 
                             this.count = 64;
                             this.gameState = C.state.game+1;//game over
+                            this.win = 2;
                         }
                     }
                     break; 
@@ -498,7 +502,8 @@
                     break;
                 case 3:
                     R.Box(0,0,this.screen.w, this.screen.h, "rgba(0, 0, 0, 1)");
-                    R.Text("TONY WAS OUT WALKING WITH HIS+FAITHFULL COMPANION", 20, 100, 5,0,PAL[51]);
+                    R.Text("TONY WAS OUT WALKING WITH HIS+FAITHFULL COMPANION", 20, 100, 4,0,PAL[51]);
+                    R.Text(TT[1], 580, 580, 4,0,PAL[51]);  
                     break;
                 case 4:
                     R.Box(0,0,this.screen.w, this.screen.h, "rgba(0, 0, 0, "+this.scCol+")");
@@ -508,8 +513,8 @@
                         R.Box(0,0,this.screen.w, this.screen.h, "rgba(0, 0, 0, "+this.scCol+")");
                         if(this.scriptStage == 2){
                             R.Text("WHEN THEY CAME ACROSS AN OLD WELL.", 20, 100, 4,0,PAL[51]);
-                            R.Text("MAKE A WISH PUPPY, TONY SAID", 20, 134, 4,0,PAL[51]);
-                            R.Text("AND HE LEANED OVER TO THROW A PENNY", 20, 168, 4,0,PAL[51]);
+                            R.Text("^MAKE A WISH PUPPY!^, SAID TONY", 20, 134, 4,0,PAL[51]);
+                            R.Text("AS HE LEANED OVER TO THROW A PENNY", 20, 168, 4,0,PAL[51]);
                             R.Text("INTO THE WELL...", 20, 202, 4,0,PAL[51]);
                             R.Text(TT[1], 580, 580, 4,0,PAL[51]);                            
                         }
@@ -554,7 +559,7 @@
                     }
                     break;
                 case 6:
-                    R.News(this.screen.w, this.screen.h, this.photo);
+                    R.News(this.screen.w, this.screen.h, this.photo,this.win);
                     break;
                 default:
                     break;

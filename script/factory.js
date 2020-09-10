@@ -25,10 +25,19 @@ var HT=[
 
 var NT=[
     "BLAH ",
+    
     "TONY STILL NOT FOUND",
-    "HERO PUPPY SAVES THE DAY",
-    "MEAN DOGS TERRORISE NEIGHBOURHOOD",
-    "LATEST CASUALTY"
+    "HERO PUPPY LEADS HEROIC RESCUE",
+
+    "MAN DISAPPEARS YESTER+DAY. ",
+    "ALIENS DID IT, +SAYS LOCAL.",
+
+    "LOCAL IDIOT WHO FELL+DOWN A WELL HAS BEEN FOUND",
+    "PUPPY RESCUES OWNER AFTER WELL INCIDENT",
+    
+    "PUPPY CAUSES MAYHEM ON+HIGHWAY. ^HE WASNT LOOK+ING WHERE HE WAS GOING^+SAYS CONCERNED MOTORIST",
+    "WELL TROLL WORRIES OLD+LADY. ^I HEARD A VOICE+COMING FROM THE WELL+ SO JUST RAN OFF^",
+    "MEAN DOGS AT LARGE IN+WOODS"
 ];
 
 var C = {
@@ -533,6 +542,13 @@ var FONT = {
         [,1,],
         [,,],
         [,1,]
+    ],
+    '^': [
+        [,1,],
+        [,,],
+        [,,],
+        [,,],
+        [,,]
     ],
     '+':[]
 };

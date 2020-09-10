@@ -104,31 +104,38 @@ var Rendering = function (context, screen, border) {
         var c = r = 0;
         for (let i = 0; i < len; i++) {
             txt(tx[t], x + c, y + r, 3, 0);
-            t=t==4?0:t+1;
+            t=t==tx.length-1?0:t+1;
             c+=12;
             if(c > w){
                 c=0;
-                r+=16;
+                r+=18;
             }
         }
     }
 
     return {
-        News:function(w,h, pic){
-            box(0,0,w, h, "#FFFFFF");
-            box(4,4,w-8, h-8, "#000000");
-            box(8,8,w-16, h-16, "#FFFFFF");
-            box(8,140,w-16, 2, "#000000");
+        News:function(w,h, pic,win){
+            win=1;
+            box(0,0,w, h, PAL[51]);
+            box(4,4,w-8, h-8, PAL[47]);
+            box(8,8,w-16, h-16, PAL[51]);
+            box(8,140,w-16, 2, PAL[47]);
             txt("4 APRIL", 740, 12, 2,0);
             txt("DAILY BLAH", 200, 60, 10,0);
             txt("PROBABLY ENTIRELY FACTUAL", 240, 120, 3,0);
 
-            txt(NT[1], 20, 154, 6,0);
-            para(NT[0], 18, 195, 200, 250 );
+            
+            txt(NT[win==1?2:1], 20, 154, 6,0);
+            
+            txt(NT[3]+NT[4], 18, 195, 3,0);
+            txt(NT[7], 500, 195, 3,0);
+
+            para(NT[0], 18, 280, 80, 250 ); 
             para(NT[0], 18, 400, 200, 250 );
-            para(NT[0], 280, 400, 200, 250 );
-            para(NT[0], 550, 195, 200, 250 );
-            para(NT[0], 550, 400, 200, 250 );
+
+            para(NT[0], 280, 400, 100, 200 );
+
+            para(NT[0], 500, 360, 240, 290 );
 
             txt(TT[1], 580, 580, 4,0);
             ctx.putImageData(gray(pic), 280, 195);
