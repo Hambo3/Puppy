@@ -136,6 +136,16 @@
                     Util.OneOf([Fac[C.src.t1], Fac[C.src.t2]]), C.ass.stump);
                 this.assets.Add(d);
             }
+            //toys n treats
+            for (var i = 0; i < spawn.trt.length; i++) {
+                var d = new Grunt(spawn.trt[i].x*tw, spawn.trt[i].y*th, Fac[C.src.treat], C.ass.treat);
+                this.assets.Add(d);
+            }
+            for (var i = 0; i < spawn.tys.length; i++) {
+                var d = new Grunt(spawn.tys[i].x*tw, spawn.tys[i].y*th, Fac[C.src.toy], C.ass.toy);
+                this.assets.Add(d);
+            }
+
             //well
             var w= spawn.hme;
             var well = [
@@ -148,7 +158,7 @@
             for (var i = 0; i < well.length; i++) {
                 var d = new Grunt(well[i].x*tw, well[i].y*th, Fac[C.src.well], C.ass.stump);
                 this.assets.Add(d);
-            }
+            }            
 
             if(!sc){
                 this.tony = new Man(spawn.tony[0].x*tw, spawn.tony[0].y*th, {x:spawn.tony[1].x*tw, y:spawn.tony[1].y*th});
@@ -169,15 +179,15 @@
                     [Fac[C.src.t1], Fac[C.src.t2]], C.ass.stump);
 
                 //treats
-                AssetUtil.PlaceAssets(16, tw, 8, map.level.dim.width, map.level.dim.height,
+                AssetUtil.PlaceAssets(16, tw, 8, map.level.dim.width, map.level.dim.height-26,
                     this.scene, this.assets, [C.ass.stump,C.ass.man,C.ass.wdog,C.ass.gdog,C.ass.player],
                     [Fac[C.src.treat]], C.ass.treat);
 
-                AssetUtil.PlaceAssets(8, tw, 8, map.level.dim.width, map.level.dim.height,
+                AssetUtil.PlaceAssets(8, tw, 8, map.level.dim.width, map.level.dim.height-26,
                     this.scene, this.assets, [C.ass.stump,C.ass.man,C.ass.wdog,C.ass.gdog,C.ass.player,C.ass.toy,C.ass.treat],
                     [Fac[C.src.toy]], C.ass.toy);
             }
-            this.subTick = 128            
+            this.subTick = 160            
             this.time = 60;
             this.subTime = this.subTick;
 
@@ -185,7 +195,7 @@
             this.scriptStop = 4;
             this.player.altTarget ={x:spawn.plr[1].x*tw, y:spawn.plr[1].y*th};
 
-            this.player.help = {toy:1,trt:1,dog:1,brk:1};
+            this.player.help = {toy:1,trt:1,dog:1,brk:1,man:1};
             this.scene.ScrollTo(this.player.x, this.player.y, 1);  
         };
         
@@ -227,8 +237,8 @@
                     t.tony.anims[0].dt = {x: 0, y: 0, z:100};
                     t.tony.anims[0].die = true;
 
-                    gameAsset.AddChat(SP[7], t.tony.x-100, t.tony.y-100, PAL[C.col.aa], 4, 80, 32, function(){
-                        gameAsset.AddChat(SP[8], t.tony.x-100, t.tony.y-100, PAL[C.col.aa], 4, 80,32);
+                    gameAsset.AddChat(SP[7]+SP[11], t.tony.x-200, t.tony.y-100, PAL[C.col.aa], 4, 80, 32, function(){
+                        gameAsset.AddChat(SP[8], t.tony.x-200, t.tony.y-100, PAL[C.col.aa], 4, 80,32);
                     });
                 }
             },
@@ -270,8 +280,8 @@
                     t.tony.action = C.act.dd;
                     t.tony.death = C.act.dd;                                           
 
-                    gameAsset.AddChat(SP[7], t.tony.x-100, t.tony.y-100, PAL[39], 4, 80, 32, function(){
-                        gameAsset.AddChat(SP[8], t.tony.x-100, t.tony.y-100, PAL[39], 4, 80,32);
+                    gameAsset.AddChat(SP[7], t.tony.x-200, t.tony.y-100, PAL[C.col.aa], 4, 80, 32, function(){
+                        gameAsset.AddChat(SP[10], t.tony.x-200, t.tony.y-100, PAL[C.col.aa], 4, 80,32);
                     });
                 }
             },
@@ -380,7 +390,8 @@
                                             t.dlog.rp[t.dlog.p].replace("{*}",t.time), d.x, d.y, PAL[C.col.mn+1], 3,
                                             t.dlog.p == t.dlog.r ? 256 : 128,32, function(){ 
                                             if(t.dlog.p == t.dlog.r){
-                                                gameAsset.AddChat(SP[2], d.x, d.y, PAL[C.col.mn+1], 3, 128,32, function(){
+                                                gameAsset.AddChat(Util.OneOf([SP[2],SP[9]]), 
+                                                        d.x, d.y, PAL[C.col.mn+1], 3, 128,32, function(){
                                                     t.dlog.wt=0;
                                                     t.dlog.active = 2;
                                                     t.player.woof=48;
@@ -403,10 +414,16 @@
                         if(this.time==0){
                             this.count = 64;
                             this.gameState = C.state.game+1;//out of time
-                            this.win = 3;
+                            this.win = 2;
                         }
                     }
-
+///////////deleteme
+if(input.isUp("ESC")){
+    this.count = 64;
+    this.gameState = C.state.game+1;//Game completed??
+    this.win = 1;
+}
+///////////deleteme
                     var hm = AssetUtil.Dir(this.home, this.man);
                     if(this.endCheck && hm.d < (5*48)){
                         this.endCheck = false;
@@ -429,7 +446,9 @@
 
                             this.count = 64;
                             this.gameState = C.state.game+1;//game over
-                            this.win = 2;
+                            this.win = {p:this.player.death,
+                                        m:this.man.death,
+                                        l:this.level};
                         }
                     }
                     break; 

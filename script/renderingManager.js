@@ -115,7 +115,6 @@ var Rendering = function (context, screen, border) {
 
     return {
         News:function(w,h, pic,win){
-            win=1;
             box(0,0,w, h, PAL[51]);
             box(4,4,w-8, h-8, PAL[47]);
             box(8,8,w-16, h-16, PAL[51]);
@@ -124,17 +123,36 @@ var Rendering = function (context, screen, border) {
             txt("DAILY BLAH", 200, 60, 10,0);
             txt("PROBABLY ENTIRELY FACTUAL", 240, 120, 3,0);
 
-            
-            txt(NT[win==1?2:1], 20, 154, 6,0);
-            
-            txt(NT[3]+NT[4], 18, 195, 3,0);
-            txt(NT[7], 500, 195, 3,0);
+            var h = NT[1];
+            var p1 = NT[3]+NT[4];
+            var p2 = Util.OneOf([NT[7],NT[8],NT[9]]);
+
+            if(win==1){
+                h = NT[2];
+                p1 = Util.OneOf([NT[5],NT[6]]);
+            }
+            else if(win==2){
+            }
+            else{
+                if(win.l>0){
+                    p1="2ND MAN GOES MISSING";
+                }
+                else if(win.p>0){
+                    p1="PUPPY IN TROUBLE";
+                }
+                else if(win.m>0){
+                    p1="CHRIS CHAMBERLAIN+FAILS IN DARING+RESCUE";
+                }
+            }
+
+            txt(h, 20, 154, 6,0);            
+            txt(p1, 18, 195, 3,0);
+            txt(p2, 500, 195, 3,0);
+
 
             para(NT[0], 18, 280, 80, 250 ); 
             para(NT[0], 18, 400, 200, 250 );
-
             para(NT[0], 280, 400, 100, 200 );
-
             para(NT[0], 500, 360, 240, 290 );
 
             txt(TT[1], 580, 580, 4,0);

@@ -174,6 +174,11 @@
                             }                            
                         }
                         if(this.altTarget == null && this.help){
+                            if(this.help.man && gameAsset.dlog.active == 2){
+                                gameAsset.AddChat(HT[4], this.x-140, this.y+(this.action == C.act.dn?80:-80), null,3,100);
+                                this.help.man = 0;
+                            }
+
                             if(this.help.brk && this.power>0){
                                 if(this.help.trt==0){
                                     gameAsset.AddChat(HT[3], this.x-140, this.y+(this.action == C.act.dn?80:-80), null,3,100);
@@ -217,7 +222,7 @@
                         if(map.colliders.over.indexOf(t) != -1){ 
                             if(t > 6 && t < 11){//water
                                 this.action = C.act.dd;
-                                this.death = C.act.dd;
+                                this.death = C.act.wt;
 
                                 for(var i=0;i<16;i++){
                                     this.anims.push(
@@ -248,21 +253,21 @@
 
                         gameAsset.AddChat(SP[0], d.x, d.y);
                         this.woof = 48;
-                        
+
                         var inp = AssetUtil.Dir(this.target, this);
 
                         if(inp.d < 5*48){
                             this.target.target = this;
                             gameAsset.StartChat();
                         }
-                        else{
-                            if(inp.d < ((this.power*12)*48)){
+                        else{ 
+                            if(inp.d < ((this.power*17)*48)){
                                 gameAsset.AddChat("!!", this.x+(this.target.x > this.x?300:-300), 
                                 this.y+(this.target.y>this.y?180:-180),null,6,100);
                             }                            
-                        }
+                        }  
 
-                        if(this.power>0)this.power--;
+                        if(this.power>0)this.power--;                                             
                      } 
                 }
             }
@@ -418,7 +423,7 @@
                         if(map.colliders.over.indexOf(t) != -1){
                             if(t > 6 && t < 11){//water
                                 this.action = C.act.dd;
-                                this.death = C.act.dd;
+                                this.death = C.act.wt;
 
                                 this.anims[0].enabled = false;
                                 for(var i=0;i<16;i++){                                              

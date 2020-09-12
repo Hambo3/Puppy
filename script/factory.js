@@ -9,10 +9,11 @@ var SP = [
     "HELLO BOY",
     "GOOD DOG",
     "WANNA TREAT FELLA?",
-    "ARRGGH IVE FALLEN",
-    "PUPPY GET HELP!",
+    "ARRGGH! ",
+    "PUPPY GET HELP!+BEFORE ITS TOO LATE!",
     "LEAD THE WAY PUPPY",
-    "HELP!"
+    "HELP!",
+    "IVE FALLEN"
 ];
 
 var HT=[
@@ -93,7 +94,8 @@ var C = {
         lt:2,
         rt:3,
         sq:4,
-        dd:5
+        dd:5,
+        wt:6
     }
 }
 
