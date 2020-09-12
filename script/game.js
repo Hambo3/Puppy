@@ -1,13 +1,13 @@
 (function() {
     function Game(map) {
         //puppy
-        var aa = C.col.aa;
-        var mn = C.col.mn;
+        var aa = 47;
+        var mn = 33;
         var pu =assets.pupu;
         var pd =assets.pupd;
         var pl =assets.pupl;
         var pr =assets.pupr;
-        for (x of [{t:1,s:1.2,c:C.col.d1,c2:aa}, {t:0,s:1.5,c:C.col.d2,c2:aa}, {t:0,s:1.5,c:C.col.d3,c2:aa}]){
+        for (x of [{t:1,s:1.2,c:17,c2:aa}, {t:0,s:1.5,c:21,c2:aa}, {t:0,s:1.5,c:25,c2:aa}]){
             Fac.push(Util.Build([pu.idl,pu.fc],x.s,[x.c,x.c2]));//up idle
             Fac.push(Util.Build([pu.leg,pu.bod, pu.fc],x.s,[x.c,x.c,x.c2]));//up stand
             Fac.push(Util.Build([pu.run,pu.bod, pu.fc],x.s,[x.c,x.c,x.c2]));//up run
@@ -26,7 +26,7 @@
         }
 
         //water particle
-        Fac.push(Util.Build([assets.cube],0.3,[C.col.wt]));//splash
+        Fac.push(Util.Build([assets.cube],0.3,[8]));//splash
 
         //man
         var m = assets.man;
@@ -44,27 +44,27 @@
         Fac.push(Util.Build([m.h.leg2,m.bod,m.h.ex,m.h.fcer],1,[mn,mn,mn,aa]));//right    
 
         //tree
-        Fac.push(Util.Build([assets.tree.bod,assets.tree.hd1],1,[C.col.d3,C.col.tr]));//tree1    
-        Fac.push(Util.Build([assets.tree.bod,assets.tree.hd2],1,[C.col.d3,C.col.tr]));//tree2    
+        Fac.push(Util.Build([assets.tree.bod,assets.tree.hd1],1,[25,29]));//tree1    
+        Fac.push(Util.Build([assets.tree.bod,assets.tree.hd2],1,[25,29]));//tree2    
 
         Fac.push(Util.Build([assets.hat],0.3,[aa]));//hat
 
-        var cc = [C.col.c1,C.col.c2,C.col.d2];
+        var cc = [38,42,21];
         for (var i = 0; i < cc.length; i++) {            
             Fac.push(Util.Build([assets.car.bod, assets.car.win, assets.car.ltf],1.3,[cc[i], aa,aa]));//car
             Fac.push(Util.Build([assets.car.bod, assets.car.win, assets.car.ltr],1.3,[cc[i], aa,aa]));//car 
         }
 
-        Fac.push(Util.Build([assets.well],1.5,[C.col.d1]));//well
-        Fac.push(Util.Build([assets.flat],1,[C.col.d1]));//flat pup
+        Fac.push(Util.Build([assets.well],1.5,[17]));//well
+        Fac.push(Util.Build([assets.flat],1,[17]));//flat pup
 
         //tony
         Fac.push(Util.Build([m.h.leg,m.bod,m.h.ex,m.h.fcer],0.8,[mn,mn,mn,aa]));//right
         Fac.push(Util.Build([m.h.leg1,m.bod,m.h.ex,m.h.fcer],0.8,[mn,mn,mn,aa]));//right
         Fac.push(Util.Build([m.h.leg2,m.bod,m.h.ex,m.h.fcer],0.8,[mn,mn,mn,aa]));//right  
 
-        Fac.push(Util.Build([assets.cube],0.2,[C.col.d1]));//treat
-        Fac.push(Util.Build([assets.cube],0.4,[C.col.c1]));//toy
+        Fac.push(Util.Build([assets.cube],0.2,[17]));//treat
+        Fac.push(Util.Build([assets.cube],0.4,[38]));//toy
 
         var i =0;
         var set = [];
@@ -109,10 +109,10 @@
             var tw = map.size.tile.width;
             var th = map.size.tile.height;
     
-            AssetUtil.CarSpawn(this.carSpawn, spawn.carl, C.ass.carl,tw);
-            AssetUtil.CarSpawn(this.carSpawn, spawn.carr, C.ass.carr,tw);
+            AssetUtil.CarSpawn(this.carSpawn, spawn.carl, 8,tw);
+            AssetUtil.CarSpawn(this.carSpawn, spawn.carr, 9,tw);
 
-            this.player = new Dog(spawn.plr[0].x*tw, spawn.plr[0].y*th, C.ass.player);
+            this.player = new Dog(spawn.plr[0].x*tw, spawn.plr[0].y*th, 1);
             this.assets.Add(this.player);
 
             this.man = new Man(spawn.man[this.level].x*tw, spawn.man[this.level].y*th, null);
@@ -120,12 +120,12 @@
             this.assets.Add(this.man);
 
             for (var i = 0; i < spawn.wdog.length; i++) {            
-                var d = new Dog(spawn.wdog[i].x*tw, spawn.wdog[i].y*th, C.ass.wdog, this.player);
+                var d = new Dog(spawn.wdog[i].x*tw, spawn.wdog[i].y*th, 3, this.player);
                 this.assets.Add(d);
             }
 
             for (var i = 0; i < spawn.gdog.length; i++) {            
-                var d = new Dog(spawn.gdog[i].s.x*tw, spawn.gdog[i].s.y*th, C.ass.gdog, this.player);
+                var d = new Dog(spawn.gdog[i].s.x*tw, spawn.gdog[i].s.y*th, 2, this.player);
                 d.patrol.p[0] = {x:spawn.gdog[i].e.x*tw, y:spawn.gdog[i].e.y*th};
                 d.patrol.rnd = false;
                 this.assets.Add(d);
@@ -134,16 +134,16 @@
             // //mapped stumps
             for (var i = 0; i < spawn.hard.length; i++) {
                 var d = new Grunt(spawn.hard[i].x*tw, spawn.hard[i].y*th, 
-                    Util.OneOf([Fac[C.src.t1], Fac[C.src.t2]]), C.ass.stump);
+                    Util.OneOf([Fac[49], Fac[50]]), 5);
                 this.assets.Add(d);
             }
             //toys n treats
             for (var i = 0; i < spawn.trt.length; i++) {
-                var d = new Grunt(spawn.trt[i].x*tw, spawn.trt[i].y*th, Fac[C.src.treat], C.ass.treat);
+                var d = new Grunt(spawn.trt[i].x*tw, spawn.trt[i].y*th, Fac[63], 6);
                 this.assets.Add(d);
             }
             for (var i = 0; i < spawn.tys.length; i++) {
-                var d = new Grunt(spawn.tys[i].x*tw, spawn.tys[i].y*th, Fac[C.src.toy], C.ass.toy);
+                var d = new Grunt(spawn.tys[i].x*tw, spawn.tys[i].y*th, Fac[64], 7);
                 this.assets.Add(d);
             }
 
@@ -157,7 +157,7 @@
             this.home = {x:w.x*48,y:w.y*48};
 
             for (var i = 0; i < well.length; i++) {
-                var d = new Grunt(well[i].x*tw, well[i].y*th, Fac[C.src.well], C.ass.stump);
+                var d = new Grunt(well[i].x*tw, well[i].y*th, Fac[58], 5);
                 this.assets.Add(d);
             }            
 
@@ -168,25 +168,25 @@
                 this.tony.hat = 56*0.8;
                 this.tony.body = [
                     [], [], [],
-                    [Fac[C.src.tony],Fac[C.src.tony+2],Fac[C.src.tony],Fac[C.src.tony+1]],
-                    [Fac[C.src.flat]],[]
+                    [Fac[60],Fac[60+2],Fac[60],Fac[60+1]],
+                    [Fac[59]],[]
                 ];
     
                 this.assets.Add(this.tony);
 
                 //rnd stumps
                 AssetUtil.PlaceAssets(120, tw, 4, map.level.dim.width, map.level.dim.height,
-                    this.scene, this.assets, [C.ass.stump,C.ass.man,C.ass.wdog,C.ass.gdog,C.ass.player],
-                    [Fac[C.src.t1], Fac[C.src.t2]], C.ass.stump);
+                    this.scene, this.assets, [5,4,3,2,1],
+                    [Fac[49], Fac[50]], 5);
 
                 //treats
                 AssetUtil.PlaceAssets(16, tw, 8, map.level.dim.width, map.level.dim.height-26,
-                    this.scene, this.assets, [C.ass.stump,C.ass.man,C.ass.wdog,C.ass.gdog,C.ass.player],
-                    [Fac[C.src.treat]], C.ass.treat);
+                    this.scene, this.assets, [5,4,3,2,1],
+                    [Fac[63]], 6);
 
                 AssetUtil.PlaceAssets(8, tw, 8, map.level.dim.width, map.level.dim.height-26,
-                    this.scene, this.assets, [C.ass.stump,C.ass.man,C.ass.wdog,C.ass.gdog,C.ass.player,C.ass.toy,C.ass.treat],
-                    [Fac[C.src.toy]], C.ass.toy);
+                    this.scene, this.assets, [5,4,3,2,1,7,6],
+                    [Fac[64]], 7);
             }
             this.subTick = 160            
             this.time = 60;
@@ -238,8 +238,8 @@
                     t.tony.anims[0].dt = {x: 0, y: 0, z:100};
                     t.tony.anims[0].die = true;
 
-                    gameAsset.AddChat(SP[10]+SP[11], t.tony.x-200, t.tony.y-100, PAL[C.col.aa], 4, 80, 32, function(){
-                        gameAsset.AddChat(SP[12], t.tony.x-200, t.tony.y-100, PAL[C.col.aa], 4, 80,32);
+                    gameAsset.AddChat(SP[10]+SP[11], t.tony.x-200, t.tony.y-100, PAL[47], 4, 80, 32, function(){
+                        gameAsset.AddChat(SP[12], t.tony.x-200, t.tony.y-100, PAL[47], 4, 80,32);
                     });
                 }
             },
@@ -255,7 +255,7 @@
                 if(input.isUp("SPACE")){
                     t.scriptStage ++;
                     
-                    var g = new Grunt(t.tony.x, t.tony.y, Fac[C.src.hat], C.ass.null,                        
+                    var g = new Grunt(t.tony.x, t.tony.y, Fac[51], 0,                        
                              {x: 0, y: 0, z:100},true);
                     g.z = 56*0.8;
                     t.assets.Add(g);
@@ -285,8 +285,8 @@
                     t.tony.action = C.act.dd;
                     t.tony.death = C.act.dd;                                           
 
-                    gameAsset.AddChat(SP[10], t.tony.x-200, t.tony.y-100, PAL[C.col.aa], 4, 80, 32, function(){
-                        gameAsset.AddChat(SP[13], t.tony.x-200, t.tony.y-100, PAL[C.col.aa], 4, 80,32);
+                    gameAsset.AddChat(SP[10], t.tony.x-200, t.tony.y-100, PAL[47], 4, 80, 32, function(){
+                        gameAsset.AddChat(SP[13], t.tony.x-200, t.tony.y-100, PAL[47], 4, 80,32);
                     });
                 }
             },
@@ -350,9 +350,9 @@
                     for (var i = 0; i < this.carSpawn.length; i++) {
                         if(this.carSpawn[i].ready == 0){
                             var sp = Util.RndI(100, 300);
-                            var o = Util.OneOf([C.src.car,C.src.car+2,C.src.car+4]);
+                            var o = Util.OneOf([52,52+2,52+4]);
                             var a = Fac[o];
-                            if(this.carSpawn[i].type == C.ass.carl)
+                            if(this.carSpawn[i].type == 8)
                             {
                                 sp = -sp;
                                 a = Fac[o+1];
@@ -390,14 +390,14 @@
                                 var d = {x:t.player.x-140, y:t.player.y+120};
 
                                 t.dlog.wt = 1;
-                                gameAsset.AddChat(this.dlog.tx[t.dlog.p], d.x, d.y, PAL[C.col.aa], 3, 128, 0, function(){
+                                gameAsset.AddChat(this.dlog.tx[t.dlog.p], d.x, d.y, PAL[47], 3, 128, 0, function(){
                                         var tx =t.dlog.rp[t.dlog.p].replace("{*}",t.time);
                                         gameAsset.AddChat(
-                                            tx, d.x, d.y, PAL[C.col.mn+1], 3,
+                                            tx, d.x, d.y, PAL[33+1], 3,
                                             t.dlog.p == t.dlog.r ? tx.length*4 : 196,32, function(){ 
                                             if(t.dlog.p == t.dlog.r){
                                                 gameAsset.AddChat(Util.OneOf([SP[14],SP[15]]), 
-                                                        d.x, d.y, PAL[C.col.mn+1], 3, 128,32, function(){
+                                                        d.x, d.y, PAL[33+1], 3, 128,32, function(){
                                                     t.dlog.wt=0;
                                                     t.dlog.active = 2;
                                                     t.player.woof=48;
@@ -618,7 +618,7 @@
                         R.Box(0,h,this.screen.w, this.screen.h, "rgba(0, 0, 0, 0.7)");
                         for(var e = 0; e < this.dlog.tx.length; e++) {
                             R.Text( this.dlog.tx[e], 180, h+16+(e*28), 4,0, 
-                            this.dlog.wt == 1 ?  PAL[49] : this.dlog.p == e ? PAL[C.col.mn] : PAL[C.col.mn+2]); 
+                            this.dlog.wt == 1 ?  PAL[49] : this.dlog.p == e ? PAL[33] : PAL[33+2]); 
                         }
                     }
                     break;

@@ -40,29 +40,29 @@
             pi:0    
         };
 
-        this.shadow = Util.Build([assets.tile.sol],1.5,[C.col.sw]);
+        this.shadow = Util.Build([assets.tile.sol],1.5,[46]);
 
         var bodies = [ 
             [
-                [Fac[C.src.up],Fac[C.src.up+1],Fac[C.src.up+2]],
-                [Fac[C.src.dn],Fac[C.src.dn+1],Fac[C.src.dn+2]],            
-                [Fac[C.src.lt],Fac[C.src.lt+1],Fac[C.src.lt+2]],
-                [Fac[C.src.rt],Fac[C.src.rt+1],Fac[C.src.rt+2]],
-                [Fac[C.src.flat]],[]
+                [Fac[0],Fac[0+1],Fac[0+2]],
+                [Fac[3],Fac[3+1],Fac[3+2]],            
+                [Fac[6],Fac[6+1],Fac[6+2]],
+                [Fac[9],Fac[9+1],Fac[9+2]],
+                [Fac[59]],[]
             ],
             [
-                [Fac[C.src.up+12],Fac[C.src.up+12+1],Fac[C.src.up+12+2]],
-                [Fac[C.src.dn+12],Fac[C.src.dn+12+1],Fac[C.src.dn+12+2]],            
-                [Fac[C.src.lt+12],Fac[C.src.lt+12+1],Fac[C.src.lt+12+2]],
-                [Fac[C.src.rt+12],Fac[C.src.rt+12+1],Fac[C.src.rt+12+2]],
-                [Fac[C.src.flat]],[]
+                [Fac[0+12],Fac[0+12+1],Fac[0+12+2]],
+                [Fac[3+12],Fac[3+12+1],Fac[3+12+2]],            
+                [Fac[6+12],Fac[6+12+1],Fac[6+12+2]],
+                [Fac[9+12],Fac[9+12+1],Fac[9+12+2]],
+                [Fac[59]],[]
             ],
             [
-                [Fac[C.src.up+24],Fac[C.src.up+24+1],Fac[C.src.up+24+2]],
-                [Fac[C.src.dn+24],Fac[C.src.dn+24+1],Fac[C.src.dn+24+2]],            
-                [Fac[C.src.lt+24],Fac[C.src.lt+24+1],Fac[C.src.lt+24+2]],
-                [Fac[C.src.rt+24],Fac[C.src.rt+24+1],Fac[C.src.rt+24+2]],
-                [Fac[C.src.flat]],[]
+                [Fac[0+24],Fac[0+24+1],Fac[0+24+2]],
+                [Fac[3+24],Fac[3+24+1],Fac[3+24+2]],            
+                [Fac[6+24],Fac[6+24+1],Fac[6+24+2]],
+                [Fac[9+24],Fac[9+24+1],Fac[9+24+2]],
+                [Fac[59]],[]
             ]
         ]
 
@@ -90,7 +90,7 @@
             if(this.death == 0){
                 if(!this.jumping)
                 {
-                    if(this.type == C.ass.player)
+                    if(this.type == 1)
                     {
                         if( gameAsset.dlog.active != 1)
                         {
@@ -186,7 +186,7 @@
                                 }
                             }
                             if(this.help.toy){
-                                var x = gameAsset.assets.Get([C.ass.toy]);
+                                var x = gameAsset.assets.Get([7]);
                                 for (var i = 0; i < x.length; i++) {
                                     var hm = AssetUtil.Dir(x[i], this);
                                     if(hm.d < 5*48){                                        
@@ -196,7 +196,7 @@
                                 }
                             }
                             if(this.help.trt){
-                                var x = gameAsset.assets.Get([C.ass.treat]);
+                                var x = gameAsset.assets.Get([6]);
                                 for (var i = 0; i < x.length; i++) {
                                     var hm = AssetUtil.Dir(x[i], this);
                                     if(hm.d < 5*48){                                        
@@ -207,7 +207,7 @@
                             }
 
                             if(this.help.dog){
-                                var x = gameAsset.assets.Get([C.ass.gdog,C.ass.wdog]);
+                                var x = gameAsset.assets.Get([2,3]);
                                 for (var i = 0; i < x.length; i++) {
                                     var hm = AssetUtil.Dir(x[i], this);
                                     if(hm.d < 10*48){                                        
@@ -226,7 +226,7 @@
 
                                 for(var i=0;i<16;i++){
                                     this.anims.push(
-                                        new Grunt(this.x, this.y, Fac[C.src.spl], C.ass.null,
+                                        new Grunt(this.x, this.y, Fac[36], 0,
                                             {x: Util.Rnd(60)-30, y: Util.Rnd(60)-30, z:200}, true));    
                                 }
                             }
@@ -242,7 +242,7 @@
                     this.woof--;
                 }
 
-                if(this.type == C.ass.player && gameAsset.dlog.active !=1 && this.woof == 0){
+                if(this.type == 1 && gameAsset.dlog.active !=1 && this.woof == 0){
                     if(input.isUp('SPACE')){
 
                         var d = AssetUtil.WhichDir(this.action,[
@@ -288,7 +288,7 @@
                 if(this.jumping){
                     //determine if can jump
                     var d = AssetUtil.Collisions(this, perps, true);
-                    if(d && (d.type == C.ass.stump || d.type == C.ass.man || d.type == C.ass.wdog || d.type == C.ass.gdog))
+                    if(d && (d.type == 5 || d.type == 4 || d.type == 3 || d.type == 2))
                     {
                         this.reset();
                     }
@@ -297,18 +297,18 @@
                 var d = AssetUtil.Collisions(this, perps, false);
                 if(d)
                 {
-                    if(d.type == C.ass.carl || d.type == C.ass.carr || d.type == C.ass.wdog || d.type == C.ass.gdog){
+                    if(d.type == 8 || d.type == 9 || d.type == 3 || d.type == 2){
                         this.motion = 0;
                         this.action = C.act.sq;
-                        this.type = C.ass.null;
+                        this.type = 0;
                         this.reset(C.act.sq);
                         gameAsset.splats.push({x:this.x,y:this.y,src:this.body[this.action][0]});
                     }
-                    else if(d.type == C.ass.toy &&this.type == C.ass.player){
+                    else if(d.type == 7 &&this.type == 1){
                         gameAsset.time+=10;
                         d.enabled = false;
                     }
-                    else if(d.type == C.ass.treat && this.type == C.ass.player){
+                    else if(d.type == 6 && this.type == 1){
                         this.power ++;
                         d.enabled = false;
                     }
@@ -342,7 +342,7 @@
 //Human man
 (function() {
     function Man(x, y, targ) {
-        this.type = C.ass.man;
+        this.type = 4;
         this.enabled = true;
 
         this.width = 48;
@@ -365,17 +365,17 @@
         this.target = targ;
         this.targMin = 3;
 
-        this.shadow = Util.Build([assets.tile.sol],1.5,[C.col.sw]);
+        this.shadow = Util.Build([assets.tile.sol],1.5,[46]);
         this.body= [
-            [Fac[C.src.mup],Fac[C.src.mup+1],Fac[C.src.mup],Fac[C.src.mup+2]],
-            [Fac[C.src.mdn],Fac[C.src.mdn+1],Fac[C.src.mdn],Fac[C.src.mdn+2]],            
-            [Fac[C.src.mlt],Fac[C.src.mlt+1],Fac[C.src.mlt],Fac[C.src.mlt+2]],
-            [Fac[C.src.mrt],Fac[C.src.mrt+2],Fac[C.src.mrt],Fac[C.src.mrt+1]],
-            [Fac[C.src.flat]],[]
+            [Fac[37],Fac[37+1],Fac[37],Fac[37+2]],
+            [Fac[40],Fac[40+1],Fac[40],Fac[40+2]],            
+            [Fac[43],Fac[43+1],Fac[43],Fac[43+2]],
+            [Fac[46],Fac[46+2],Fac[46],Fac[46+1]],
+            [Fac[59]],[]
         ];
         this.hat = 56;
         this.anims = [];
-        this.anims.push(new Grunt(this.x, this.y, Fac[C.src.hat], C.ass.null,null,false));
+        this.anims.push(new Grunt(this.x, this.y, Fac[51], 0,null,false));
         this.reset = function(die){
             if(die){
                 this.death = die;
@@ -428,7 +428,7 @@
                                 this.anims[0].enabled = false;
                                 for(var i=0;i<16;i++){                                              
                                     this.anims.push(
-                                        new Grunt(this.x, this.y, Fac[C.src.spl], C.ass.null,
+                                        new Grunt(this.x, this.y, Fac[36], 0,
                                             {x: Util.Rnd(60)-30, y: Util.Rnd(60)-30, z:200}, true));    
                                 }
                             }
@@ -451,16 +451,16 @@
                 if(this.jumping){
                     //determine if can jump
                     var d = AssetUtil.Collisions(this, perps, true);
-                    if(d && (d.type == C.ass.stump || d.type == C.ass.man || d.type == C.ass.wdog || d.type == C.ass.gdog)){
+                    if(d && (d.type == 5 || d.type == 4 || d.type == 3 || d.type == 2)){
                         this.reset();
                     }
                 } 
                 else{
                     var d = AssetUtil.Collisions(this, perps, false);
-                    if(d && (d.type == C.ass.carl || d.type == C.ass.carr )){
+                    if(d && (d.type == 8 || d.type == 9 )){
                         this.motion = 0;
                         this.action = C.act.sq;
-                        this.type = C.ass.null;
+                        this.type = 0;
                         this.reset(C.act.sq);
                         gameAsset.splats.push({x:this.x,y:this.y,src:this.body[this.action][0]});
 
@@ -536,15 +536,15 @@
             if(map.colliders.fend.indexOf(t) != -1){  
                 this.enabled = false;
             }
-            this.dest.x = this.type == C.ass.carl ? this.x-(this.width) : this.x+(this.width);
+            this.dest.x = this.type == 8 ? this.x-(this.width) : this.x+(this.width);
             this.dest.y = this.y; 
         },
         Collider: function(perps){
-            if(this.type == C.ass.carl || this.type == C.ass.carr)
+            if(this.type == 8 || this.type == 9)
             {
                 //predictive collison only with cars, checking a few tiles ahead
                 var d = AssetUtil.Collisions(this, perps, true);
-                if(d && (d.type == C.ass.carl || d.type == C.ass.carr))
+                if(d && (d.type == 8 || d.type == 9))
                 {
                     this.dt.x = d.dt.x;
                 }

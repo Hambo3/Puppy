@@ -48,52 +48,7 @@ var NT=[
 ];
 
 var C = {
-    state:{game:5},
-    col:{
-        wt:8,
-        d1:17,
-        d2:21,
-        d3:25,
-        tr:29,
-        mn:33,
-        c1:38,
-        c2:42,
-        sw:46,
-        aa:47 
-    },   
-    ass:{
-        null:0,
-        player:1,
-        gdog:2,
-        wdog:3,        
-        man:4,
-        stump:5,
-        treat:6,
-        toy:7,
-        carl:8,
-        carr:9,
-        sqrl:10
-    },
-    src:{
-        up:0,
-        dn:3,
-        lt:6,
-        rt:9,
-        spl:36,
-        mup:37,
-        mdn:40,
-        mlt:43,
-        mrt:46,
-        t1:49,
-        t2:50,
-        hat:51,
-        car:52,
-        well:58,
-        flat:59,
-        tony:60,
-        treat:63,
-        toy:64
-    },
+    state:{game:5}, 
     act:{
         up:0,
         dn:1,
