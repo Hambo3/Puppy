@@ -97,13 +97,14 @@
             this.win = 0;
 
             this.assets = new ObjectPool(); 
-            this.dlog = {active:0, p:0, r:3, 
+            this.dlog = {active:0, p:0, r:2, 
                 wt:0,
-                tx:[SP[0]+" "+SP[0],
-                SP[0]+" "+SP[0]+" "+SP[1],
-                SP[1]+" "+SP[1]+" "+SP[0],
-                SP[0]+" "+SP[1]+" "+SP[0]+" "+SP[0]+" "+SP[1]],
-                rp:[SP[4],SP[6],SP[5],SP[3]]};
+                tx:Util.Speaks(4)
+                ,
+                rp:[
+                    SP[4],SP[6],SP[2],SP[7]
+                ]
+            };
             var spawn = map.level.spawn;
             var tw = map.size.tile.width;
             var th = map.size.tile.height;
@@ -237,8 +238,8 @@
                     t.tony.anims[0].dt = {x: 0, y: 0, z:100};
                     t.tony.anims[0].die = true;
 
-                    gameAsset.AddChat(SP[7]+SP[11], t.tony.x-200, t.tony.y-100, PAL[C.col.aa], 4, 80, 32, function(){
-                        gameAsset.AddChat(SP[8], t.tony.x-200, t.tony.y-100, PAL[C.col.aa], 4, 80,32);
+                    gameAsset.AddChat(SP[10]+SP[11], t.tony.x-200, t.tony.y-100, PAL[C.col.aa], 4, 80, 32, function(){
+                        gameAsset.AddChat(SP[12], t.tony.x-200, t.tony.y-100, PAL[C.col.aa], 4, 80,32);
                     });
                 }
             },
@@ -248,10 +249,10 @@
                     t.scriptStage ++;
                     t.count = 100;
                 }
-            },
+            },            
             function(){
                 t.scCol = 1;
-                if(--t.count == 0){
+                if(input.isUp("SPACE")){
                     t.scriptStage ++;
                     
                     var g = new Grunt(t.tony.x, t.tony.y, Fac[C.src.hat], C.ass.null,                        
@@ -268,7 +269,11 @@
                     t.man.y = spawn.man[t.level].y*tw;
                     t.man.target = null;
                     t.dlog.active = 0;
+                    t.dlog.r = Util.RndI(0,4);
+                    t.dlog.rp = Util.Replies(t.dlog.r);
+                    t.dlog.tx = Util.Speaks(4);
                     t.endCheck = true;
+                    input.Clr();
                 }
             },
             function(){
@@ -280,8 +285,8 @@
                     t.tony.action = C.act.dd;
                     t.tony.death = C.act.dd;                                           
 
-                    gameAsset.AddChat(SP[7], t.tony.x-200, t.tony.y-100, PAL[C.col.aa], 4, 80, 32, function(){
-                        gameAsset.AddChat(SP[10], t.tony.x-200, t.tony.y-100, PAL[C.col.aa], 4, 80,32);
+                    gameAsset.AddChat(SP[10], t.tony.x-200, t.tony.y-100, PAL[C.col.aa], 4, 80, 32, function(){
+                        gameAsset.AddChat(SP[13], t.tony.x-200, t.tony.y-100, PAL[C.col.aa], 4, 80,32);
                     });
                 }
             },
@@ -386,11 +391,12 @@
 
                                 t.dlog.wt = 1;
                                 gameAsset.AddChat(this.dlog.tx[t.dlog.p], d.x, d.y, PAL[C.col.aa], 3, 128, 0, function(){
+                                        var tx =t.dlog.rp[t.dlog.p].replace("{*}",t.time);
                                         gameAsset.AddChat(
-                                            t.dlog.rp[t.dlog.p].replace("{*}",t.time), d.x, d.y, PAL[C.col.mn+1], 3,
-                                            t.dlog.p == t.dlog.r ? 256 : 128,32, function(){ 
+                                            tx, d.x, d.y, PAL[C.col.mn+1], 3,
+                                            t.dlog.p == t.dlog.r ? tx.length*4 : 196,32, function(){ 
                                             if(t.dlog.p == t.dlog.r){
-                                                gameAsset.AddChat(Util.OneOf([SP[2],SP[9]]), 
+                                                gameAsset.AddChat(Util.OneOf([SP[14],SP[15]]), 
                                                         d.x, d.y, PAL[C.col.mn+1], 3, 128,32, function(){
                                                     t.dlog.wt=0;
                                                     t.dlog.active = 2;
@@ -414,17 +420,27 @@
                         if(this.time==0){
                             this.count = 64;
                             this.gameState = C.state.game+1;//out of time
-                            this.win = 2;
+                            this.win = [NT[1],
+                                        NT[3]+NT[4],
+                                        Util.OneOf([NT[7],NT[8],NT[9]])
+                                    ];
                         }
                     }
-///////////deleteme
-if(input.isUp("ESC")){
-    this.count = 64;
-    this.gameState = C.state.game+1;//Game completed??
-    this.win = 1;
-}
-///////////deleteme
+
                     var hm = AssetUtil.Dir(this.home, this.man);
+
+///////////deleteme
+// if(input.isUp("ESC")){
+//     // hm.d= 3;
+//     // this.level = 2;
+//     // this.endCheck = true;
+    
+//     this.time = 1;
+//     //this.player.death = 1;
+//     //this.level = 1;
+//     //this.man.death=1;
+// }
+// ///////////deleteme                    
                     if(this.endCheck && hm.d < (5*48)){
                         this.endCheck = false;
                         if(this.level < 2){
@@ -434,7 +450,10 @@ if(input.isUp("ESC")){
                         else{
                             this.count = 64;
                             this.gameState = C.state.game+1;//Game completed??
-                            this.win = 1;
+                            this.win = [NT[2],
+                                        Util.OneOf([NT[5],NT[6]]),
+                                        Util.OneOf([NT[7],NT[8],NT[9]])
+                                    ];
                         }
                     }
                     if(this.player.death || this.man.death){
@@ -446,9 +465,27 @@ if(input.isUp("ESC")){
 
                             this.count = 64;
                             this.gameState = C.state.game+1;//game over
-                            this.win = {p:this.player.death,
-                                        m:this.man.death,
-                                        l:this.level};
+                            if(this.man.death>0){
+                                this.win = [NT[1],
+                                    NT[10]+Util.OneOf([NT[11],NT[4]]),
+                                    Util.OneOf([NT[7],NT[8],NT[9]])
+                                ];
+                            }
+                            else{
+                                if(this.level >0){
+                                    this.win = [NT[1],
+                                            NT[10]+Util.OneOf([ NT[11],NT[4]]),
+                                            Util.OneOf([NT[7],NT[8],NT[9]])
+                                        ];
+                                }
+                                else{
+                                    this.win = [NT[1],
+                                            NT[3]+NT[4],
+                                            Util.OneOf([NT[7],NT[8],NT[9]])
+                                        ];
+                                }
+
+                            }
                         }
                     }
                     break; 
@@ -535,6 +572,14 @@ if(input.isUp("ESC")){
                             R.Text("^MAKE A WISH PUPPY!^, SAID TONY", 20, 134, 4,0,PAL[51]);
                             R.Text("AS HE LEANED OVER TO THROW A PENNY", 20, 168, 4,0,PAL[51]);
                             R.Text("INTO THE WELL...", 20, 202, 4,0,PAL[51]);
+                            R.Text(TT[1], 580, 580, 4,0,PAL[51]);                            
+                        }
+                        if(this.scriptStage == 5){
+                            R.Text("PUPPY FINDS HELP AND BRINGS HIM TO HIS MASTER.", 20, 100, 4,0,PAL[51]);
+                            R.Text("^HELLO IS THERE ANYONE DOWN THERE!^, SHOUTS THE MAN.", 20, 134, 4,0,PAL[51]);
+                            R.Text("^THANK THE LORD IM SAVED^, REPLIES TONY AS HIS", 20, 168, 4,0,PAL[51]);
+                            R.Text("RESCUER LEANS OVER THE EDGE OF THE WELL...", 20, 202, 4,0,PAL[51]);
+
                             R.Text(TT[1], 580, 580, 4,0,PAL[51]);                            
                         }
                     }

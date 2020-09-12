@@ -262,8 +262,8 @@
                         }
                         else{ 
                             if(inp.d < ((this.power*17)*48)){
-                                gameAsset.AddChat("!!", this.x+(this.target.x > this.x?300:-300), 
-                                this.y+(this.target.y>this.y?180:-180),null,6,100);
+                                gameAsset.AddChat("!!", this.x+(Util.OSet(this.x,this.target.x)*300), 
+                                this.y+(Util.OSet(this.y,this.target.y)*200),null,6,100);
                             }                            
                         }  
 

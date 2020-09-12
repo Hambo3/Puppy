@@ -231,6 +231,39 @@ var Util = {
             }
         }
         return b;
+    },
+    OSet:function(s,d){
+        if(Util.AbsDist(s,d) < (5*48)){
+            return 0;
+        }
+        else{
+            return s > d ? -1 : 1;
+        }
+    },
+    Replies: function(r){
+        var arr = [4,5,6,7,8,9];        
+        arr.sort(() => Math.random() - 0.5);
+        arr[r] = Util.RndI(2,4);
+        arr = arr.slice(0, 4);
+        var m = [];
+        for(var j=0;j<arr.length;j++){
+            m.push(SP[arr[j]]);
+        }
+        return m;
+    },
+    Speaks: function(n){
+        var r =[];
+        for(var i=0;i<n;i++){            
+            do{
+                var m="";
+                var l = Util.RndI(1,5);
+                for(var j=0;j<l;j++){
+                    m+=SP[Util.RndI(0,2)]+" ";
+                }
+            }while(r.includes(m));
+            r.push(m);
+        }
+        return r;
     }
 }
 
