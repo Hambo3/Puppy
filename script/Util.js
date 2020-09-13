@@ -240,10 +240,10 @@ var Util = {
             return s > d ? -1 : 1;
         }
     },
-    Replies: function(r){
+    Replies: function(r,v){
         var arr = [4,5,6,7,8,9];        
         arr.sort(() => Math.random() - 0.5);
-        arr[r] = Util.RndI(2,4);
+        arr[r] = v;
         arr = arr.slice(0, 4);
         var m = [];
         for(var j=0;j<arr.length;j++){

@@ -15,7 +15,7 @@ var SP = [
     "ARRGGH! ",
     "IVE FALLEN",
     "PUPPY GET HELP!+BEFORE ITS TOO LATE!",
-    "HELP!",    
+    "GET HELP!",    
     "LEAD THE WAY PUPPY",
     "LETS GO PUPPY"
 ];
@@ -29,17 +29,13 @@ var HT=[
 ];
 
 var NT=[
-    "BLAH ",
-    
+    "BLAH ",    
     "TONY STILL NOT FOUND",
     "HERO PUPPY LEADS HEROIC RESCUE",
-
     "MAN DISAPPEARS YESTER+DAY. ",
     "ALIENS DID IT, +SAYS LOCAL.",
-
     "LOCAL IDIOT WHO FELL+DOWN A WELL HAS BEEN+FOUND",
-    "PUPPY RESCUES OWNER AFTER WELL INCIDENT",
-    
+    "POLICE ARREST 2 MEN+OVER TROLL HOAX",    
     "PUPPY CAUSES MAYHEM ON+HIGHWAY. ^HE WASNT LOOK+ING WHERE HE WAS GOING^+SAYS CONCERNED MOTORIST",
     "WELL TROLL WORRIES OLD+LADY. ^I HEARD A VOICE+COMING FROM THE WELL+SO JUST RAN OFF^",
     "MEAN DOGS AT LARGE IN+WOODS",
@@ -365,6 +361,13 @@ var FONT = {
         [1, , , , 1],
         [1, , 1, , 1],
         [1, 1, 1, 1, 1]
+    ],
+    'X': [
+        [1, , , , 1],
+        [, 1, , 1],
+        [, , 1],
+        [, 1, , 1],
+        [1, , , , 1]
     ],
     'Y': [
         [1, , 1],

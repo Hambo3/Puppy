@@ -82,12 +82,13 @@
         this.gameState = 0;
         this.scCol = 1;
         this.count = 16;
-        this.endCheck = true;
+        
 
         this.photo = null;
         
         this.reset = function(sc){
             R.Set(sc||1);
+            this.endCheck = true;
             this.scene.Set(sc);
             this.chat = [];
             this.carSpawn = [];
@@ -270,7 +271,7 @@
                     t.man.target = null;
                     t.dlog.active = 0;
                     t.dlog.r = Util.RndI(0,4);
-                    t.dlog.rp = Util.Replies(t.dlog.r);
+                    t.dlog.rp = Util.Replies(t.dlog.r, t.level==1 ? 3 : Util.RndI(2,4));
                     t.dlog.tx = Util.Speaks(4);
                     t.endCheck = true;
                     input.Clr();
@@ -393,11 +394,11 @@
                                 gameAsset.AddChat(this.dlog.tx[t.dlog.p], d.x, d.y, PAL[47], 3, 128, 0, function(){
                                         var tx =t.dlog.rp[t.dlog.p].replace("{*}",t.time);
                                         gameAsset.AddChat(
-                                            tx, d.x, d.y, PAL[33+1], 3,
+                                            tx, d.x, d.y, PAL[51], 3,
                                             t.dlog.p == t.dlog.r ? tx.length*4 : 196,32, function(){ 
                                             if(t.dlog.p == t.dlog.r){
                                                 gameAsset.AddChat(Util.OneOf([SP[14],SP[15]]), 
-                                                        d.x, d.y, PAL[33+1], 3, 128,32, function(){
+                                                        d.x, d.y, PAL[51], 3, 128,32, function(){
                                                     t.dlog.wt=0;
                                                     t.dlog.active = 2;
                                                     t.player.woof=48;
@@ -428,19 +429,7 @@
                     }
 
                     var hm = AssetUtil.Dir(this.home, this.man);
-
-///////////deleteme
-// if(input.isUp("ESC")){
-//     // hm.d= 3;
-//     // this.level = 2;
-//     // this.endCheck = true;
-    
-//     this.time = 1;
-//     //this.player.death = 1;
-//     //this.level = 1;
-//     //this.man.death=1;
-// }
-// ///////////deleteme                    
+                   
                     if(this.endCheck && hm.d < (5*48)){
                         this.endCheck = false;
                         if(this.level < 2){
@@ -575,12 +564,17 @@
                             R.Text(TT[1], 580, 580, 4,0,PAL[51]);                            
                         }
                         if(this.scriptStage == 5){
+                            if(this.level ==0){
                             R.Text("PUPPY FINDS HELP AND BRINGS HIM TO HIS MASTER.", 20, 100, 4,0,PAL[51]);
-                            R.Text("^HELLO IS THERE ANYONE DOWN THERE!^, SHOUTS THE MAN.", 20, 134, 4,0,PAL[51]);
+                            R.Text("^HELLO DOWN THERE!^, SHOUTS THE MAN.", 20, 134, 4,0,PAL[51]);
                             R.Text("^THANK THE LORD IM SAVED^, REPLIES TONY AS HIS", 20, 168, 4,0,PAL[51]);
                             R.Text("RESCUER LEANS OVER THE EDGE OF THE WELL...", 20, 202, 4,0,PAL[51]);
-
-                            R.Text(TT[1], 580, 580, 4,0,PAL[51]);                            
+                            }else{
+                            R.Text("PUPPY GUIDES THE MAN TO THE WELL.", 20, 100, 4,0,PAL[51]);
+                            R.Text("^ARE THERE TROLLS DOWN THERE^ ASKS THE MAN.", 20, 134, 4,0,PAL[51]);
+                            R.Text("PUPPY GIVES A SIGH AS THE MAN LEANS+OVER TO TAKE A LOOK...", 20, 168, 4,0,PAL[51]);
+                            R.Text(TT[1], 580, 580, 4,0,PAL[51]);
+                            }
                         }
                     }
                     else{
